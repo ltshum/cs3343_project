@@ -22,7 +22,7 @@ public class Customer extends Account {
     private static List<Permission> getCustomerPermissions() {
         return Arrays.asList(
                 new Permission(Role.CUSTOMER, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
-                new Permission(Role.CUSTOMER, Resource.VISITED_RESTAURANT, Set.of(Privilege.READ)),
+                new Permission(Role.CUSTOMER, Resource.VIEW_BOOKING, Set.of(Privilege.READ)),
                 new Permission(Role.CUSTOMER, Resource.SEARCH_RESTAURANT, Set.of(Privilege.READ))
         );
     }

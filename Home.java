@@ -36,21 +36,9 @@ public class Home {
                         TableManagement tableManagementPage = new TableManagement(account);
                         tableManagementPage.displayTableManagement(in);
                     }
-                    case TIMESLOT_MANAGEMENT -> {
-                        TimeslotManagement timeslotManagementPage = new TimeslotManagement(account);
-                        timeslotManagementPage.displayTimeslotManagement(in);
-                    }
-                    case BOOKING -> {
+                    case VIEW_BOOKING -> {
                         System.out.println("You selected Booking.");
                         // Add booking actions here
-                    }
-                    case COMMENT -> {
-                        System.out.println("You selected Comment.");
-                        // Add comment actions here
-                    }
-                    case VISITED_RESTAURANT -> {
-                        System.out.println("You selected Visited Restaurant.");
-                        // Add visited restaurant actions here
                     }
                     case SEARCH_RESTAURANT -> {
                         System.out.println("You selected Search Restaurant.");

@@ -18,10 +18,16 @@ public class Restaurant extends Account {
     private LocalTime closeTime;
     private Duration sessionDuration;
     private ArrayList<Table> allTables = new ArrayList<>();
+    private ArrayList<Comment> allComments = new ArrayList<>();
+
+    //Test
+    Comment cm1 = new Comment("User1", "Great", 3);
+    Comment cm2 = new Comment("User2", "Good", 4);
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
     public Restaurant(String userName, String password, String name, String type, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
         super(Arrays.asList(Role.RESTAURANT), userName, password, getRestaurantPermissions());
+        this.rate = 0;
         this.restaurantName = name;
         this.type = type;
         this.address = address;
@@ -32,7 +38,8 @@ public class Restaurant extends Account {
         this.allTables = new ArrayList<>();
         initializeTables(tableNum);
         generateTimeslots();
-        //this.allComments = new ArrayList<>();
+        this.allComments.add(cm1);
+        this.allComments.add(cm2);
         //this.allTables = new ArrayList<>();
     }
 
@@ -42,14 +49,16 @@ public class Restaurant extends Account {
         }
     }
 
-    public void getTimeslots() {
+    public String getTimeslots() {
         LocalTime currentTime = openTime;
+        String result = "";
         while (currentTime.plus(sessionDuration).isBefore(closeTime)
                 || currentTime.plus(sessionDuration).equals(closeTime)) {
             String session = currentTime.toString() + " - " + currentTime.plus(sessionDuration).toString();
             currentTime = currentTime.plus(sessionDuration);
-            System.out.println(session);
+            result = result + session + " \n";
         }
+        return result;
     }
 
     public void setTimeslots(LocalTime openTime, LocalTime closeTime, Duration sessionDuration) {
@@ -84,10 +93,16 @@ public class Restaurant extends Account {
         return Arrays.asList(
                 new Permission(Role.RESTAURANT, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
                 new Permission(Role.RESTAURANT, Resource.TABLE_MANAGEMENT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
-                new Permission(Role.RESTAURANT, Resource.TIMESLOT_MANAGEMENT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
-                new Permission(Role.RESTAURANT, Resource.BOOKING, Set.of(Privilege.READ)),
-                new Permission(Role.RESTAURANT, Resource.COMMENT, Set.of(Privilege.READ, Privilege.REPLY))
+                new Permission(Role.RESTAURANT, Resource.WEEKLY_REPORT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE))
         );
+    }
+
+    public String getComment() {
+        String result = "";
+        for (Comment cm : allComments) {
+            result = result + cm.getCustomer_name() + ": " + cm.getContent() + " " + cm.getRate() + "\n";
+        }
+        return result;
     }
 
     public String getRestaurantName() {

@@ -13,7 +13,7 @@ public class Profile {
     public void displayProfile(Scanner in) {
 
         System.out.println("\n# Here is your information #");
-        server.getUserDetail(account);
+        System.out.println(server.getUserDetail(account));
         System.out.println("\n1. Edit");
         System.out.println("\n2. Back");
         System.out.print("\nWhat action do you want to do?: ");

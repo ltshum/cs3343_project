@@ -58,20 +58,32 @@ public class Server {
         return null; // Return null if no match found
     }
 
-    public void getUserDetail(Account ac) {
+    public String getUserDetail(Account ac) {
         System.out.println("\nUsername: " + ac.getUserName() + "\nPassword: " + ac.getPassword());
         List<Role> roles = ac.getRoles();
         for (Role role : roles) {
             if (role == Role.CUSTOMER) {
                 Customer customer = (Customer) ac;
-                System.out.println("Name: " + customer.getCustomerName() + "\nPhone: " + customer.getCustomerContact());
+                return "Name: " + customer.getCustomerName()
+                        + "\nPhone: " + customer.getCustomerContact();
 
             }
             if (role == Role.RESTAURANT) {
                 Restaurant restaurant = (Restaurant) ac;
-                System.out.println("Restaurant Name: " + restaurant.getRestaurantName() + "\nType: " + restaurant.getType() + "\nAddress: " + restaurant.getAddress() + "\nPhone: " + restaurant.getRestaurantContact() + "\nOpen Time: " + restaurant.getOpenTime() + "\nClose Time: " + restaurant.getCloseTime() + "\nSession Duration: " + restaurant.getSessionDuration() + "mins" + "\nTable Amount: " + restaurant.getAllTables().size());
+                return "Rate: " + restaurant.getRate()
+                        + "\nRestaurant Name: " + restaurant.getRestaurantName()
+                        + "\nType: " + restaurant.getType()
+                        + "\nAddress: " + restaurant.getAddress()
+                        + "\nPhone: " + restaurant.getRestaurantContact()
+                        + "\nOpen Time: " + restaurant.getOpenTime()
+                        + "\nClose Time: " + restaurant.getCloseTime()
+                        + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
+                        + "\nTable Amount: " + restaurant.getAllTables().size()
+                        + "\n\nTimeslot: \n" + restaurant.getTimeslots()
+                        + "\nComment: \n" + restaurant.getComment();
             }
         }
+        return null;
     }
 
     public void updateUserDetail(Account ac, Scanner in) {
@@ -134,28 +146,26 @@ public class Server {
 
     }
 
-    public void getAllTimeslotInfo(Account ac) {
-        Restaurant restaurant = (Restaurant) ac;
-        restaurant.getTimeslots();
-        // for (Table table : tables) {
-        //     System.out.println("Table ID: " + table.getTableID());
-        //     System.out.println("Seat: " + table.getSeatNum());
-        //     System.out.println("Status: " + table.gatStatus());
-        // System.out.println("Timeslots: ");
-        // List<Timeslot> timeslots = table.getAllTimeslots();
-        // for (Timeslot timeslot : timeslots) {
-        //     System.out.println(timeslot.getSession());
-        // }
-    }
-
-    public void updateTimeslotInfo(Account ac, Scanner in) {
-        Restaurant restaurant = (Restaurant) ac;
-        System.out.print("\nNew open time (HH:mm): ");
-        LocalTime openTime = LocalTime.parse(in.next());
-        System.out.print("\nNew close time (HH:mm): ");
-        LocalTime closeTime = LocalTime.parse(in.next());
-        System.out.print("\nNew session duration in minutes: ");
-        Duration sessionDuration = Duration.ofMinutes(in.nextInt());
-        restaurant.setTimeslots(openTime, closeTime, sessionDuration);
-    }
+    // public String getAllTimeslotInfo(Restaurant restaurant) {
+    //     restaurant.getTimeslots();
+    // for (Table table : tables) {
+    //     System.out.println("Table ID: " + table.getTableID());
+    //     System.out.println("Seat: " + table.getSeatNum());
+    //     System.out.println("Status: " + table.gatStatus());
+    // System.out.println("Timeslots: ");
+    // List<Timeslot> timeslots = table.getAllTimeslots();
+    // for (Timeslot timeslot : timeslots) {
+    //     System.out.println(timeslot.getSession());
+    // }
 }
+
+// public void updateTimeslotInfo(Account ac, Scanner in) {
+//         Restaurant restaurant = (Restaurant) ac;
+//         System.out.print("\nNew open time (HH:mm): ");
+//         LocalTime openTime = LocalTime.parse(in.next());
+//         System.out.print("\nNew close time (HH:mm): ");
+//         LocalTime closeTime = LocalTime.parse(in.next());
+//         System.out.print("\nNew session duration in minutes: ");
+//         Duration sessionDuration = Duration.ofMinutes(in.nextInt());
+//         restaurant.setTimeslots(openTime, closeTime, sessionDuration);
+//     }
