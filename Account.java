@@ -1,5 +1,6 @@
 
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class Account {
 
@@ -76,5 +77,7 @@ public abstract class Account {
     public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
+
+    public abstract void edit(Scanner in);
 
 }

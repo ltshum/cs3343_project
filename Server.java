@@ -86,48 +86,38 @@ public class Server {
         return null;
     }
 
-    public String getRestaurantDetail(Restaurant restaurant){
-        return "Rate: " + restaurant.getRate()
-        + "\nRestaurant Name: " + restaurant.getRestaurantName()
-        + "\nType: " + restaurant.getType()
-        + "\nAddress: " + restaurant.getAddress()
-        + "\nPhone: " + restaurant.getRestaurantContact()
-        + "\nOpen Time: " + restaurant.getOpenTime()
-        + "\nClose Time: " + restaurant.getCloseTime()
-        + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
-        + "\nTable Amount: " + restaurant.getAllTables().size()
-        + "\n\nTimeslot: \n" + restaurant.getTimeslots()
-        + "\nComment: \n" + restaurant.getComment();
-    }
+    // public void updateUserDetail(Account ac, Scanner in) {
+    //     List<Role> roles = ac.getRoles();
+    //     for (Role role : roles) {
+    //         if (role == Role.CUSTOMER) {
+    //             Customer customer = (Customer) ac;
+    //             System.out.print("\nNew Name: ");
+    //             String newName = in.next();
+    //             System.out.print("\nNew Phone Number: ");
+    //             String newContact = in.next();
+    //             customer.setCustomerName(newName);
+    //             customer.setCustomerContact(newContact);
+    //         }
+    //         if (role == Role.RESTAURANT) {
+    //             Restaurant restaurant = (Restaurant) ac;
+    //             System.out.print("\nNew Name: ");
+    //             String newName = in.next();
+    //             System.out.print("\nNew Type: ");
+    //             String newType = in.next();
+    //             System.out.print("\nNew Address: ");
+    //             String newAddress = in.next();
+    //             System.out.print("\nNew Phone Number: ");
+    //             String newContact = in.next();
+    //             restaurant.setRestaurantName(newName);
+    //             restaurant.setType(newType);
+    //             restaurant.setAddress(newAddress);
+    //             restaurant.setRestaurantContact(newContact);
+    //         }
+    //     }
+    // }
 
     public void updateUserDetail(Account ac, Scanner in) {
-        List<Role> roles = ac.getRoles();
-        for (Role role : roles) {
-            if (role == Role.CUSTOMER) {
-                Customer customer = (Customer) ac;
-                System.out.print("\nNew Name: ");
-                String newName = in.next();
-                System.out.print("\nNew Phone Number: ");
-                String newContact = in.next();
-                customer.setCustomerName(newName);
-                customer.setCustomerContact(newContact);
-            }
-            if (role == Role.RESTAURANT) {
-                Restaurant restaurant = (Restaurant) ac;
-                System.out.print("\nNew Name: ");
-                String newName = in.next();
-                System.out.print("\nNew Type: ");
-                String newType = in.next();
-                System.out.print("\nNew Address: ");
-                String newAddress = in.next();
-                System.out.print("\nNew Phone Number: ");
-                String newContact = in.next();
-                restaurant.setRestaurantName(newName);
-                restaurant.setType(newType);
-                restaurant.setAddress(newAddress);
-                restaurant.setRestaurantContact(newContact);
-            }
-        }
+        ac.edit(in);
     }
 
     public void getAllTableInfo(Account ac) {

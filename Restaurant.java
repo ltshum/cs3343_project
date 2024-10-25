@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.Scanner;
 
 public class Restaurant extends Account {
 
@@ -175,6 +176,77 @@ public class Restaurant extends Account {
 
     public void setAllTables(ArrayList<Table> allTables) {
         this.allTables = allTables;
+    }
+
+    public void edit(Scanner in) {
+        while (true) {
+            System.out.println("# If you want to back to last page please input X #");
+            System.out.println("# Comment is not allowed to change #\n");
+            System.out.println("# Change open/close/session time will regenerate timeslots #\n");
+            System.out.println("1. Restaurant Name\n");
+            System.out.println("2. Type\n");
+            System.out.println("3. Address\n");
+            System.out.println("4. Phone\n");
+            System.out.println("5. Open Time\n");
+            System.out.println("6. Close Time\n");
+            System.out.println("7. Session Duration\n");
+            System.out.println("8. Table Amount\n");
+
+            System.out.print("Please input what information you want to change in list: ");
+            String input = in.next();
+
+            if (input.charAt(0) == 'X') {
+                return;
+            }
+            else {
+                try {
+                    switch (Integer.parseInt(input)) {
+                        case 1 -> {
+                            System.out.print("Please input new Restaurant Name: ");
+                            setRestaurantName(in.next());
+                        }
+                        case 2 -> {
+                            System.out.print("Please input new Type: ");
+                            setType(in.next());
+                        }
+                        case 3 -> {
+                            System.out.print("Please input new Address: ");
+                            setAddress(in.next());
+                        }
+                        case 4 -> {
+                            System.out.print("Please input new Phone: ");
+                            setRestaurantContact(in.next());
+                        }
+                        case 5 -> {
+                            System.out.print("Please input new Open Time: ");
+                            setOpenTime(LocalTime.parse(in.next()));
+                            generateTimeslots();
+                        }
+                        case 6 -> {
+                            System.out.print("Please input new Close Time: ");
+                            setCloseTime(LocalTime.parse(in.next()));
+                            generateTimeslots();
+                        }
+                        case 7 -> {
+                            System.out.print("Please input new Session Duration: ");
+                            setSessionDuration(Duration.ofMinutes(in.nextInt()));
+                            generateTimeslots();
+                        }
+                        case 8 -> {
+                            System.out.print("Please input new Table Amount: ");
+                            allTables.clear();
+                            initializeTables(in.nextInt());
+                        }
+                    }
+                }
+                catch (NumberFormatException e) {
+                    System.out.println("Invalid input!");
+                }
+                catch (Exception e) {
+                    System.out.printf("Error: %s\n", e.getMessage());
+                }
+            }
+        }
     }
 
 }
