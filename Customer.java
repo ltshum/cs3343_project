@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.Scanner;
 
 public class Customer extends Account {
 
@@ -57,6 +58,40 @@ public class Customer extends Account {
 
     public void setAllWrittenComment(ArrayList<String> allWrittenComment) {
         this.allWrittenComment = allWrittenComment;
+    }
+
+    public void edit(Scanner in) {
+        while (true) {
+            System.out.println("# If you want to back to last page please input X #");
+            System.out.println("1. Name\n");
+            System.out.println("2. Phone\n");
+            System.out.print("Please input what information you want to change in list: ");
+            String input = in.next();
+
+            if (input.charAt(0) == 'X') {
+                return;
+            }
+            else {
+                try {
+                    switch (Integer.parseInt(input)) {
+                        case 1 -> {
+                            System.out.print("Please input new Name: ");
+                            setCustomerName(in.next());
+                        }
+                        case 2 -> {
+                            System.out.print("Please input new Phone: ");
+                            setCustomerContact(in.next());
+                        }
+                    }
+                }
+                catch (NumberFormatException e) {
+                    System.out.println("Invalid input!");
+                }
+                catch (Exception e) {
+                    System.out.printf("Error: %s\n", e.getMessage());
+                }
+            }
+        }
     }
 
 }
