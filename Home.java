@@ -41,8 +41,8 @@ public class Home {
                         // Add booking actions here
                     }
                     case SEARCH_RESTAURANT -> {
-                        System.out.println("You selected Search Restaurant.");
-                        // Add search restaurant actions here
+                        SearchRestaurant searchRestaurantPage = new SearchRestaurant(account);
+                        searchRestaurantPage.disolaySearchRestaurnt(in);
                     }
                     default ->
                         System.out.println("Invalid selection.");
