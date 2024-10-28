@@ -37,8 +37,8 @@ public class Home {
                         tableManagementPage.displayTableManagement(in);
                     }
                     case VIEW_BOOKING -> {
-                        System.out.println("You selected Booking.");
-                        // Add booking actions here
+                        ViewBooking viewBooking = new ViewBooking(account);
+                        viewBooking.displayViewBooking(in);
                     }
                     case SEARCH_RESTAURANT -> {
                         SearchRestaurant searchRestaurantPage = new SearchRestaurant(account);
