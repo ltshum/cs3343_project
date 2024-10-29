@@ -27,12 +27,12 @@ public class Server {
         }
     }
 
-    public void signUpRestaurant(String role, String username, String password, String name, String type, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
+    public void signUpRestaurant(String role, String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
 
         if (AccountList.stream().anyMatch(user -> user.getUserName().equals(username))) {
             System.out.println("Error: Username already exists!");
         } else {
-            Restaurant restaurant = new Restaurant(username, password, name, type, address, contact, openTime, closeTime, sessiDuration, tableNum);
+            Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
             AccountList.add(restaurant);
             System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
             System.out.println("\n#Restaurant signed up successfully!#\n");
@@ -73,6 +73,7 @@ public class Server {
                 return "Rate: " + restaurant.getRate()
                         + "\nRestaurant Name: " + restaurant.getRestaurantName()
                         + "\nType: " + restaurant.getType()
+                        + "\nDistrict: " + restaurant.getDistrict()
                         + "\nAddress: " + restaurant.getAddress()
                         + "\nPhone: " + restaurant.getRestaurantContact()
                         + "\nOpen Time: " + restaurant.getOpenTime()

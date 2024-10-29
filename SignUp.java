@@ -46,6 +46,9 @@ public class SignUp {
                 //Input restaurantType
                 System.out.print("\nPlease input your restaurant type: ");
                 String type = in.next();
+                //Input restaurantDistrict
+                System.out.print("\nPlease input your restaurant district: ");
+                String district = in.next();
                 //Input restaurantAddress
                 System.out.print("\nPlease input your restaurant address: ");
                 String address = in.next();
@@ -64,7 +67,7 @@ public class SignUp {
                 //Input tableNum
                 System.out.print("\nPlease input your table amount: ");
                 int tableCount = in.nextInt();
-                server.signUpRestaurant("Restaurant", username, password, name, type, address, contact, openTime, closeTime, sessionDuration, tableCount);
+                server.signUpRestaurant("Restaurant", username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
             }
             case 3 -> {
                 return;

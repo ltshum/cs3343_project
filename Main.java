@@ -11,8 +11,7 @@ public class Main {
 
         //For Test
         server.signUpCustomer("Customer", "1", "1", "1", "1");
-        server.signUpRestaurant("Restaurant", "2", "2", "1", "1", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
-        server.signUpRestaurant("Restaurant", "3", "3", "1", "1", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(75), 3);
+        server.signUpRestaurant("Restaurant", "2", "2", "1", "1", "d","1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
 
         //Pass to Sign-in or Sign-up
         while (true) {

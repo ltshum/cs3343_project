@@ -12,6 +12,7 @@ public class Restaurant extends Account {
 
     private String restaurantName;
     private String type;
+    private String district;
     private String address;
     private String restaurantContact;
     private float rate;
@@ -26,11 +27,12 @@ public class Restaurant extends Account {
     Comment cm2 = new Comment("User2", "Good", 4);
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
-    public Restaurant(String userName, String password, String name, String type, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
+    public Restaurant(String userName, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
         super(Arrays.asList(Role.RESTAURANT), userName, password, getRestaurantPermissions());
         this.rate = 0;
         this.restaurantName = name;
         this.type = type;
+        this.district = district;
         this.address = address;
         this.restaurantContact = contact;
         this.openTime = openTime;
@@ -143,6 +145,10 @@ public class Restaurant extends Account {
         return allTables;
     }
 
+    public String getDistrict(){
+        return district;
+    }
+
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
     }
@@ -151,6 +157,9 @@ public class Restaurant extends Account {
         this.type = type;
     }
 
+    public void setDistrict(String district){
+        this.district = district;
+    }
     public void setAddress(String address) {
         this.address = address;
     }
@@ -186,12 +195,13 @@ public class Restaurant extends Account {
             System.out.println("# Change open/close/session time will regenerate timeslots #\n");
             System.out.println("1. Restaurant Name\n");
             System.out.println("2. Type\n");
-            System.out.println("3. Address\n");
-            System.out.println("4. Phone\n");
-            System.out.println("5. Open Time\n");
-            System.out.println("6. Close Time\n");
-            System.out.println("7. Session Duration\n");
-            System.out.println("8. Table Amount\n");
+            System.out.println("3. District\n");
+            System.out.println("4. Address\n");
+            System.out.println("5. Phone\n");
+            System.out.println("6. Open Time\n");
+            System.out.println("7. Close Time\n");
+            System.out.println("8. Session Duration\n");
+            System.out.println("9. Table Amount\n");
 
             System.out.print("Please input what information you want to change in list: ");
             String input = in.next();
@@ -210,30 +220,34 @@ public class Restaurant extends Account {
                             System.out.print("Please input new Type: ");
                             setType(in.next());
                         }
-                        case 3 -> {
+                        case 3-> {
+                            System.out.print("Please input new Distrct: ");
+                            setDistrict(in.next());
+                        }
+                        case 4 -> {
                             System.out.print("Please input new Address: ");
                             setAddress(in.next());
                         }
-                        case 4 -> {
+                        case 5 -> {
                             System.out.print("Please input new Phone: ");
                             setRestaurantContact(in.next());
                         }
-                        case 5 -> {
+                        case 6 -> {
                             System.out.print("Please input new Open Time: ");
                             setOpenTime(LocalTime.parse(in.next()));
                             generateTimeslots();
                         }
-                        case 6 -> {
+                        case 7 -> {
                             System.out.print("Please input new Close Time: ");
                             setCloseTime(LocalTime.parse(in.next()));
                             generateTimeslots();
                         }
-                        case 7 -> {
+                        case 8 -> {
                             System.out.print("Please input new Session Duration: ");
                             setSessionDuration(Duration.ofMinutes(in.nextInt()));
                             generateTimeslots();
                         }
-                        case 8 -> {
+                        case 9 -> {
                             System.out.print("Please input new Table Amount: ");
                             allTables.clear();
                             initializeTables(in.nextInt());
