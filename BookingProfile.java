@@ -12,11 +12,11 @@ public class BookingProfile {
 
     public void displayBookingProfile(Scanner in) {
 
-        System.out.println("\n# Here is restaurant information #");
-        System.out.println(server.getRestaurantDetail(restaurant));
+        System.out.println("\n# Here is restaurant information #\n");
+        System.out.println(server.getRestaurantBookingDetail(restaurant));
         System.out.println("\n1. Book today");
-        System.out.println("\n1. Book another day");
-        System.out.println("\n2. Back");
+        System.out.println("\n2. Book another day");
+        System.out.println("\n3. Back");
         System.out.print("\nWhat action do you want to do?: ");
 
         int op = in.nextInt();

@@ -87,6 +87,24 @@ public class Server {
         return null;
     }
 
+    public String getRestaurantBookingDetail(Restaurant restaurant){
+        return "Rate: " + restaurant.getRate()
+        + "\nRestaurant Name: " + restaurant.getRestaurantName()
+        + "\nType: " + restaurant.getType()
+        + "\nDistrict: " + restaurant.getDistrict()
+        + "\nAddress: " + restaurant.getAddress()
+        + "\nPhone: " + restaurant.getRestaurantContact()
+        + "\nOpen Time: " + restaurant.getOpenTime()
+        + "\nClose Time: " + restaurant.getCloseTime()
+        + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
+        + "\nTable Amount: " + restaurant.getAllTables().size()
+        + "\n\nTimeslot: \n" + restaurant.getTimeslots()
+        + "\nComment: \n" + restaurant.getComment();
+    }
+
+    public String getListInfo(Restaurant restaurant){
+        return restaurant.getRestaurantName() + ": " + restaurant.getRate() + " " + restaurant.getType() + " " + restaurant.getDistrict();
+    }
     // public void updateUserDetail(Account ac, Scanner in) {
     //     List<Role> roles = ac.getRoles();
     //     for (Role role : roles) {
