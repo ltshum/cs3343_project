@@ -1,4 +1,7 @@
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -78,6 +81,12 @@ public abstract class Account {
         this.permissions = permissions;
     }
 
+    public void booking(LocalTime bookingtime,int customernumber,String contactnumber) {
+  
+    }
+    public void bookinganotherdate(LocalTime bookingtime,int customernumber,LocalDate bookingdate,String contactnumber) {
+
+    }
     public abstract void edit(Scanner in);
 
 }

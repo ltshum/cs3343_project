@@ -11,7 +11,7 @@ public class RestaurantList {
         this.result = result;
     }
 
-    public void displayRestaurantList(Scanner in) {
+    public void displayRestaurantList(Scanner in,Account ac) {
 
         while (true) {
             int count = 1;
@@ -28,8 +28,13 @@ public class RestaurantList {
             } else {
                 try {
                     int op = Integer.parseInt(input);
-                    BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));
-                    bookingProfile.displayBookingProfile(in);
+                    if(ac instanceof Customer){
+                        BookingProfile bookingProfile = new BookingProfile(result.get(op - 1),ac);
+                        bookingProfile.displayBookingProfile(in);
+                    }else{
+                        BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));
+                        bookingProfile.displayBookingProfile(in);
+                    }
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input!");
                 } catch (Exception e) {

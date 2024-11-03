@@ -8,15 +8,21 @@ public class Table {
     private int seatNum;
     private boolean status;
     private List<Timeslot> allTimeslots;
+    private List<Timeslot> bookedTimeSlot;
+
 
     public Table(int tableID) {
         this.tableID = tableID;
         this.status = true; // Initially available
         this.allTimeslots = new ArrayList<>();
+        this.bookedTimeSlot=new ArrayList<>();
     }
 
     public void addTimeslot(Timeslot timeslot) {
         allTimeslots.add(timeslot);
+    }
+    public void addBookingTimeslot(Timeslot bookingTime) {
+        this.bookedTimeSlot.add(bookingTime);
     }
 
     public int getTableID() {
@@ -39,6 +45,10 @@ public class Table {
         return allTimeslots;
     }
 
+    public List<Timeslot> getBookingTimeslots() {
+        return bookedTimeSlot;
+    }
+
     public void setTableID(int tableID) {
         this.tableID = tableID;
     }
@@ -53,6 +63,10 @@ public class Table {
 
     public void setAllTimeslots(List<Timeslot> allTimeslots) {
         this.allTimeslots = allTimeslots;
+    }
+
+    public void setBookingTimeslots(List<Timeslot> bookingTimeslot) {
+        this.bookedTimeSlot = bookingTimeslot;
     }
 
 }

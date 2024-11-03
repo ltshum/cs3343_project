@@ -1,6 +1,7 @@
 
 // Other imports as needed
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,8 @@ public class Restaurant extends Account {
     private Duration sessionDuration;
     private ArrayList<Table> allTables = new ArrayList<>();
     private ArrayList<Comment> allComments = new ArrayList<>();
+    private ArrayList<Booking> allBookings = new ArrayList<>();
+
 
     //Test
     Comment cm1 = new Comment("User1", "Great", 3);
@@ -39,6 +42,7 @@ public class Restaurant extends Account {
         this.closeTime = closeTime;
         this.sessionDuration = sessionDuration;
         this.allTables = new ArrayList<>();
+        this.allBookings =new ArrayList<>();
         initializeTables(tableNum);
         generateTimeslots();
         this.allComments.add(cm1);
@@ -262,6 +266,18 @@ public class Restaurant extends Account {
                 }
             }
         }
+    }
+    
+    public void booking(LocalTime bookingtime,int customernumber,String contactnumber) {
+        Booking bk=new Booking(bookingtime,customernumber,contactnumber);
+        this.allBookings.add(bk);
+        bk.bookingSuccess();
+    }
+    
+    public void bookinganotherdate(LocalTime bookingtime,int customernumber,LocalDate bookingdate,String contactnumber) {
+        Booking bk=new Booking(bookingtime,customernumber,bookingdate,contactnumber);
+        this.allBookings.add(bk);
+        bk.bookingSuccess();
     }
 
 }

@@ -45,7 +45,7 @@ public class SearchRestaurant {
         testList.add(r3);
         
         RestaurantList testRestaurantList = new RestaurantList(testList);
-        testRestaurantList.displayRestaurantList(in);
+        testRestaurantList.displayRestaurantList(in,account);
 
     }
 }
