@@ -11,6 +11,7 @@ public class Booking {
         this.bookingTime = bookingTime;
         this.numberOfSeats = numberOfSeats;
         this.contactnumber=contactnumber;
+        this.bookingdate = LocalDate.now();
     }
     public Booking(LocalTime bookingTime, int numberOfSeats,LocalDate bookingdate,String contactnumber) {
         this.bookingTime = bookingTime;

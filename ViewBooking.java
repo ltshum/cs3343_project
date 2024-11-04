@@ -27,7 +27,7 @@ public class ViewBooking {
             }
         }
 
-        System.out.println("\n[today date]");
+        System.out.println("\n[" + LocalDate.now() + "]");
 
         System.out.println("\nIf you want to view another date's booking record");
         System.err.println("please input date [YY-MM-DD]");
