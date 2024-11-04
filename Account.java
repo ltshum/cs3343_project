@@ -81,10 +81,10 @@ public abstract class Account {
         this.permissions = permissions;
     }
 
-    public void booking(LocalTime bookingtime,int customernumber,String contactnumber) {
+    public void booking(LocalTime starttime,LocalTime endTime,int customernumber,String contactnumber) {
   
     }
-    public void bookinganotherdate(LocalTime bookingtime,int customernumber,LocalDate bookingdate,String contactnumber) {
+    public void bookinganotherdate(LocalTime starttime,LocalTime endTime,int customernumber,LocalDate bookingdate,String contactnumber) {
 
     }
     public abstract void edit(Scanner in);

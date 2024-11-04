@@ -268,14 +268,15 @@ public class Restaurant extends Account {
         }
     }
     
-    public void booking(LocalTime bookingtime,int customernumber,String contactnumber) {
-        Booking bk=new Booking(bookingtime,customernumber,contactnumber);
+    public void booking(LocalTime starTime,LocalTime endtime,int customernumber,String contactnumber) {
+        System.out.println("This is the booking detail see by restaurant");
+        Booking bk=new Booking(starTime,endtime,customernumber,contactnumber);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
     
-    public void bookinganotherdate(LocalTime bookingtime,int customernumber,LocalDate bookingdate,String contactnumber) {
-        Booking bk=new Booking(bookingtime,customernumber,bookingdate,contactnumber);
+    public void bookinganotherdate(LocalTime starTime,LocalTime endtime,int customernumber,LocalDate bookingdate,String contactnumber) {
+        Booking bk=new Booking(starTime,endtime,customernumber,bookingdate,contactnumber);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }

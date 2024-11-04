@@ -69,4 +69,11 @@ public class Table {
         this.bookedTimeSlot = bookingTimeslot;
     }
 
+    public boolean canbook(int customernumber,Timeslot time){
+        // if(customernumber> this.getSeatNum() && !this.bookedTimeSlot.contains(time)){
+            // return false;
+        // }
+        return true;
+    }
+
 }
