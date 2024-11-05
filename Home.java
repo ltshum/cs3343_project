@@ -27,6 +27,7 @@ public class Home {
             int op = in.nextInt();
             if (op >= 1 && op <= list.size()) {
                 Resource selectedResource = list.get(op - 1).getResource();
+                //System.out.println("Selected resource: " + selectedResource);
                 switch (selectedResource) {
                     case PROFILE -> {
                         Profile profilePage = new Profile(account);
@@ -42,7 +43,11 @@ public class Home {
                     }
                     case SEARCH_RESTAURANT -> {
                         SearchRestaurant searchRestaurantPage = new SearchRestaurant(account);
-                        searchRestaurantPage.disolaySearchRestaurnt(in);
+                        searchRestaurantPage.displaySearchRestaurnt(in);
+                    }
+                    case WEEKLY_REPORT -> {
+                        WeeklyReport weeklyReport = new WeeklyReport(account);
+                        weeklyReport.displayWeeklyReport(in);
                     }
                     default ->
                         System.out.println("Invalid selection.");

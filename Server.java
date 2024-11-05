@@ -2,14 +2,30 @@
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Server {
 
     private static final Server instance = new Server();
     private static ArrayList<Account> AccountList = new ArrayList<>();
-
+    
+    private Map<String, Account> RestaurantAccounts;
+    private Map<String, Map<String, RestaurantLog>> restaurantLogs;
+    private Server() {
+        RestaurantAccounts = new HashMap<>();
+        restaurantLogs = new HashMap<>();
+        Restaurant r1 = new Restaurant("AC1", "1", "1", "1", "1", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 1);
+        Restaurant r2 = new Restaurant("AC2", "2", "AC2", "India", "Wong Tai Sin", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
+        // predeined data
+        RestaurantAccounts.put(r1.getUserName(), r1);
+        RestaurantAccounts.put(r2.getUserName(), r2);
+        // add data
+        addTestData();
+    }
+     
     public static Server getInstance() {
         return instance;
     }
@@ -34,6 +50,9 @@ public class Server {
         } else {
             Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
             AccountList.add(restaurant);
+            //add to list
+            RestaurantAccounts.put(restaurant.getUserName(), restaurant);
+
             System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
             System.out.println("\n#Restaurant signed up successfully!#\n");
         }
@@ -56,6 +75,28 @@ public class Server {
             }
         }
         return null; // Return null if no match found
+    }
+
+    private void addTestData() {
+        // test1
+        Map<String, RestaurantLog> restaurant1Logs = new HashMap<>();
+        restaurant1Logs.put("lastWeek", new RestaurantLog(1, 4.5f, 100, List.of(new Comment("User1", "Nice", 5.0f))));
+        restaurant1Logs.put("thisWeek", new RestaurantLog(2, 4.0f, 120, List.of(new Comment("User2", "Good", 4.0f))));
+        restaurantLogs.put("AC1", restaurant1Logs);
+
+        // test2
+        Map<String, RestaurantLog> restaurant2Logs = new HashMap<>();
+        restaurant2Logs.put("lastWeek", new RestaurantLog(3, 3.5f, 80, List.of(new Comment("User3", "Average", 3.0f))));
+        restaurant2Logs.put("thisWeek", new RestaurantLog(1, 4.5f, 150, List.of(new Comment("User4", "Excellent", 5.0f))));
+        restaurantLogs.put("AC2", restaurant2Logs);
+    }
+
+    public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
+        Map<String, RestaurantLog> logs = restaurantLogs.get(restaurant.getUserName());
+        if (logs != null) {
+            return logs.get(period);
+        }
+        return null;
     }
 
     public String getUserDetail(Account ac) {

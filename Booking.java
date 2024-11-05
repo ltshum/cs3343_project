@@ -23,6 +23,9 @@ public class Booking {
         this.contactnumber=contactnumber;
     }
 
+    public Booking(LocalTime bookingtime, int customernumber, LocalDate bookingdate2, String contactnumber2) {
+        //TODO Auto-generated constructor stub
+    }
     // Method to handle booking success
     public void bookingSuccess() {
         System.out.println("Booking confirmed!");

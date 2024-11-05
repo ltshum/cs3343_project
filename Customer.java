@@ -59,7 +59,7 @@ public class Customer extends Account {
     }
 
     public void booking(LocalTime bookingtime,int customernumber,String contactnumber) {
-        Booking bk=new Booking(bookingtime,customernumber,contactnumber);
+        Booking bk=new Booking(bookingtime,bookingtime, customernumber,contactnumber);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
