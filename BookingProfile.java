@@ -56,6 +56,7 @@ public class BookingProfile {
                         // System.out.println("This is the bookingtime you want to book: " + bookingtime);
                         ArrayList<Table> tblist=restaurant.getAllTables();
                         System.out.println("This is inside the try part");
+                        boolean booked= false;
                         for (Table t: tblist){
                             System.out.println("This is inside the loop part");
                             if(t.canbook(customernumber, bkTimeslot)){
@@ -63,8 +64,14 @@ public class BookingProfile {
                                 restaurant.booking(startTime,endTime, customernumber, contactnumber); 
                                 ac.booking(startTime,endTime, customernumber, contactnumber);
                                 t.addBookingTimeslot(bkTimeslot);
+                                booked = true;
+                                
+                            }
+                            if(booked==true){
+                                break;
                             }
                         }
+
                     } catch (DateTimeParseException e) {
                         System.out.println("Invalid time format. Please use HH:mm.");
                     }
@@ -88,6 +95,7 @@ public class BookingProfile {
                         System.out.print("What is your contact number ");
                         String contactnumber = in.nextLine(); // Read timeslot input
                         Timeslot ts= new Timeslot(timeslot);
+                        boolean booked=false;
                         try {
                             LocalTime bookingtime = LocalTime.parse(timeslot);
                             System.out.print("How many seats would you like to book? ");
@@ -98,6 +106,10 @@ public class BookingProfile {
                                 restaurant.booking(startTime,endTime, customernumber, contactnumber); 
                                 ac.booking(startTime,endTime, customernumber, contactnumber);
                                 t.addBookingTimeslot(bkTimeslot);
+                                booked =true;
+                            }
+                            if(booked == true){
+                                break;
                             }
                         }
                         } catch (DateTimeParseException e) {
