@@ -40,6 +40,7 @@ public class SearchRestaurant {
         Restaurant r2 = new Restaurant("AC2", "2", "AC2", "India", "Wong Tai Sin", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
         Restaurant r3 = new Restaurant("AC3", "2", "AC3", "Thai", "Lok Fu", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
         ArrayList<Restaurant> testList = new ArrayList<Restaurant>();
+        server.updateSeatNo(r1,1,6);
         testList.add(r1);
         testList.add(r2);
         testList.add(r3);

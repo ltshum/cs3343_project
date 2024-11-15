@@ -1,8 +1,8 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.format.DateTimeParseException;
 
 public class BookingProfile {
 
@@ -101,16 +101,27 @@ public class BookingProfile {
                             System.out.print("How many seats would you like to book? ");
                             int customernumber = in.nextInt();
                             ArrayList<Table> table=restaurant.getAllTables();
+                            // ArrayList <Integer> setnum=new ArrayList<Integer>();
+                            // boolean enoughseat=false;
+                            System.out.println("This is the name of the restaurnat"+restaurant.getRestaurantName());
                             for (Table t: table){
+                                // if(customernumber>t.getSeatNum()){
+                                //     enoughseat=true;
+                                // }
                             if(t.canbook(customernumber, bkTimeslot)){
                                 restaurant.booking(startTime,endTime, customernumber, contactnumber); 
                                 ac.booking(startTime,endTime, customernumber, contactnumber);
                                 t.addBookingTimeslot(bkTimeslot);
                                 booked =true;
+                                // enoughseat=true;
                             }
                             if(booked == true){
                                 break;
                             }
+                        }
+                        if(booked=false){
+                            System.out.println("Sorry the restaurant cannot process with your booking");
+                            // if(enoughseat=false)
                         }
                         } catch (DateTimeParseException e) {
                             System.out.println("Invalid time format. Please use HH:mm.");

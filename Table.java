@@ -10,17 +10,17 @@ public class Table {
     private List<Timeslot> allTimeslots;
     private List<Timeslot> bookedTimeSlot;
 
-
     public Table(int tableID) {
         this.tableID = tableID;
         this.status = true; // Initially available
         this.allTimeslots = new ArrayList<>();
-        this.bookedTimeSlot=new ArrayList<>();
+        this.bookedTimeSlot = new ArrayList<>();
     }
 
     public void addTimeslot(Timeslot timeslot) {
         allTimeslots.add(timeslot);
     }
+
     public void addBookingTimeslot(Timeslot bookingTime) {
         this.bookedTimeSlot.add(bookingTime);
     }
@@ -69,10 +69,10 @@ public class Table {
         this.bookedTimeSlot = bookingTimeslot;
     }
 
-    public boolean canbook(int customernumber,Timeslot time){
-        // if(customernumber> this.getSeatNum() && !this.bookedTimeSlot.contains(time)){
-            // return false;
-        // }
+    public boolean canbook(int customernumber, Timeslot time) {
+        if (customernumber > this.getSeatNum() && !this.bookedTimeSlot.contains(time)) {
+            return false;
+        }
         return true;
     }
 
