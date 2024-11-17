@@ -63,6 +63,9 @@ public class Customer extends Account {
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
+    public ArrayList<Booking> getallBooking(){
+        return allBookings;
+    }
     public void bookinganotherdate(LocalTime bookingtime,int customernumber,LocalDate bookingdate,String contactnumber) {
         Booking bk=new Booking(bookingtime,customernumber,bookingdate,contactnumber);
         this.allBookings.add(bk);

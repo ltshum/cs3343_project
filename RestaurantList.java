@@ -29,7 +29,7 @@ public class RestaurantList {
                 try {
                     int op = Integer.parseInt(input);
                     if(ac instanceof Customer){
-                        BookingProfile bookingProfile = new BookingProfile(result.get(op - 1),ac);
+                        BookingProfile bookingProfile = new BookingProfile(result.get(op - 1),(Customer)ac);
                         bookingProfile.displayBookingProfile(in);
                     }else{
                         BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));

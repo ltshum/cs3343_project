@@ -9,13 +9,13 @@ public class BookingProfile {
     Server server = Server.getInstance();
     private final Restaurant restaurant;
     Scanner in = new Scanner(System.in);
-    private final Account ac ;
+    private final Customer ac ;
 
     public BookingProfile(Restaurant restaurant) {
         this.restaurant = restaurant;
         this.ac=null;
     }
-    public BookingProfile(Restaurant restaurant,Account ac) {
+    public BookingProfile(Restaurant restaurant,Customer ac) {
         this.restaurant = restaurant;
         this.ac =ac;
     }
@@ -65,7 +65,6 @@ public class BookingProfile {
                                 ac.booking(startTime,endTime, customernumber, contactnumber);
                                 t.addBookingTimeslot(bkTimeslot);
                                 booked = true;
-                                
                             }
                             if(booked==true){
                                 break;

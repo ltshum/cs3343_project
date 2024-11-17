@@ -280,5 +280,8 @@ public class Restaurant extends Account {
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
+    public ArrayList<Booking> getallBooking(){
+        return allBookings;
+    }
 
 }
