@@ -63,6 +63,8 @@ public class BookingProfile {
                                 System.out.println("This is inside the can bk part");
                                 restaurant.booking(startTime,endTime, customernumber, contactnumber); 
                                 ac.booking(startTime,endTime, customernumber, contactnumber);
+                                System.out.println("Current booking for this restaurant "+restaurant.getallBooking());
+                                System.out.println("Current booking for this customer "+ac.getallBooking());
                                 t.addBookingTimeslot(bkTimeslot);
                                 booked = true;
                             }

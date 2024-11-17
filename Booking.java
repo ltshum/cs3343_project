@@ -35,5 +35,16 @@ public class Booking {
         System.out.println("Number: " + contactnumber);
     }
 
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "StartTime=" + startTime +
+                ",EndTime=" + endTime +
+                ", numberOfSeats=" + numberOfSeats +
+                ", bookingDate=" + bookingdate +
+                ", contactNumber='" + contactnumber + '\'' +
+                '}';
+    }
+
     // Add getters for the fields if needed
 }

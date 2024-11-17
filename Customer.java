@@ -58,8 +58,8 @@ public class Customer extends Account {
         this.customerContact = customerContact;
     }
 
-    public void booking(LocalTime bookingtime,int customernumber,String contactnumber) {
-        Booking bk=new Booking(bookingtime,bookingtime, customernumber,contactnumber);
+    public void booking(LocalTime bookingtime,LocalTime Endtime,int customernumber,String contactnumber) {
+        Booking bk=new Booking(bookingtime,Endtime, customernumber,contactnumber);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
