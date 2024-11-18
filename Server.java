@@ -215,19 +215,21 @@ public class Server {
                 System.out.println(bookingString);
                 return index;
             }
-            /*if (role == Role.RESTAURANT) {
+            if (role == Role.RESTAURANT) {
                 Restaurant restaurant = (Restaurant) ac;
                 ArrayList<Booking> allbookings = restaurant.getAllBookings();
                 ArrayList<Table> tables = restaurant.getAllTables();
                 String bookingString = "";
                 int index = 0;
                 for (Booking booking : allbookings) {
-                    index++;
-                    bookingString += index + ". " + booking.getStartTime() + "-" + booking.getEndTime() + " " + booking.getNumberOfSeats() + " " + booking.getContactNumber() + "\n";
+                    if (booking.getBookingDate().equals(date)) {
+                        index++;
+                        bookingString += index + ". " + booking.getRestaurant().getRestaurantName() + ": " + booking.getStartTime() + "-" + booking.getEndTime() + " " + booking.getNumberOfSeats() + "ppl" + "\n";
+                    }
                 }
                 System.out.println(bookingString);
                 return index;
-            }*/
+            }
         }
         return 0;
     }
@@ -249,6 +251,26 @@ public class Server {
             }
         }
     }
+
+    public void booking(LocalTime startTime, LocalTime endTime, int customerNumber, String contactNumber, Restaurant restaurant, Customer customer) {
+        for (Account account: AccountList) {
+            if (account.getUserName().equals(restaurant.getUserName())) {
+                Restaurant requiredRestaurant = (Restaurant) account;
+                System.out.println(requiredRestaurant.getId());
+                requiredRestaurant.booking(startTime, endTime, customerNumber, contactNumber, requiredRestaurant, customer);
+            }
+        }
+    }
+
+    public void bookinganotherdate(LocalTime startTime, LocalTime endTime, int customerNumber, LocalDate bookingDate, String contactNumber, Restaurant restaurant, Customer customer) {
+        for (Account account: AccountList) {
+            if (account.getUserName().equals(restaurant.getUserName())) {
+                Restaurant requiredRestaurant = (Restaurant) account;
+                requiredRestaurant.bookinganotherdate(startTime, endTime, customerNumber, bookingDate, contactNumber, requiredRestaurant, customer);
+            }
+        }
+    }
+
 }
 
 // public void updateTimeslotInfo(Account ac, Scanner in) {

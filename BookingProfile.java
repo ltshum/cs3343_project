@@ -61,7 +61,7 @@ public class BookingProfile {
                             System.out.println("This is inside the loop part");
                             if(t.canbook(customernumber, bkTimeslot)){
                                 System.out.println("This is inside the can bk part");
-                                restaurant.booking(startTime,endTime, customernumber, contactnumber, restaurant, ac); 
+                                server.booking(startTime,endTime, customernumber, contactnumber, restaurant, ac); 
                                 ac.booking(startTime,endTime, customernumber, contactnumber, restaurant, ac);
                                 System.out.println("Current booking for this restaurant "+restaurant.getAllBookings());
                                 System.out.println("Current booking for this customer "+ac.getallBooking());
@@ -109,7 +109,7 @@ public class BookingProfile {
                                 //     enoughseat=true;
                                 // }
                             if(t.canbook(customernumber, bkTimeslot)){
-                                restaurant.bookinganotherdate(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, ac);
+                                server.bookinganotherdate(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, ac);
                                 ac.bookinganotherdate(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, ac);
                                 t.addBookingTimeslot(bkTimeslot);
                                 booked = true;
