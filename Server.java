@@ -1,5 +1,6 @@
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,18 +92,24 @@ public class Server {
     }
 
     public String getRestaurantBookingDetail(Restaurant restaurant){
-        return "Rate: " + restaurant.getRate()
-        + "\nRestaurant Name: " + restaurant.getRestaurantName()
-        + "\nType: " + restaurant.getType()
-        + "\nDistrict: " + restaurant.getDistrict()
-        + "\nAddress: " + restaurant.getAddress()
-        + "\nPhone: " + restaurant.getRestaurantContact()
-        + "\nOpen Time: " + restaurant.getOpenTime()
-        + "\nClose Time: " + restaurant.getCloseTime()
-        + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
-        + "\nTable Amount: " + restaurant.getAllTables().size()
-        + "\n\nTimeslot: \n" + restaurant.getTimeslots()
-        + "\nComment: \n" + restaurant.getComment();
+        for (Account account: AccountList) {
+            if (account.getUserName().equals(restaurant.getUserName())) {
+                System.out.println("In Condition");
+                Restaurant requiredRestaurant = (Restaurant) account;
+                return "Rate: " + requiredRestaurant.getRate()
+                + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
+                + "\nType: " + requiredRestaurant.getType()
+                + "\nDistrict: " + requiredRestaurant.getDistrict()
+                + "\nAddress: " + requiredRestaurant.getAddress()
+                + "\nPhone: " + requiredRestaurant.getRestaurantContact()
+                + "\nOpen Time: " + requiredRestaurant.getOpenTime()
+                + "\nClose Time: " + requiredRestaurant.getCloseTime()
+                + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
+                + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
+                + "\nComment: \n" + requiredRestaurant.getComment();
+            }
+        }
+        return "Restaurant not found.";
     }
 
     public String getListInfo(Restaurant restaurant){
@@ -191,6 +198,57 @@ public class Server {
     // for (Timeslot timeslot : timeslots) {
     //     System.out.println(timeslot.getSession());
     // }
+    public int getViewBookingRecord(Account ac, LocalDate date) {
+        List<Role> roles = ac.getRoles();
+        for (Role role : roles) {
+            if (role == Role.CUSTOMER) {
+                Customer customer = (Customer) ac;
+                ArrayList<Booking> allbookings = customer.getAllBookings();
+                String bookingString = "";
+                int index = 0;
+                for (Booking booking : allbookings) {
+                    if (booking.getBookingDate().equals(date)) {
+                        index++;
+                        bookingString += index + ". " + booking.getRestaurant().getRestaurantName() + ": " + booking.getStartTime() + "-" + booking.getEndTime() + " " + booking.getNumberOfSeats() + "ppl" + "\n";
+                    }
+                }
+                System.out.println(bookingString);
+                return index;
+            }
+            /*if (role == Role.RESTAURANT) {
+                Restaurant restaurant = (Restaurant) ac;
+                ArrayList<Booking> allbookings = restaurant.getAllBookings();
+                ArrayList<Table> tables = restaurant.getAllTables();
+                String bookingString = "";
+                int index = 0;
+                for (Booking booking : allbookings) {
+                    index++;
+                    bookingString += index + ". " + booking.getStartTime() + "-" + booking.getEndTime() + " " + booking.getNumberOfSeats() + " " + booking.getContactNumber() + "\n";
+                }
+                System.out.println(bookingString);
+                return index;
+            }*/
+        }
+        return 0;
+    }
+
+    public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
+        Customer customer = (Customer) ac;
+        ArrayList<Booking> allbookings = customer.getAllBookings();
+        ArrayList<Booking> bookings = new ArrayList<>();
+        for (Booking booking : allbookings) {
+            if (booking.getBookingDate().equals(date)) {
+                bookings.add(booking);
+            }
+        }
+        Booking requiredBooking = bookings.get(inputNumber - 1);
+        for (Account account: AccountList) {
+            if (account.getUserName().equals(requiredBooking.getRestaurant().getUserName())) {
+                Restaurant restaurant = (Restaurant) account;
+                restaurant.addComment(ac.getUserName(), comment, rate);
+            }
+        }
+    }
 }
 
 // public void updateTimeslotInfo(Account ac, Scanner in) {

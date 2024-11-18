@@ -1,10 +1,12 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
 public class ViewBooking {
     Server server = Server.getInstance();
-    private Account account;
+    private final Account account;
+    private LocalDate date = LocalDate.now();
     private boolean isCustomer = false;
     private boolean isRestaurant = false;
 
@@ -28,10 +30,15 @@ public class ViewBooking {
             }
         }
 
-        System.out.println("\n[" + LocalDate.now() + "]");
+        System.out.println("\n[" + date + "]");
+
+        int bookingRecordNumber = server.getViewBookingRecord(account, date);
+        if (bookingRecordNumber == 0) {
+            System.out.println("No booking record found.");
+        }
 
         System.out.println("\nIf you want to view another date's booking record");
-        System.err.println("please input date [YY-MM-DD]");
+        System.err.println("please input date [YYYY-MM-DD]");
 
         System.out.print("\n\nWhat action do you want to do: ");
         String op = in.next();
@@ -48,7 +55,27 @@ public class ViewBooking {
             case "X":
                 return;
             default:
-                System.out.println("Invalid option. Please try again.");
+                try {
+                    int inputNumber = Integer.parseInt(op);
+                    if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
+                        System.out.print("\nPlease input your rate: ");
+                        int rate = in.nextInt();
+                        System.out.print("Please input your comment: ");
+                        String comment = in.next();
+                        server.makeComment(account, inputNumber, date, rate, comment);
+                        displayViewBooking(in);
+                    } else {
+                        System.out.println("Invalid option. Please try again.");
+                    }
+                } catch (NumberFormatException e) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(op);
+                        date = parsedDate;
+                        displayViewBooking(in);
+                } catch (DateTimeParseException ex) {
+                    System.out.println("Invalid option. Please try again.");
+                }
+            }
         }
     }
 }
