@@ -46,8 +46,18 @@ public class ViewBooking {
         switch (op) {
             case "T": 
                 if (isRestaurant) {
-                    System.out.print("\nWhich session you want to take attendance (HH:mm): ");
-                    String input = in.next();
+                    System.out.print("\nWhich session you want to take attendance (HH:mm) - (HH:mm): ");
+                    in.nextLine();
+                    String inputSession = in.nextLine(); 
+                    System.out.print("Please input the table ID: ");
+                    int tableID = in.nextInt();
+                    in.nextLine();
+                    if (server.takeAttendance(account, date, inputSession, tableID)) {
+                        System.out.println("Attendance taken successfully.");
+                    } else {
+                        System.out.println("Invalid option. Please try again.");
+                    };
+                    displayViewBooking(in);
                 }
                 else {
                     System.out.println("Invalid option. Please try again.");
@@ -58,12 +68,17 @@ public class ViewBooking {
                 try {
                     int inputNumber = Integer.parseInt(op);
                     if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
-                        System.out.print("\nPlease input your rate: ");
-                        int rate = in.nextInt();
-                        System.out.print("Please input your comment: ");
-                        String comment = in.next();
-                        server.makeComment(account, inputNumber, date, rate, comment);
-                        displayViewBooking(in);
+                        if (isCustomer) {
+                            System.out.print("\nPlease input your rate: ");
+                            int rate = in.nextInt();
+                            System.out.print("Please input your comment: ");
+                            in.nextLine();
+                            String comment = in.nextLine();
+                            server.makeComment(account, inputNumber, date, rate, comment);
+                            displayViewBooking(in);
+                        } else {
+                            System.out.println("Invalid option. Please try again.");
+                        }
                     } else {
                         System.out.println("Invalid option. Please try again.");
                     }
@@ -75,6 +90,7 @@ public class ViewBooking {
                 } catch (DateTimeParseException ex) {
                     System.out.println("Invalid option. Please try again.");
                 }
+                return;
             }
         }
     }

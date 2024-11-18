@@ -3,6 +3,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -246,9 +248,9 @@ public class Server {
                 String bookingString = "";
                 int index = 0;
                 for (Booking booking : allbookings) {
-                    if (booking.getBookingDate().equals(date)) {
+                    if (booking.getDate().equals(date)) {
                         index++;
-                        bookingString += index + ". " + booking.getRestaurant().getRestaurantName() + ": " + booking.getStartTime() + "-" + booking.getEndTime() + " " + booking.getNumberOfSeats() + "ppl" + "\n";
+                        bookingString += index + ". " + booking.getRestaurantName() + ": " + booking.getTimeslot() + " " + booking.getPpl() + "ppl" + "\n";
                     }
                 }
                 System.out.println(bookingString);
@@ -257,57 +259,104 @@ public class Server {
             if (role == Role.RESTAURANT) {
                 Restaurant restaurant = (Restaurant) ac;
                 ArrayList<Booking> allbookings = restaurant.getAllBookings();
-                ArrayList<Table> tables = restaurant.getAllTables();
-                String bookingString = "";
-                int index = 0;
+                Collections.sort(allbookings, Comparator.comparing(Booking::getTimeslot));
+                int totalBookings = 0; // Counter for total bookings on the date
+                ArrayList<Booking> requiredBookings = new ArrayList<>();
                 for (Booking booking : allbookings) {
-                    if (booking.getBookingDate().equals(date)) {
-                        index++;
-                        bookingString += index + ". " + booking.getRestaurant().getRestaurantName() + ": " + booking.getStartTime() + "-" + booking.getEndTime() + " " + booking.getNumberOfSeats() + "ppl" + "\n";
+                    if (booking.getDate().equals(date)) {
+                        totalBookings++; // Increment the total bookings counter
+                        requiredBookings.add(booking);
                     }
                 }
-                System.out.println(bookingString);
-                return index;
+                List<List<Booking>> groupedBookings = new ArrayList<>();
+
+                // Iterate over the initial list of bookings
+                for (Booking booking : requiredBookings) {
+                    boolean added = false;
+
+                    // Check if the timeslot matches any existing group
+                    for (List<Booking> group : groupedBookings) {
+                        if (!group.isEmpty() && group.get(0).getTimeslot().equals(booking.getTimeslot())) {
+                            group.add(booking);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    // If the timeslot doesn't match any existing group, create a new group
+                    if (!added) {
+                        List<Booking> newGroup = new ArrayList<>();
+                        newGroup.add(booking);
+                        groupedBookings.add(newGroup);
+                    }
+                }
+
+                // Access grouped bookings by timeslot
+                for (List<Booking> group : groupedBookings) {
+                    System.out.println(group.get(0).getTimeslot());
+                    StringBuilder tableID = new StringBuilder("            ");
+                    StringBuilder booker = new StringBuilder("            ");
+                    StringBuilder ppl = new StringBuilder("            ");
+                    StringBuilder contact = new StringBuilder("            ");
+                    StringBuilder arrived = new StringBuilder("            ");
+                    for (Booking booking : group) {
+                        tableID.append(String.format("| Table ID: %-13d ", booking.getTableID()));
+                        booker.append(String.format("| Booker: %-13s ", booking.getCustomerName()));
+                        ppl.append(String.format("| Ppl No: %-13s ", booking.getPpl()));
+                        contact.append(String.format("| Contact: %-13s ", booking.getCustomerContact()));
+                        arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
+                    }
+                    System.out.println(tableID.toString());
+                    System.out.println(booker.toString());
+                    System.out.println(ppl.toString());
+                    System.out.println(contact.toString());
+                    System.out.println(arrived.toString());
+                }
+                return totalBookings;
             }
         }
         return 0;
     }
+    /*StringBuilder tableID = new StringBuilder("                ");
+    StringBuilder seat = new StringBuilder("                ");
+    StringBuilder status = new StringBuilder("                ");
+    for (Table table : tables) {
+        tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
+        seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
+        status.append(String.format("| Status: %-15s ", table.getStatus()));
+    }
+    System.out.println(tableID.toString());
+    System.out.println(seat.toString());
+    System.out.println(status.toString());*/
 
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
         Customer customer = (Customer) ac;
         ArrayList<Booking> allbookings = customer.getAllBookings();
         ArrayList<Booking> bookings = new ArrayList<>();
         for (Booking booking : allbookings) {
-            if (booking.getBookingDate().equals(date)) {
+            if (booking.getDate().equals(date)) {
                 bookings.add(booking);
             }
         }
         Booking requiredBooking = bookings.get(inputNumber - 1);
         for (Account account: AccountList) {
-            if (account.getUserName().equals(requiredBooking.getRestaurant().getUserName())) {
+            if (account.getUserName().equals(requiredBooking.getRestaurantName())) {
                 Restaurant restaurant = (Restaurant) account;
                 restaurant.addComment(ac.getUserName(), comment, rate);
             }
         }
     }
 
-    public void booking(LocalTime startTime, LocalTime endTime, int customerNumber, String contactNumber, Restaurant restaurant, Customer customer) {
-        for (Account account: AccountList) {
-            if (account.getUserName().equals(restaurant.getUserName())) {
-                Restaurant requiredRestaurant = (Restaurant) account;
-                System.out.println(requiredRestaurant.getId());
-                requiredRestaurant.booking(startTime, endTime, customerNumber, contactNumber, requiredRestaurant, customer);
+    public boolean takeAttendance(Account ac, LocalDate date, String inputSession, int tableID) {
+        Restaurant restaurant = (Restaurant) ac;
+        ArrayList<Booking> allbookings = restaurant.getAllBookings();
+        for (Booking booking : allbookings) {
+            if (booking.getDate().equals(date) && booking.getTableID() == tableID && booking.getTimeslot().equals(inputSession)) {
+                booking.takeAttendance();
+                return true;
             }
         }
-    }
-
-    public void bookinganotherdate(LocalTime startTime, LocalTime endTime, int customerNumber, LocalDate bookingDate, String contactNumber, Restaurant restaurant, Customer customer) {
-        for (Account account: AccountList) {
-            if (account.getUserName().equals(restaurant.getUserName())) {
-                Restaurant requiredRestaurant = (Restaurant) account;
-                requiredRestaurant.bookinganotherdate(startTime, endTime, customerNumber, bookingDate, contactNumber, requiredRestaurant, customer);
-            }
-        }
+        return false;
     }
 
     public ArrayList<Booking> getCustomerAllBookings(Customer customer) {

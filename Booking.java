@@ -86,4 +86,8 @@ public class Booking {
     public void setArrive(boolean arrive) {
         this.arrive = arrive;
     }
+
+    public void takeAttendance() {
+        arrive = true;
+    }
 }
