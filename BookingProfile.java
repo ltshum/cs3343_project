@@ -43,10 +43,10 @@ public class BookingProfile {
                     String timeslot = in.nextLine(); // Read timeslot input
                     Timeslot bkTimeslot =new Timeslot(timeslot);
                     String[] parts = timeslot.split("-");
-                        LocalTime startTime = LocalTime.parse(parts[0].trim());
-                        LocalTime endTime = LocalTime.parse(parts[1].trim());
-                        System.out.println("Start Time: " + startTime);
-                        System.out.println("End Time: " + endTime);
+                    LocalTime startTime = LocalTime.parse(parts[0].trim());
+                    LocalTime endTime = LocalTime.parse(parts[1].trim());
+                    System.out.println("Start Time: " + startTime);
+                    System.out.println("End Time: " + endTime);
                     System.out.print("What is your contact number ");
                     String contactnumber = in.nextLine(); // Read timeslot input
                     System.out.println("This is the contactnumber: " + contactnumber);
@@ -61,9 +61,9 @@ public class BookingProfile {
                             System.out.println("This is inside the loop part");
                             if(t.canbook(customernumber, bkTimeslot)){
                                 System.out.println("This is inside the can bk part");
-                                restaurant.booking(startTime,endTime, customernumber, contactnumber); 
-                                ac.booking(startTime,endTime, customernumber, contactnumber);
-                                System.out.println("Current booking for this restaurant "+restaurant.getallBooking());
+                                restaurant.booking(startTime,endTime, customernumber, contactnumber, restaurant, ac); 
+                                ac.booking(startTime,endTime, customernumber, contactnumber, restaurant, ac);
+                                System.out.println("Current booking for this restaurant "+restaurant.getAllBookings());
                                 System.out.println("Current booking for this customer "+ac.getallBooking());
                                 t.addBookingTimeslot(bkTimeslot);
                                 booked = true;
@@ -98,7 +98,6 @@ public class BookingProfile {
                         Timeslot ts= new Timeslot(timeslot);
                         boolean booked=false;
                         try {
-                            LocalTime bookingtime = LocalTime.parse(timeslot);
                             System.out.print("How many seats would you like to book? ");
                             int customernumber = in.nextInt();
                             ArrayList<Table> table=restaurant.getAllTables();
@@ -110,10 +109,10 @@ public class BookingProfile {
                                 //     enoughseat=true;
                                 // }
                             if(t.canbook(customernumber, bkTimeslot)){
-                                restaurant.booking(startTime,endTime, customernumber, contactnumber); 
-                                ac.booking(startTime,endTime, customernumber, contactnumber);
+                                restaurant.bookinganotherdate(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, ac);
+                                ac.bookinganotherdate(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, ac);
                                 t.addBookingTimeslot(bkTimeslot);
-                                booked =true;
+                                booked = true;
                                 // enoughseat=true;
                             }
                             if(booked == true){

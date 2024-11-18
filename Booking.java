@@ -3,36 +3,70 @@ import java.time.LocalTime;
 
 
 public class Booking {
-    private LocalTime startTime;// To store booking time
-    private LocalTime endTime;
-    private int numberOfSeats; // To store number of seats
-    private LocalDate bookingdate;
-    private String contactnumber;
-    public Booking( LocalTime bookingTime, LocalTime bktime,int numberOfSeats,String contactnumber) {
-        this.startTime = bookingTime;
-        this.endTime = bktime;
+    private final LocalTime startTime;// To store booking time
+    private final LocalTime endTime;
+    private final int numberOfSeats; // To store number of seats
+    private final LocalDate bookingDate;
+    private final String contactNumber;
+    private final Restaurant restaurant;
+    private final Customer customer;
+    private boolean arrived = false;
+
+    public Booking(LocalTime startTime, LocalTime endTime, int numberOfSeats, String contactNumber, Restaurant restaurant, Customer customer) {
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.numberOfSeats = numberOfSeats;
-        this.contactnumber=contactnumber;
-        this.bookingdate = LocalDate.now();
-    }
-    public Booking(LocalTime bookingTime, LocalTime bktime,int numberOfSeats,LocalDate bookingdate,String contactnumber) {
-        this.startTime = bookingTime;
-        this.endTime = bktime;
-        this.numberOfSeats = numberOfSeats;
-        this.bookingdate =bookingdate;
-        this.contactnumber=contactnumber;
+        this.bookingDate = LocalDate.now();
+        this.contactNumber = contactNumber;
+        this.restaurant = restaurant;
+        this.customer = customer;
     }
 
-    public Booking(LocalTime bookingtime, int customernumber, LocalDate bookingdate2, String contactnumber2) {
-        //TODO Auto-generated constructor stub
+    public Booking(LocalTime startTime, LocalTime endTime, int numberOfSeats, LocalDate bookingDate, String contactNumber, Restaurant restaurant, Customer customer) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.numberOfSeats = numberOfSeats;
+        this.bookingDate = bookingDate;
+        this.contactNumber = contactNumber;
+        this.restaurant = restaurant;
+        this.customer = customer;
     }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    public LocalDate getBookingDate() {
+        return bookingDate;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
     // Method to handle booking success
     public void bookingSuccess() {
         System.out.println("Booking confirmed!");
         System.out.println("Booking Time: " + startTime+" - "+ endTime);
         System.out.println("Number of Seats: " + numberOfSeats);
-        System.out.println("Date: " + bookingdate);
-        System.out.println("Number: " + contactnumber);
+        System.out.println("Date: " + bookingDate);
+        System.out.println("Number: " + contactNumber);
     }
 
     @Override
@@ -41,8 +75,8 @@ public class Booking {
                 "StartTime=" + startTime +
                 ",EndTime=" + endTime +
                 ", numberOfSeats=" + numberOfSeats +
-                ", bookingDate=" + bookingdate +
-                ", contactNumber='" + contactnumber + '\'' +
+                ", bookingDate=" + bookingDate +
+                ", contactNumber='" + contactNumber + '\'' +
                 '}';
     }
 

@@ -5,8 +5,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Customer extends Account {
 
@@ -35,7 +35,7 @@ public class Customer extends Account {
     public String getCustomerName() {
         return customerName;
     }
-    public ArrayList<Booking> getbookingrecord() {
+    public ArrayList<Booking> getAllBookings() {
         return allBookings;
     }
     public String getCustomerContact() {
@@ -58,16 +58,16 @@ public class Customer extends Account {
         this.customerContact = customerContact;
     }
 
-    public void booking(LocalTime bookingtime,LocalTime Endtime,int customernumber,String contactnumber) {
-        Booking bk=new Booking(bookingtime,Endtime, customernumber,contactnumber);
+    public void booking(LocalTime startTime,LocalTime endTime,int customerNumber,String contactNumber, Restaurant restaurant, Customer customer) {
+        Booking bk=new Booking(startTime, endTime, customerNumber ,contactNumber, restaurant, customer);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
     public ArrayList<Booking> getallBooking(){
         return allBookings;
     }
-    public void bookinganotherdate(LocalTime bookingtime,int customernumber,LocalDate bookingdate,String contactnumber) {
-        Booking bk=new Booking(bookingtime,customernumber,bookingdate,contactnumber);
+    public void bookinganotherdate(LocalTime startTime, LocalTime endTime, int customernumber,LocalDate bookingdate,String contactnumber, Restaurant restaurant, Customer customer) {
+        Booking bk=new Booking(startTime, endTime ,customernumber,bookingdate,contactnumber, restaurant, customer);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }

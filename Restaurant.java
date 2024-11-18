@@ -268,20 +268,26 @@ public class Restaurant extends Account {
         }
     }
     
-    public void booking(LocalTime starTime,LocalTime endtime,int customernumber,String contactnumber) {
+    public void booking(LocalTime starTime,LocalTime endtime,int customernumber,String contactnumber, Restaurant restaurant, Customer customer) {
         System.out.println("This is the booking detail see by restaurant");
-        Booking bk=new Booking(starTime,endtime,customernumber,contactnumber);
+        Booking bk=new Booking(starTime,endtime,customernumber,contactnumber, restaurant, customer);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
     
-    public void bookinganotherdate(LocalTime starTime,LocalTime endtime,int customernumber,LocalDate bookingdate,String contactnumber) {
-        Booking bk=new Booking(starTime,endtime,customernumber,bookingdate,contactnumber);
+    public void bookinganotherdate(LocalTime starTime,LocalTime endtime,int customernumber,LocalDate bookingdate,String contactnumber, Restaurant restaurant, Customer customer) {
+        Booking bk=new Booking(starTime,endtime,customernumber,bookingdate,contactnumber, restaurant, customer);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
-    public ArrayList<Booking> getallBooking(){
+    public ArrayList<Booking> getAllBookings(){
         return allBookings;
+    }
+
+    public void addComment(String customerName, String content, int rate) {
+        Comment comment = new Comment(customerName, content, rate);
+        allComments.add(comment);
+        System.out.println("\nComment added!");
     }
 
 }
