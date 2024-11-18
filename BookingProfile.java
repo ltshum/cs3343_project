@@ -31,7 +31,7 @@ public class BookingProfile {
         if(ac instanceof Customer){
             switch (op) {
                 case 1 -> {
-                    System.out.print("Which timeslot do you want to book (HH:mm)-(HH:mm): ");
+                    System.out.print("Which timeslot do you want to book (HH:mm) - (HH:mm): ");
                     String bookSession = in.nextLine();
                     //validation
                     if(!server.timeslotValidation(restaurant,bookSession)){
