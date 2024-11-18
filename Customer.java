@@ -14,8 +14,7 @@ public class Customer extends Account {
     private String customerContact;
     private ArrayList<Integer> allRestaurant = new ArrayList<>();
     private ArrayList<String> allWrittenComment = new ArrayList<>();
-    private  ArrayList<Booking> allBookings = new ArrayList<>();
-
+    private ArrayList<Booking> allBookings = new ArrayList<>();
 
     public Customer(String userName, String password, String name, String contact) {
         super(Arrays.asList(Role.CUSTOMER), userName, password, getCustomerPermissions());
@@ -35,9 +34,11 @@ public class Customer extends Account {
     public String getCustomerName() {
         return customerName;
     }
+
     public ArrayList<Booking> getAllBookings() {
         return allBookings;
     }
+
     public String getCustomerContact() {
         return customerContact;
     }
@@ -58,19 +59,20 @@ public class Customer extends Account {
         this.customerContact = customerContact;
     }
 
-    public void booking(LocalTime startTime,LocalTime endTime,int customerNumber,String contactNumber, Restaurant restaurant, Customer customer) {
-        Booking bk=new Booking(startTime, endTime, customerNumber ,contactNumber, restaurant, customer);
+    public void addBooking(Booking bk) {
         this.allBookings.add(bk);
-        bk.bookingSuccess();
     }
-    public ArrayList<Booking> getallBooking(){
+
+    public ArrayList<Booking> getallBooking() {
         return allBookings;
     }
-    public void bookinganotherdate(LocalTime startTime, LocalTime endTime, int customernumber,LocalDate bookingdate,String contactnumber, Restaurant restaurant, Customer customer) {
-        Booking bk=new Booking(startTime, endTime ,customernumber,bookingdate,contactnumber, restaurant, customer);
+
+    public void bookinganotherdate(LocalTime startTime, LocalTime endTime, int customernumber, LocalDate bookingdate, String contactnumber, Restaurant restaurant, Customer customer) {
+        Booking bk = new Booking(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, customer);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
+
     public void setAllRestaurant(ArrayList<Integer> allRestaurant) {
         this.allRestaurant = allRestaurant;
     }
@@ -89,8 +91,7 @@ public class Customer extends Account {
 
             if (input.charAt(0) == 'X') {
                 return;
-            }
-            else {
+            } else {
                 try {
                     switch (Integer.parseInt(input)) {
                         case 1 -> {
@@ -102,11 +103,9 @@ public class Customer extends Account {
                             setCustomerContact(in.next());
                         }
                     }
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Invalid input!");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.printf("Error: %s\n", e.getMessage());
                 }
             }

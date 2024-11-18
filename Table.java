@@ -1,4 +1,5 @@
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,22 @@ public class Table {
 
     public List<Timeslot> getAllTimeslots() {
         return allTimeslots;
+    }
+
+    public boolean isTimeslotAvailable(String timeslotSession, LocalDate date) {
+        for (Timeslot timeslot : bookedTimeSlot) {
+            // Check if the session matches and is available
+            if (timeslot.getSession().equals(timeslotSession) && timeslot.getDate().equals(date)) {
+                return false; // Timeslot is available
+            }
+        }
+        return true; // No matching available timeslot found
+    }
+
+    public void setTimeslotUnavailable(String timeslotSession, LocalDate date) {
+        Timeslot t = new Timeslot(timeslotSession);
+        t.setDate(date);
+        bookedTimeSlot.add(t);
     }
 
     public List<Timeslot> getBookingTimeslots() {

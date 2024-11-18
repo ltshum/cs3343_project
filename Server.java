@@ -112,6 +112,45 @@ public class Server {
         return "Restaurant not found.";
     }
 
+    public boolean timeslotValidation(Restaurant ac, String bookTimeslot){
+        String[] allTimeslots = ac.getTimeslots().split(" \n");
+        for (String timeslot: allTimeslots) {
+            if (timeslot.equals(bookTimeslot)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
+        // Iterate through the restaurant's tables
+        ArrayList<Table> allTables = ac.getAllTables();
+        for (Table table : allTables) {
+            // Check if table meets the seating requirement
+            if (table.getSeatNum() >= ppl) {
+                // Check if the timeslot is available
+                if (table.isTimeslotAvailable(timeslotSession, date)) {
+                    table.setTimeslotUnavailable(timeslotSession, date);
+                    return table.getTableID(); // Return the table ID if found
+                }
+            }
+        }
+        return 0; // Return -1 if no suitable table is found
+    }
+    
+    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
+        for (Account account : AccountList) {
+            if (account.getUserName().equals(restaurant.getUserName())) {
+                Restaurant requiredRestaurant = (Restaurant) account;
+                Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant.getRestaurantName(), ac.getCustomerName(), contact, ppl);
+                requiredRestaurant.addBooking(bk);
+                ac.addBooking(bk);
+                break;
+            }
+        }
+        return "Already booked a seat for you";
+    }
+
     public String getListInfo(Restaurant restaurant){
         return restaurant.getRestaurantName() + ": " + restaurant.getRate() + " " + restaurant.getType() + " " + restaurant.getDistrict();
     }
@@ -271,6 +310,13 @@ public class Server {
         }
     }
 
+    public ArrayList<Booking> getCustomerAllBookings(Customer customer) {
+        return customer.getAllBookings();
+    }
+
+    public ArrayList<Booking> getRestaurantAllBookings(Restaurant restaurant) {
+        return restaurant.getAllBookings();
+    } 
 }
 
 // public void updateTimeslotInfo(Account ac, Scanner in) {

@@ -24,7 +24,6 @@ public class Restaurant extends Account {
     private ArrayList<Comment> allComments = new ArrayList<>();
     private ArrayList<Booking> allBookings = new ArrayList<>();
 
-
     //Test
     Comment cm1 = new Comment("User1", "Great", 3);
     Comment cm2 = new Comment("User2", "Good", 4);
@@ -42,7 +41,7 @@ public class Restaurant extends Account {
         this.closeTime = closeTime;
         this.sessionDuration = sessionDuration;
         this.allTables = new ArrayList<>();
-        this.allBookings =new ArrayList<>();
+        this.allBookings = new ArrayList<>();
         initializeTables(tableNum);
         generateTimeslots();
         this.allComments.add(cm1);
@@ -149,7 +148,7 @@ public class Restaurant extends Account {
         return allTables;
     }
 
-    public String getDistrict(){
+    public String getDistrict() {
         return district;
     }
 
@@ -161,9 +160,10 @@ public class Restaurant extends Account {
         this.type = type;
     }
 
-    public void setDistrict(String district){
+    public void setDistrict(String district) {
         this.district = district;
     }
+
     public void setAddress(String address) {
         this.address = address;
     }
@@ -212,8 +212,7 @@ public class Restaurant extends Account {
 
             if (input.charAt(0) == 'X') {
                 return;
-            }
-            else {
+            } else {
                 try {
                     switch (Integer.parseInt(input)) {
                         case 1 -> {
@@ -224,7 +223,7 @@ public class Restaurant extends Account {
                             System.out.print("Please input new Type: ");
                             setType(in.next());
                         }
-                        case 3-> {
+                        case 3 -> {
                             System.out.print("Please input new Distrct: ");
                             setDistrict(in.next());
                         }
@@ -257,30 +256,26 @@ public class Restaurant extends Account {
                             initializeTables(in.nextInt());
                         }
                     }
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Invalid input!");
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     System.out.printf("Error: %s\n", e.getMessage());
                 }
             }
         }
     }
-    
-    public void booking(LocalTime starTime,LocalTime endtime,int customernumber,String contactnumber, Restaurant restaurant, Customer customer) {
-        System.out.println("This is the booking detail see by restaurant");
-        Booking bk=new Booking(starTime,endtime,customernumber,contactnumber, restaurant, customer);
+
+    public void addBooking(Booking bk) {
+        this.allBookings.add(bk);
+    }
+
+    public void bookinganotherdate(LocalTime starTime, LocalTime endtime, int customernumber, LocalDate bookingdate, String contactnumber, Restaurant restaurant, Customer customer) {
+        Booking bk = new Booking(starTime, endtime, customernumber, bookingdate, contactnumber, restaurant, customer);
         this.allBookings.add(bk);
         bk.bookingSuccess();
     }
-    
-    public void bookinganotherdate(LocalTime starTime,LocalTime endtime,int customernumber,LocalDate bookingdate,String contactnumber, Restaurant restaurant, Customer customer) {
-        Booking bk=new Booking(starTime,endtime,customernumber,bookingdate,contactnumber, restaurant, customer);
-        this.allBookings.add(bk);
-        bk.bookingSuccess();
-    }
-    public ArrayList<Booking> getAllBookings(){
+
+    public ArrayList<Booking> getAllBookings() {
         return allBookings;
     }
 
