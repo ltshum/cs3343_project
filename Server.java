@@ -181,6 +181,7 @@ public class Server {
             if (table.getSeatNum() >= ppl) {
                 if (table.isTimeslotAvailable(timeslotSession, date)) {
                     table.setTimeslotUnavailable(timeslotSession, date);
+                    return table.getTableID();
                 }
             }
         }

@@ -93,7 +93,6 @@ public class BookingProfile {
                     String dateInput = in.nextLine();
                     try {
                         LocalDate bookingDate = LocalDate.parse(dateInput);
-                        System.out.println("[" + bookingDate + "]");
                         System.out.print("Which timeslot do you want to book (HH:mm)-(HH:mm): ");
                         String bookSession = in.nextLine();
                         //validation
