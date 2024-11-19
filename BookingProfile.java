@@ -107,7 +107,7 @@ public class BookingProfile {
                         if ( tableID == 0 ){
                             System.out.println("Not validate ");
                             return;
-                        };
+                        }
                         System.out.print("What is your contact number ");
                         String contact = in.next();
                         //makeBooking

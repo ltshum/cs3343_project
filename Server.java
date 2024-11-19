@@ -135,11 +135,10 @@ public class Server {
     }
 
     public String getRestaurantBookingDetail(Restaurant restaurant) {
-        for (Account account : AccountList) {
-            if (account.getUserName().equals(restaurant.getUserName())) {
-                System.out.println("In Condition");
-                Restaurant requiredRestaurant = (Restaurant) account;
-                return "Rate: " + requiredRestaurant.getRate()
+
+        Restaurant requiredRestaurant = getRestaurantAccountByRestaurantName(restaurant.getUserName());
+        if (requiredRestaurant != null) {
+            return "Rate: " + requiredRestaurant.getRate()
                         + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
                         + "\nType: " + requiredRestaurant.getType()
                         + "\nDistrict: " + requiredRestaurant.getDistrict()
@@ -150,7 +149,6 @@ public class Server {
                         + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
                         + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
                         + "\nComment: \n" + requiredRestaurant.getComment();
-            }
         }
         return "Restaurant not found.";
     }
@@ -176,10 +174,10 @@ public class Server {
     }
 
     public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
-        ArrayList<Table> allTables = ac.getAllTables();
+        ArrayList<Table> allTables = getRestaurantAccountByRestaurantName(ac.getUserName()).getAllTables();
         for (Table table : allTables) {
-            if (table.getSeatNum() >= ppl) {
-                if (table.isTimeslotAvailable(timeslotSession, date)) {
+            if (table.isTimeslotAvailable(timeslotSession, date)) {
+                if (table.getSeatNum() >= ppl) {
                     table.setTimeslotUnavailable(timeslotSession, date);
                     return table.getTableID();
                 }
@@ -189,16 +187,15 @@ public class Server {
     }
 
     public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
-        for (Account account : AccountList) {
-            if (account.getUserName().equals(restaurant.getUserName())) {
-                Restaurant requiredRestaurant = (Restaurant) account;
-                Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant.getRestaurantName(), ac.getCustomerName(), contact, ppl);
-                requiredRestaurant.addBooking(bk);
-                ac.addBooking(bk);
-                break;
-            }
+        Restaurant requiredRestaurant = getRestaurantAccountByRestaurantName(restaurant.getUserName());
+        if (requiredRestaurant == null) {
+            return "Restaurant not found.";
+        } else {
+            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant.getRestaurantName(), ac.getCustomerName(), contact, ppl);
+            requiredRestaurant.addBooking(bk);
+            ac.addBooking(bk);
+            return "Already booked a seat for you";
         }
-        return "Already booked a seat for you";
     }
 
     public String getListInfo(Restaurant restaurant) {
@@ -329,11 +326,10 @@ public class Server {
             }
         }
         Booking requiredBooking = bookings.get(inputNumber - 1);
-        for (Account account : AccountList) {
-            if (account.getUserName().equals(requiredBooking.getRestaurantName())) {
-                Restaurant restaurant = (Restaurant) account;
-                restaurant.addComment(ac.getUserName(), comment, rate);
-            }
+        try {
+            getRestaurantAccountByRestaurantName(requiredBooking.getRestaurantName()).addComment(ac.getUserName(), comment, rate);
+        } catch (Exception e) {
+            System.out.println("Restaurant not found.");
         }
     }
 
@@ -349,6 +345,14 @@ public class Server {
         return false;
     }
 
+    public Restaurant getRestaurantAccountByRestaurantName(String username) {
+        for (Account account : AccountList) {
+            if (account.getUserName().equals(username)) {
+                return (Restaurant) account;
+            }
+        }
+        return null;
+    }
 }
 
 

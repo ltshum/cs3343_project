@@ -48,12 +48,11 @@ public class Table {
 
     public boolean isTimeslotAvailable(String timeslotSession, LocalDate date) {
         for (Timeslot timeslot : bookedTimeSlot) {
-            // Check if the session matches and is available
             if (timeslot.getSession().equals(timeslotSession) && timeslot.getDate().equals(date)) {
-                return false; // Timeslot is available
+                return false; 
             }
         }
-        return true; // No matching available timeslot found
+        return true;
     }
 
     public void setTimeslotUnavailable(String timeslotSession, LocalDate date) {
