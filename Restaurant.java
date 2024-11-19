@@ -282,6 +282,11 @@ public class Restaurant extends Account {
     public void addComment(String customerName, String content, int rate) {
         Comment comment = new Comment(customerName, content, rate);
         allComments.add(comment);
+        float recal_rate = 0;
+        for (Comment cm : allComments) {
+            recal_rate += cm.getRate();
+        }
+        this.rate = recal_rate / allComments.size();
         System.out.println("\nComment added!");
     }
 
