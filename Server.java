@@ -79,6 +79,8 @@ public class Server {
         } else {
             Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
             AccountList.add(restaurant);
+            //add to list
+            RestaurantAccounts.put(restaurant.getUserName(), restaurant);
             System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
             System.out.println("\n#Restaurant signed up successfully!#\n");
         }
@@ -368,7 +370,6 @@ public class Server {
     System.out.println(tableID.toString());
     System.out.println(seat.toString());
     System.out.println(status.toString());*/
-
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
         Customer customer = (Customer) ac;
         ArrayList<Booking> allbookings = customer.getAllBookings();
