@@ -165,20 +165,26 @@ public class Server {
         return false;
     }
 
+    public boolean tableValidation(Restaurant ac, int tableID){
+        ArrayList<Table> allTables = ac.getAllTables();
+        for (Table table: allTables) {
+            if (table.getTableID() == tableID){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
-        // Iterate through the restaurant's tables
         ArrayList<Table> allTables = ac.getAllTables();
         for (Table table : allTables) {
-            // Check if table meets the seating requirement
             if (table.getSeatNum() >= ppl) {
-                // Check if the timeslot is available
                 if (table.isTimeslotAvailable(timeslotSession, date)) {
                     table.setTimeslotUnavailable(timeslotSession, date);
-                    return table.getTableID(); // Return the table ID if found
                 }
             }
         }
-        return 0; // Return -1 if no suitable table is found
+        return 0;
     }
 
     public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
@@ -197,35 +203,6 @@ public class Server {
     public String getListInfo(Restaurant restaurant) {
         return restaurant.getRestaurantName() + ": " + restaurant.getRate() + " " + restaurant.getType() + " " + restaurant.getDistrict();
     }
-    // public void updateUserDetail(Account ac, Scanner in) {
-    //     List<Role> roles = ac.getRoles();
-    //     for (Role role : roles) {
-    //         if (role == Role.CUSTOMER) {
-    //             Customer customer = (Customer) ac;
-    //             System.out.print("\nNew Name: ");
-    //             String newName = in.next();
-    //             System.out.print("\nNew Phone Number: ");
-    //             String newContact = in.next();
-    //             customer.setCustomerName(newName);
-    //             customer.setCustomerContact(newContact);
-    //         }
-    //         if (role == Role.RESTAURANT) {
-    //             Restaurant restaurant = (Restaurant) ac;
-    //             System.out.print("\nNew Name: ");
-    //             String newName = in.next();
-    //             System.out.print("\nNew Type: ");
-    //             String newType = in.next();
-    //             System.out.print("\nNew Address: ");
-    //             String newAddress = in.next();
-    //             System.out.print("\nNew Phone Number: ");
-    //             String newContact = in.next();
-    //             restaurant.setRestaurantName(newName);
-    //             restaurant.setType(newType);
-    //             restaurant.setAddress(newAddress);
-    //             restaurant.setRestaurantContact(newContact);
-    //         }
-    //     }
-    // }
 
     public void updateUserDetail(Account ac, Scanner in) {
         ac.edit(in);
@@ -269,17 +246,6 @@ public class Server {
         table.setSeatNum(seatNum);
     }
 
-    // public String getAllTimeslotInfo(Restaurant restaurant) {
-    //     restaurant.getTimeslots();
-    // for (Table table : tables) {
-    //     System.out.println("Table ID: " + table.getTableID());
-    //     System.out.println("Seat: " + table.getSeatNum());
-    //     System.out.println("Status: " + table.gatStatus());
-    // System.out.println("Timeslots: ");
-    // List<Timeslot> timeslots = table.getAllTimeslots();
-    // for (Timeslot timeslot : timeslots) {
-    //     System.out.println(timeslot.getSession());
-    // }
     public int getViewBookingRecord(Account ac, LocalDate date) {
         List<Role> roles = ac.getRoles();
         for (Role role : roles) {
@@ -301,21 +267,18 @@ public class Server {
                 Restaurant restaurant = (Restaurant) ac;
                 ArrayList<Booking> allbookings = restaurant.getAllBookings();
                 Collections.sort(allbookings, Comparator.comparing(Booking::getTimeslot));
-                int totalBookings = 0; // Counter for total bookings on the date
+                int totalBookings = 0;
                 ArrayList<Booking> requiredBookings = new ArrayList<>();
                 for (Booking booking : allbookings) {
                     if (booking.getDate().equals(date)) {
-                        totalBookings++; // Increment the total bookings counter
+                        totalBookings++;
                         requiredBookings.add(booking);
                     }
                 }
                 List<List<Booking>> groupedBookings = new ArrayList<>();
 
-                // Iterate over the initial list of bookings
                 for (Booking booking : requiredBookings) {
                     boolean added = false;
-
-                    // Check if the timeslot matches any existing group
                     for (List<Booking> group : groupedBookings) {
                         if (!group.isEmpty() && group.get(0).getTimeslot().equals(booking.getTimeslot())) {
                             group.add(booking);
@@ -323,16 +286,12 @@ public class Server {
                             break;
                         }
                     }
-
-                    // If the timeslot doesn't match any existing group, create a new group
                     if (!added) {
                         List<Booking> newGroup = new ArrayList<>();
                         newGroup.add(booking);
                         groupedBookings.add(newGroup);
                     }
                 }
-
-                // Access grouped bookings by timeslot
                 for (List<Booking> group : groupedBookings) {
                     System.out.println(group.get(0).getTimeslot());
                     StringBuilder tableID = new StringBuilder("            ");
@@ -359,17 +318,6 @@ public class Server {
         return 0;
     }
 
-    /*StringBuilder tableID = new StringBuilder("                ");
-    StringBuilder seat = new StringBuilder("                ");
-    StringBuilder status = new StringBuilder("                ");
-    for (Table table : tables) {
-        tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
-        seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
-        status.append(String.format("| Status: %-15s ", table.getStatus()));
-    }
-    System.out.println(tableID.toString());
-    System.out.println(seat.toString());
-    System.out.println(status.toString());*/
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
         Customer customer = (Customer) ac;
         ArrayList<Booking> allbookings = customer.getAllBookings();
@@ -400,22 +348,6 @@ public class Server {
         return false;
     }
 
-    public ArrayList<Booking> getCustomerAllBookings(Customer customer) {
-        return customer.getAllBookings();
-    }
-
-    public ArrayList<Booking> getRestaurantAllBookings(Restaurant restaurant) {
-        return restaurant.getAllBookings();
-    }
 }
 
-// public void updateTimeslotInfo(Account ac, Scanner in) {
-//         Restaurant restaurant = (Restaurant) ac;
-//         System.out.print("\nNew open time (HH:mm): ");
-//         LocalTime openTime = LocalTime.parse(in.next());
-//         System.out.print("\nNew close time (HH:mm): ");
-//         LocalTime closeTime = LocalTime.parse(in.next());
-//         System.out.print("\nNew session duration in minutes: ");
-//         Duration sessionDuration = Duration.ofMinutes(in.nextInt());
-//         restaurant.setTimeslots(openTime, closeTime, sessionDuration);
-//     }
+
