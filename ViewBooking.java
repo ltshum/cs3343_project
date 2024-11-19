@@ -115,22 +115,34 @@ public class ViewBooking {
                         if (isCustomer) {
                             isValidOption = true;
                             if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
+                                System.out.print("\n#Input 'b@ck' to exit the commenting session#\n");
                                 int rate = -1;
                                 while (rate < 0 || rate > 5) {
                                     System.out.print("Please input your rate (0-5): ");
-                                    while (!in.hasNextInt()) {
-                                        System.out.println("\nInvalid input. Please enter a number between 0 and 5.");
-                                        in.next();
-                                    }
-                                    rate = in.nextInt();
-                                    
-                                    if (rate < 0 || rate > 5) {
-                                        System.out.println("\nInvalid input. Please enter a number between 0 and 5.");
+                                    if (in.hasNextInt()) {
+                                        rate = in.nextInt();
+                                        if (rate < 0 || rate > 5) {
+                                            System.out.println("\nInvalid input. Please enter a number between 0 and 5.");
+                                        }
+                                    } else {
+                                        String input = in.next();
+                                        if (input.equalsIgnoreCase("b@ck")) {
+                                            System.out.println("\nExiting commenting session...");
+                                            isValidOption = false;
+                                            break outerLoop;
+                                        } else {
+                                            System.out.println("\nInvalid input. Please enter a number between 0 and 5.");
+                                        }
                                     }
                                 }
                                 System.out.print("Please input your comment: ");
                                 in.nextLine();
                                 String comment = in.nextLine();
+                                if (comment.equalsIgnoreCase("b@ck")) {
+                                    System.out.println("\nExiting commenting session...");
+                                    isValidOption = false;
+                                    break;
+                                }
                                 server.makeComment(account, inputNumber, date, rate, comment);
                                 displayViewBooking(in);
                             } else {
