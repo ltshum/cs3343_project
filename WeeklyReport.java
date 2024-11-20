@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Scanner;
 
 public class WeeklyReport {
@@ -15,9 +14,11 @@ public class WeeklyReport {
     }
 
     public void displayWeeklyReport(Scanner in) {
+        server.generateRestaurantLog();
         String report = generateWeeklyReport();
         System.out.println(report);
-        System.out.println("\n1. Exit");
+        System.out.println("1. Exit\n");
+        System.out.print("What action do you want to do?: ");
         int choice = in.nextInt();
         if (choice == 1) {
             return;

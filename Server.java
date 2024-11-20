@@ -1,49 +1,48 @@
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Server {
 
     private static final Server instance = new Server();
     private static ArrayList<Account> AccountList = new ArrayList<>();
     private Map<String, Account> RestaurantAccounts = new HashMap<>();
-    private Map<String, Map<String, RestaurantLog>> AllRestaurant1Logs = new HashMap<>();
+    private Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
+    private Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
     private Server() {
-        
-        Restaurant r1 = new Restaurant("AC1", "1", "1", "1", "1", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 1);
-        Restaurant r2 = new Restaurant("AC2", "2", "AC2", "India", "Wong Tai Sin", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
-        // predeined data
-        RestaurantAccounts.put(r1.getUserName(), r1);
-        RestaurantAccounts.put(r2.getUserName(), r2);
-        // add data
-        addTestData();
     }
 
-    private void addTestData() {
-        // test1
-        Map<String, RestaurantLog> restaurant1Logs = new HashMap<>();
-        restaurant1Logs.put("lastWeek", new RestaurantLog(1, 4.5f, 100, List.of(new Comment("User1", "Nice", 5.0f, LocalDate.now()))));
-        restaurant1Logs.put("thisWeek", new RestaurantLog(2, 4.0f, 120, List.of(new Comment("User2", "Good", 4.0f, LocalDate.now()))));
-        AllRestaurant1Logs.put("AC1", restaurant1Logs);
+    public void addRestaurantAccount(Restaurant restaurant) {
+        RestaurantAccounts.put(restaurant.getUserName(), restaurant);
+    }
 
-        // test2
-        Map<String, RestaurantLog> restaurant2Logs = new HashMap<>();
-        restaurant2Logs.put("lastWeek", new RestaurantLog(3, 3.5f, 80, List.of(new Comment("User3", "Average", 3.0f, LocalDate.now()))));
-        restaurant2Logs.put("thisWeek", new RestaurantLog(1, 4.5f, 150, List.of(new Comment("User4", "Excellent", 5.0f, LocalDate.now()))));
-        AllRestaurant1Logs.put("AC2", restaurant2Logs);
+    public void generateRestaurantLog() {
+        generateRestaurantLogData();
+        for (Account restaurantAc : (RestaurantAccounts.values())) {
+            Restaurant restaurant = (Restaurant) restaurantAc;
+            RestaurantLogData restaurantLogData = restaurantLogDataMap.get(restaurant.getUserName());
+            Map<String, RestaurantLog> restaurantLogs = new HashMap<>();
+            restaurantLogs.put("lastWeek", new RestaurantLog(restaurantLogData.getLastWeekRank(), restaurantLogData.getLastWeekRate(), restaurantLogData.getLastWeekTotalPpl(), restaurantLogData.getLastWeekComments()));
+            restaurantLogs.put("thisWeek", new RestaurantLog(restaurantLogData.getThisWeekRank(), restaurantLogData.getThisWeekRate(), restaurantLogData.getThisWeekTotalPpl(), restaurantLogData.getThisWeekComments()));
+            AllRestaurantLogs.put(restaurant.getUserName(), restaurantLogs);
+        }
     }
 
     public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
-        Map<String, RestaurantLog> logs = AllRestaurant1Logs.get(restaurant.getUserName());
+        Map<String, RestaurantLog> logs = AllRestaurantLogs.get(restaurant.getUserName());
         if (logs != null) {
             return logs.get(period);
         }
@@ -362,6 +361,75 @@ public class Server {
             }
         }
         return null;
+    }
+
+    private void generateRestaurantLogData() {
+        LocalDate thisWeekStartDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate thisWeekEndDate = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
+        LocalDate lastWeekEndDate = thisWeekEndDate.minusWeeks(1);
+        for (Account restaurantAc : (RestaurantAccounts.values())) {
+            Restaurant restaurant = (Restaurant) restaurantAc;
+
+            //last week data
+            ArrayList<Booking> lastWeekBookings = restaurant.getPeriodBooking(lastWeekStartDate, lastWeekEndDate);
+            ArrayList<Comment> lastWeekComments = restaurant.getPeriodComment(lastWeekStartDate, lastWeekEndDate);
+            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getPpl).sum();
+            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getRate).average().getAsDouble();
+
+            //this week data
+            ArrayList<Booking> thisWeekBookings = restaurant.getPeriodBooking(thisWeekStartDate, thisWeekEndDate);
+            ArrayList<Comment> thisWeekComments = restaurant.getPeriodComment(thisWeekStartDate, thisWeekEndDate);
+            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getPpl).sum();
+            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getRate).average().getAsDouble();
+
+            RestaurantLogData restaurantLogData = new RestaurantLogData(lastWeekComments, lastWeekTotalPpl, lastWeekRate, 0, thisWeekComments, thisWeekTotalPpl, thisWeekRate, 0);
+            restaurantLogDataMap.put(restaurant.getUserName(), restaurantLogData);
+
+        }
+        
+        Map<String, RestaurantLogData> sortedByThisWeekRate = restaurantLogDataMap.entrySet()
+            .stream()
+            .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        // Update thisWeekRank based on the index after sorting
+        int thisWeekRank = 1;
+        Float thisWeekPreviousRate = null;
+        int thisWeekSameRateRank = 0;
+        for (Map.Entry<String, RestaurantLogData> entry : sortedByThisWeekRate.entrySet()) {
+            Float currentRate = entry.getValue().getLastWeekRate();
+            if (thisWeekPreviousRate == null || currentRate.compareTo(thisWeekPreviousRate) != 0) {
+                thisWeekRank += thisWeekSameRateRank;
+                thisWeekSameRateRank = 1;
+                thisWeekPreviousRate = currentRate;
+            } else {
+                thisWeekSameRateRank++;
+            }
+            entry.getValue().setThisWeekRank(thisWeekRank);
+        }
+
+        // Sort the map by lastWeekRate from big to small
+        Map<String, RestaurantLogData> sortedByLastWeekRate = restaurantLogDataMap.entrySet()
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getLastWeekRate))))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        // Update lastWeekRank based on the index after sorting
+        int lastWeekRank = 1;
+        Float lastWeekPreviousRate = null;
+        int lastWeekSameRateRank = 0;
+        for (Map.Entry<String, RestaurantLogData> entry : sortedByLastWeekRate.entrySet()) {
+            Float currentRate = entry.getValue().getLastWeekRate();
+            if (lastWeekPreviousRate == null || currentRate.compareTo(lastWeekPreviousRate) != 0) {
+                lastWeekRank += lastWeekSameRateRank;
+                lastWeekSameRateRank = 1;
+                lastWeekPreviousRate = currentRate;
+            } else {
+                lastWeekSameRateRank++;
+            }
+            entry.getValue().setLastWeekRank(lastWeekRank);
+        }
     }
 }
 

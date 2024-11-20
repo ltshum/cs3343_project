@@ -17,9 +17,14 @@ public class Main {
         Restaurant r2 = new Restaurant("AC2", "2", "AC2", "India", "Wong Tai Sin", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
         Restaurant r3 = new Restaurant("AC3", "2", "AC3", "Thai", "Lok Fu", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
         server.updateSeatNo(r1,1,6);
+        server.updateSeatNo(r2,1,6);
+        server.updateSeatNo(r3,1,6);
         server.addRestaurant(r1);
         server.addRestaurant(r2);
         server.addRestaurant(r3);
+        server.addRestaurantAccount(r1);
+        server.addRestaurantAccount(r2);
+        server.addRestaurantAccount(r3);
         //Pass to Sign-in or Sign-up
         while (true) {
             System.out.println("\n# Welcome to Restaurant Booking System #\n");
