@@ -43,7 +43,8 @@ public class ViewBooking {
         boolean isValidOption = false;
         while (!isValidOption) {
             System.out.print("\nWhat action do you want to do: ");
-            String op = in.next();
+            in.nextLine();
+            String op = in.nextLine();
 
             outerLoop: switch (op) {
                 case "T": 

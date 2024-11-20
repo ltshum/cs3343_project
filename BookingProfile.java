@@ -46,7 +46,7 @@ public class BookingProfile {
                         System.out.println("Not validate ");
                         return;
                     };
-                    System.out.print("What is your contact number ");
+                    System.out.print("What is your contact number: ");
                     String contact = in.next();
                     //makeBooking
                     System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurant, ac, contact, ppl));
