@@ -25,8 +25,8 @@ public class Restaurant extends Account {
     private ArrayList<Booking> allBookings = new ArrayList<>();
 
     //Test
-    Comment cm1 = new Comment("User1", "Great", 3);
-    Comment cm2 = new Comment("User2", "Good", 4);
+    Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
+    Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
     public Restaurant(String userName, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
@@ -49,12 +49,6 @@ public class Restaurant extends Account {
         //this.allTables = new ArrayList<>();
     }
 
-    private void initializeTables(int tableCount) {
-        for (int i = 1; i <= tableCount; i++) {
-            allTables.add(new Table(i));
-        }
-    }
-
     public String getTimeslots() {
         LocalTime currentTime = openTime;
         String result = "";
@@ -67,20 +61,6 @@ public class Restaurant extends Account {
         return result;
     }
 
-    public void setTimeslots(LocalTime openTime, LocalTime closeTime, Duration sessionDuration) {
-        this.openTime = openTime;
-        this.closeTime = closeTime;
-        this.sessionDuration = sessionDuration;
-        LocalTime currentTime = openTime;
-        while (currentTime.plus(sessionDuration).isBefore(closeTime)
-                || currentTime.plus(sessionDuration).equals(closeTime)) {
-            String session = currentTime.toString() + " - " + currentTime.plus(sessionDuration).toString();
-            for (Table table : allTables) {
-                table.addTimeslot(new Timeslot(session));
-            }
-            currentTime = currentTime.plus(sessionDuration);
-        }
-    }
 
     private void generateTimeslots() {
         LocalTime currentTime = openTime;
@@ -104,7 +84,7 @@ public class Restaurant extends Account {
         );
     }
 
-    public String getComment() {
+    public String getCommentString() {
         String result = "";
         for (Comment cm : allComments) {
             result = result + cm.getCustomer_name() + ": " + cm.getContent() + " " + cm.getRate() + "\n";
@@ -152,6 +132,14 @@ public class Restaurant extends Account {
         return district;
     }
 
+    public ArrayList<Booking> getAllBookings() {
+        return allBookings;
+    }
+
+    public ArrayList<Comment> getAllComments() {
+        return allComments;
+    }
+
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
     }
@@ -192,6 +180,13 @@ public class Restaurant extends Account {
         this.allTables = allTables;
     }
 
+    private void initializeTables(int tableCount) {
+        for (int i = 1; i <= tableCount; i++) {
+            allTables.add(new Table(i));
+        }
+    }
+    
+    @Override
     public void edit(Scanner in) {
         while (true) {
             System.out.println("# If you want to back to last page please input X #");
@@ -269,18 +264,8 @@ public class Restaurant extends Account {
         this.allBookings.add(bk);
     }
 
-    public void bookinganotherdate(LocalTime starTime, LocalTime endtime, int customernumber, LocalDate bookingdate, String contactnumber, Restaurant restaurant, Customer customer) {
-        Booking bk = new Booking(starTime, endtime, customernumber, bookingdate, contactnumber, restaurant, customer);
-        this.allBookings.add(bk);
-        bk.bookingSuccess();
-    }
-
-    public ArrayList<Booking> getAllBookings() {
-        return allBookings;
-    }
-
-    public void addComment(String customerName, String content, int rate) {
-        Comment comment = new Comment(customerName, content, rate);
+    public void addComment(String customerName, String content, int rate, LocalDate date) {
+        Comment comment = new Comment(customerName, content, rate, date);
         allComments.add(comment);
         float recal_rate = 0;
         for (Comment cm : allComments) {
@@ -290,4 +275,23 @@ public class Restaurant extends Account {
         System.out.println("\nComment added!");
     }
 
+    public ArrayList<Booking> getPeriodBooking(LocalDate startDate, LocalDate endDate) {
+        ArrayList<Booking> result = new ArrayList<>();
+        for (Booking bk : allBookings) {
+            if ((bk.getDate().isEqual(startDate) || bk.getDate().isAfter(startDate)) && (bk.getDate().isEqual(endDate) || bk.getDate().isBefore(endDate))) {
+                result.add(bk);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<Comment> getPeriodComment(LocalDate startDate, LocalDate endDate) {
+        ArrayList<Comment> result = new ArrayList<>();
+        for (Comment cm : allComments) {
+            if ((cm.getDate().isEqual(startDate) || cm.getDate().isAfter(startDate)) && (cm.getDate().isEqual(endDate) || cm.getDate().isBefore(endDate))) {
+                result.add(cm);
+            }
+        }
+        return result;
+    }
 }
