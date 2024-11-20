@@ -1,7 +1,5 @@
 
 // Other imports as needed
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,20 +57,6 @@ public class Customer extends Account {
         this.customerContact = customerContact;
     }
 
-    public void addBooking(Booking bk) {
-        this.allBookings.add(bk);
-    }
-
-    public ArrayList<Booking> getallBooking() {
-        return allBookings;
-    }
-
-    public void bookinganotherdate(LocalTime startTime, LocalTime endTime, int customernumber, LocalDate bookingdate, String contactnumber, Restaurant restaurant, Customer customer) {
-        Booking bk = new Booking(startTime, endTime, customernumber, bookingdate, contactnumber, restaurant, customer);
-        this.allBookings.add(bk);
-        bk.bookingSuccess();
-    }
-
     public void setAllRestaurant(ArrayList<Integer> allRestaurant) {
         this.allRestaurant = allRestaurant;
     }
@@ -81,6 +65,7 @@ public class Customer extends Account {
         this.allWrittenComment = allWrittenComment;
     }
 
+    @Override
     public void edit(Scanner in) {
         while (true) {
             System.out.println("# If you want to back to last page please input X #");
@@ -112,4 +97,7 @@ public class Customer extends Account {
         }
     }
 
+    public void addBooking(Booking bk) {
+        this.allBookings.add(bk);
+    }
 }
