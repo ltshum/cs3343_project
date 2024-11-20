@@ -14,12 +14,11 @@ public class Server {
 
     private static final Server instance = new Server();
     private static ArrayList<Account> AccountList = new ArrayList<>();
-    private Map<String, Account> RestaurantAccounts;
-    private Map<String, Map<String, RestaurantLog>> restaurantLogs;
+    private Map<String, Account> RestaurantAccounts = new HashMap<>();
+    private Map<String, Map<String, RestaurantLog>> AllRestaurant1Logs = new HashMap<>();
 
     private Server() {
-        RestaurantAccounts = new HashMap<>();
-        restaurantLogs = new HashMap<>();
+        
         Restaurant r1 = new Restaurant("AC1", "1", "1", "1", "1", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 1);
         Restaurant r2 = new Restaurant("AC2", "2", "AC2", "India", "Wong Tai Sin", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
         // predeined data
@@ -32,19 +31,19 @@ public class Server {
     private void addTestData() {
         // test1
         Map<String, RestaurantLog> restaurant1Logs = new HashMap<>();
-        restaurant1Logs.put("lastWeek", new RestaurantLog(1, 4.5f, 100, List.of(new Comment("User1", "Nice", 5.0f))));
-        restaurant1Logs.put("thisWeek", new RestaurantLog(2, 4.0f, 120, List.of(new Comment("User2", "Good", 4.0f))));
-        restaurantLogs.put("AC1", restaurant1Logs);
+        restaurant1Logs.put("lastWeek", new RestaurantLog(1, 4.5f, 100, List.of(new Comment("User1", "Nice", 5.0f, LocalDate.now()))));
+        restaurant1Logs.put("thisWeek", new RestaurantLog(2, 4.0f, 120, List.of(new Comment("User2", "Good", 4.0f, LocalDate.now()))));
+        AllRestaurant1Logs.put("AC1", restaurant1Logs);
 
         // test2
         Map<String, RestaurantLog> restaurant2Logs = new HashMap<>();
-        restaurant2Logs.put("lastWeek", new RestaurantLog(3, 3.5f, 80, List.of(new Comment("User3", "Average", 3.0f))));
-        restaurant2Logs.put("thisWeek", new RestaurantLog(1, 4.5f, 150, List.of(new Comment("User4", "Excellent", 5.0f))));
-        restaurantLogs.put("AC2", restaurant2Logs);
+        restaurant2Logs.put("lastWeek", new RestaurantLog(3, 3.5f, 80, List.of(new Comment("User3", "Average", 3.0f, LocalDate.now()))));
+        restaurant2Logs.put("thisWeek", new RestaurantLog(1, 4.5f, 150, List.of(new Comment("User4", "Excellent", 5.0f, LocalDate.now()))));
+        AllRestaurant1Logs.put("AC2", restaurant2Logs);
     }
 
     public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
-        Map<String, RestaurantLog> logs = restaurantLogs.get(restaurant.getUserName());
+        Map<String, RestaurantLog> logs = AllRestaurant1Logs.get(restaurant.getUserName());
         if (logs != null) {
             return logs.get(period);
         }
@@ -128,7 +127,7 @@ public class Server {
                         + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
                         + "\nTable Amount: " + restaurant.getAllTables().size()
                         + "\n\nTimeslot: \n" + restaurant.getTimeslots()
-                        + "\nComment: \n" + restaurant.getComment();
+                        + "\nComment: \n" + restaurant.getCommentString();
             }
         }
         return null;
@@ -136,7 +135,7 @@ public class Server {
 
     public String getRestaurantBookingDetail(Restaurant restaurant) {
 
-        Restaurant requiredRestaurant = getRestaurantAccountByRestaurantName(restaurant.getUserName());
+        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getUserName());
         if (requiredRestaurant != null) {
             return "Rate: " + requiredRestaurant.getRate()
                         + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
@@ -148,7 +147,7 @@ public class Server {
                         + "\nClose Time: " + requiredRestaurant.getCloseTime()
                         + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
                         + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
-                        + "\nComment: \n" + requiredRestaurant.getComment();
+                        + "\nComment: \n" + requiredRestaurant.getCommentString();
         }
         return "Restaurant not found.";
     }
@@ -174,7 +173,7 @@ public class Server {
     }
 
     public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
-        ArrayList<Table> allTables = getRestaurantAccountByRestaurantName(ac.getUserName()).getAllTables();
+        ArrayList<Table> allTables = getRestaurantAccountByUserName(ac.getUserName()).getAllTables();
         for (Table table : allTables) {
             if (table.isTimeslotAvailable(timeslotSession, date)) {
                 if (table.getSeatNum() >= ppl) {
@@ -187,7 +186,7 @@ public class Server {
     }
 
     public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
-        Restaurant requiredRestaurant = getRestaurantAccountByRestaurantName(restaurant.getUserName());
+        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getUserName());
         if (requiredRestaurant == null) {
             return "Restaurant not found.";
         } else {
@@ -316,7 +315,7 @@ public class Server {
         return 0;
     }
 
-    public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
+    public Booking getBookingToBeComment(Account ac, int inputNumber, LocalDate date) {
         Customer customer = (Customer) ac;
         ArrayList<Booking> allbookings = customer.getAllBookings();
         ArrayList<Booking> bookings = new ArrayList<>();
@@ -325,9 +324,20 @@ public class Server {
                 bookings.add(booking);
             }
         }
-        Booking requiredBooking = bookings.get(inputNumber - 1);
+        return bookings.get(inputNumber - 1);
+    }
+
+    public boolean checkHasAttend(Account ac, int inputNumber, LocalDate date) {
+        if (!getBookingToBeComment(ac, inputNumber, date).hasArrived()) {
+            System.out.println("\nYou can only make comment after you have attended the appointment.");
+            return false;
+        }
+        return true;
+    }
+
+    public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
         try {
-            getRestaurantAccountByRestaurantName(requiredBooking.getRestaurantName()).addComment(ac.getUserName(), comment, rate);
+            getRestaurantAccountByUserName(getBookingToBeComment(ac, inputNumber, date).getRestaurantName()).addComment(ac.getUserName(), comment, rate, date);
         } catch (Exception e) {
             System.out.println("Restaurant not found.");
         }
@@ -345,7 +355,7 @@ public class Server {
         return false;
     }
 
-    public Restaurant getRestaurantAccountByRestaurantName(String username) {
+    public Restaurant getRestaurantAccountByUserName(String username) {
         for (Account account : AccountList) {
             if (account.getUserName().equals(username)) {
                 return (Restaurant) account;

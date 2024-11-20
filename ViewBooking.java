@@ -52,11 +52,11 @@ public class ViewBooking {
                         in.nextLine();
                         String inputSession = "";
                         boolean isValidSession = false;
-                        System.out.print("\n#Input 'b@ck' to exit the attendance taking session#");
+                        System.out.print("\n#Input X to exit the attendance taking session#");
                         while (!isValidSession) {
                             System.out.print("\nWhich session do you want to take attendance (HH:mm) - (HH:mm): ");
                             inputSession = in.nextLine(); 
-                            if (inputSession.equalsIgnoreCase("b@ck")) {
+                            if (inputSession.equals("X")) {
                                 System.out.println("\nExiting attendance taking session...");
                                 isValidOption = false;
                                 break outerLoop;
@@ -74,7 +74,7 @@ public class ViewBooking {
                             System.out.print("\nPlease input the table ID: ");
                             String tableInput = in.next();
                             
-                            if (tableInput.equalsIgnoreCase("b@ck")) {
+                            if (tableInput.equals("X")) {
                                 System.out.println("\nExiting attendance taking session...");
                                 isValidOption = false;
                                 break outerLoop;
@@ -115,7 +115,11 @@ public class ViewBooking {
                         if (isCustomer) {
                             isValidOption = true;
                             if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
-                                System.out.print("\n#Input 'b@ck' to exit the commenting session#\n");
+                                if (!server.checkHasAttend(account, inputNumber, date)) {
+                                    isValidOption = false;
+                                    break;
+                                }
+                                System.out.print("\n#Input X to exit the commenting session#\n");
                                 int rate = -1;
                                 while (rate < 0 || rate > 5) {
                                     System.out.print("Please input your rate (0-5): ");
@@ -126,7 +130,7 @@ public class ViewBooking {
                                         }
                                     } else {
                                         String input = in.next();
-                                        if (input.equalsIgnoreCase("b@ck")) {
+                                        if (input.equals("X")) {
                                             System.out.println("\nExiting commenting session...");
                                             isValidOption = false;
                                             break outerLoop;
@@ -138,7 +142,7 @@ public class ViewBooking {
                                 System.out.print("Please input your comment: ");
                                 in.nextLine();
                                 String comment = in.nextLine();
-                                if (comment.equalsIgnoreCase("b@ck")) {
+                                if (comment.equals("X")) {
                                     System.out.println("\nExiting commenting session...");
                                     isValidOption = false;
                                     break;
