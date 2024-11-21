@@ -45,6 +45,7 @@ public class SearchRestaurant {
         testList.add(r1);
         testList.add(r2);
         testList.add(r3);
+        testList.addAll(server.getRestaurantAccounts());
         
         RestaurantList testRestaurantList = new RestaurantList(testList);
         testRestaurantList.displayRestaurantList(in,account);

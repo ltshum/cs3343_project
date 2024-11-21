@@ -65,20 +65,22 @@ public class Server {
         return false;
     }
 
-    public void signUpCustomer(String role, String username, String password, String name, String contact) {
+    public Customer signUpCustomer(String role, String username, String password, String name, String contact) {
         Customer customer = new Customer(username, password, name, contact);
         AccountList.add(customer);
         System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
         System.out.println("\n#Customer signed up successfully!#\n");
+        return customer;
     }
 
-    public void signUpRestaurant(String role, String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
+    public Restaurant signUpRestaurant(String role, String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
         Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
         AccountList.add(restaurant);
         //add to list
         RestaurantAccounts.put(restaurant.getUserName(), restaurant);
         System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
         System.out.println("\n#Restaurant signed up successfully!#\n");
+        return restaurant;
     }
 
     public Account signIn(String username, String password) {
@@ -348,6 +350,14 @@ public class Server {
             }
         }
         return false;
+    }
+
+    public ArrayList<Restaurant> getRestaurantAccounts() {
+        ArrayList<Restaurant> result = new ArrayList<>();
+        for (Account restaurantAc : (RestaurantAccounts.values())) {
+            result.add((Restaurant) restaurantAc);
+        }
+        return result;
     }
 
     public Restaurant getRestaurantAccountByUserName(String username) {
