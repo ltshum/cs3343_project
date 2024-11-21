@@ -178,7 +178,7 @@ public class Server {
         if (requiredRestaurant == null) {
             return "Restaurant not found.";
         } else {
-            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant.getRestaurantName(), ac.getCustomerName(), contact, ppl);
+            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant, ac, contact, ppl);
             requiredRestaurant.addBooking(bk);
             ac.addBooking(bk);
             return "Already booked a seat for you";
@@ -333,8 +333,9 @@ public class Server {
     }
 
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String comment) {
+        Customer customer = (Customer) ac;
         try {
-            getRestaurantAccountByUserName(getBookingToBeComment(ac, inputNumber, date).getRestaurantName()).addComment(ac.getUserName(), comment, rate, date);
+            getBookingToBeComment(ac, inputNumber, date).getRestaurant().addComment(customer.getCustomerName(), comment, rate, date);
         } catch (Exception e) {
             System.out.println("Restaurant not found.");
         }
@@ -361,7 +362,7 @@ public class Server {
     }
 
     public Restaurant getRestaurantAccountByUserName(String username) {
-        for (Account account : AccountList) {
+        for (Account account : RestaurantAccounts.values()) {
             if (account.getUserName().equals(username)) {
                 return (Restaurant) account;
             }
