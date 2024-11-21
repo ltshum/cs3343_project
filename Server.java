@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class Server {
 
     private static final Server instance = new Server();
-    private static ArrayList<Account> AccountList = new ArrayList<>();
-    private Map<String, Account> RestaurantAccounts = new HashMap<>();
-    private Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
-    private Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
+    private static final ArrayList<Account> AccountList = new ArrayList<>();
+    private final Map<String, Account> RestaurantAccounts = new HashMap<>();
+    private final Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
+    private final Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
     private Server() {
     }
@@ -394,6 +394,8 @@ public class Server {
 
         }
         
+        // Sort the map by thisWeekRate
+        @SuppressWarnings("unused")
         Map<String, RestaurantLogData> sortedByThisWeekRate = restaurantLogDataMap.entrySet()
             .stream()
             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
@@ -415,7 +417,9 @@ public class Server {
             entry.getValue().setThisWeekRank(thisWeekRank);
         }
 
-        // Sort the map by lastWeekRate from big to small
+        
+        // Sort the map by lastWeekRate 
+        @SuppressWarnings("unused")
         Map<String, RestaurantLogData> sortedByLastWeekRate = restaurantLogDataMap.entrySet()
                 .stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getLastWeekRate))))

@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class TableManagement {
 
     Server server = Server.getInstance();
-    private Account account;
+    private final Account account;
 
     public TableManagement(Account account) {
         this.account = account;

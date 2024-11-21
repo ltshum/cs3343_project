@@ -5,7 +5,7 @@ public class SignIn {
 
     Server server = Server.getInstance();
 
-    public void SignIn(Scanner in) {
+    public void signIn(Scanner in) {
 
         //Input username
         System.out.print("\nPlease input your username: ");

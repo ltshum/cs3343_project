@@ -46,7 +46,7 @@ public class ViewBooking {
                 System.out.print("\nWhat action do you want to do: ");
                 String op = in.nextLine();
                 outerLoop: switch (op) {
-                    case "T": {
+                    case "T" ->  {
                         if (isRestaurant) {
                             String inputSession = "";
                             boolean isValidSession = false;
@@ -93,20 +93,17 @@ public class ViewBooking {
                                 isValidOption = true;
                             } else {
                                 System.out.print("\nThis booking is not exist. Please try again.");
-                                break;
                             }
                         }
                         else {
                             System.out.print("\nInvalid option. Please try again.");
-                            break;
                         }
-                        break;
                     }
-                    case "X":
+                    case "X" -> {
                         exitLoop = true;
                         isValidOption = true;
-                        break;
-                    default:
+                    }
+                    default -> {
                         try {
                             int inputNumber = Integer.parseInt(op);
                             if (isCustomer) {
@@ -114,7 +111,6 @@ public class ViewBooking {
                                 if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
                                     if (!server.checkHasAttend(account, inputNumber, date)) {
                                         isValidOption = false;
-                                        break;
                                     }
                                     System.out.print("\n#Input X to exit the commenting session#\n");
                                     int rate = -1;
@@ -142,26 +138,23 @@ public class ViewBooking {
                                     if (comment.equals("X")) {
                                         System.out.println("\nExiting commenting session...");
                                         isValidOption = false;
-                                        break;
                                     }
                                     server.makeComment(account, inputNumber, date, rate, comment);
                                 } else {
                                     isValidOption = false;
                                     System.out.print("\nInvalid option. Please try again.");
-                                    break;
                                 }
                             } else {
                                 System.out.print("\nInvalid option. Please try again.");
-                                break;
                             }
                         } catch (NumberFormatException e) {
                             try {
                                 LocalDate parsedDate = LocalDate.parse(op);
                                 isValidOption = true;
                                 date = parsedDate;
-                        } catch (DateTimeParseException ex) {
-                            System.out.print("\nInvalid option. Please try again.");
-                            break;
+                            } catch (DateTimeParseException ex) {
+                                System.out.print("\nInvalid option. Please try again.");
+                            }
                         }
                     }
                 }

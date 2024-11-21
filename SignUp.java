@@ -8,7 +8,7 @@ public class SignUp {
 
     Server server = Server.getInstance();
 
-    public void SignUp(Scanner in) {
+    public void signUp(Scanner in) {
 
         // Back to Main
         System.out.print("\n# Sign-up for a new account #\n");

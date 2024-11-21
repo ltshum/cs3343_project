@@ -5,8 +5,8 @@ public class WeeklyReport {
     private Server server;
 
     public WeeklyReport(Account account) {
-        if (account instanceof Restaurant) {
-            this.restaurant = (Restaurant) account;
+        if (account instanceof Restaurant tempRestaurant) {
+            this.restaurant = tempRestaurant;
             this.server = Server.getInstance();
         } else {
             throw new IllegalArgumentException("Account must be an instance of Restaurant");

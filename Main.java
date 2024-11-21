@@ -41,11 +41,11 @@ public class Main {
                     int choice = Integer.parseInt(in.nextLine());
                     switch (choice) {
                         case 1 -> {
-                            (new SignIn()).SignIn(in);
+                            (new SignIn()).signIn(in);
                             isValidChoice = true;
                         }
                         case 2 -> {
-                            (new SignUp()).SignUp(in);
+                            (new SignUp()).signUp(in);
                             isValidChoice = true;
                         }
                         case 3 -> {

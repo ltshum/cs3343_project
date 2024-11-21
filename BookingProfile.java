@@ -5,7 +5,6 @@ public class BookingProfile {
 
     Server server = Server.getInstance();
     private final Restaurant restaurant;
-    Scanner in = new Scanner(System.in);
     private final Customer ac ;
 
     public BookingProfile(Restaurant restaurant) {
@@ -74,7 +73,7 @@ public class BookingProfile {
                         case 2 -> {
                             System.out.println("Book another day");
                             boolean isValidDate = false;
-                            String dateInput = "";
+                            String dateInput;
                             while (!isValidDate) {
                                 System.out.print("Which date do you want to book (yyyy-MM-dd): ");
                                 dateInput = in.nextLine();

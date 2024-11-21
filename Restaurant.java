@@ -22,7 +22,7 @@ public class Restaurant extends Account {
     private LocalTime closeTime;
     private Duration sessionDuration;
     private ArrayList<Table> allTables = new ArrayList<>();
-    private ArrayList<Comment> allComments = new ArrayList<>();
+    private final ArrayList<Comment> allComments = new ArrayList<>();
     private ArrayList<Booking> allBookings = new ArrayList<>();
 
     //Test

@@ -12,7 +12,7 @@ public class Customer extends Account {
     private String customerContact;
     private ArrayList<Integer> allRestaurant = new ArrayList<>();
     private ArrayList<String> allWrittenComment = new ArrayList<>();
-    private ArrayList<Booking> allBookings = new ArrayList<>();
+    private final ArrayList<Booking> allBookings = new ArrayList<>();
 
     public Customer(String userName, String password, String name, String contact) {
         super(Arrays.asList(Role.CUSTOMER), userName, password, getCustomerPermissions());
