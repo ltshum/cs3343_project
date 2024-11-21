@@ -6,18 +6,18 @@ public class Booking {
     private LocalDate date;
     private int tableID;
     private String timeslot;
-    private String restaurantName;
-    private String customerName;
+    private Restaurant restaurant;
+    private Customer customer;
     private String customerContact;
     private int ppl;
     private boolean arrive = false;
 
-    public Booking(LocalDate date, int tableID, String timeslot, String restaurantName, String customerName, String customerContact, int ppl) {
+    public Booking(LocalDate date, int tableID, String timeslot, Restaurant restaurant, Customer customer, String customerContact, int ppl) {
         this.date = date;
         this.tableID = tableID;
         this.timeslot = timeslot;
-        this.restaurantName = restaurantName;
-        this.customerName = customerName;
+        this.restaurant = restaurant;
+        this.customer = customer;
         this.customerContact = customerContact;
         this.ppl = ppl;
     }
@@ -35,12 +35,20 @@ public class Booking {
         return timeslot;
     }
 
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
     public String getRestaurantName() {
-        return restaurantName;
+        return restaurant.getRestaurantName();
     }
 
     public String getCustomerName() {
-        return customerName;
+        return customer.getCustomerName();
     }
 
     public String getCustomerContact() {
@@ -67,12 +75,12 @@ public class Booking {
         this.timeslot = timeslot;
     }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public void setCustomerContact(String customerContact) {
