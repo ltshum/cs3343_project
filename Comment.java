@@ -1,14 +1,17 @@
+import java.time.LocalDate;
 
 public class Comment {
 
     private String customer_name;
     private String content;
     private float rate;
+    private LocalDate date;
 
-    public Comment(String customer_name, String content, float rate) {
+    public Comment(String customer_name, String content, float rate, LocalDate date) {
         this.customer_name = customer_name;
         this.content = content;
         this.rate = rate;
+        this.date = date;
     }
 
     public String getCustomer_name() {
@@ -23,6 +26,10 @@ public class Comment {
         return content;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -35,4 +42,7 @@ public class Comment {
         this.rate = rate;
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 }

@@ -10,11 +10,12 @@ public class SignIn {
         //Input username
         System.out.print("\nPlease input your username: ");
         String username = in.next();
+        in.nextLine();
 
         //Input password
         System.out.print("\nPlease input your password: ");
         String password = in.next();
-
+        in.nextLine();
         Account account = server.signIn(username, password);
 
         //Pass to Home page or Back to Main
