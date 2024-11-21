@@ -57,41 +57,28 @@ public class Server {
         AccountList.add(ac);
     }
 
-    public void signUpCustomer(String role, String username, String password, String name, String contact) {
-
+    public boolean isUsernameExist(String username) {
         if (AccountList.stream().anyMatch(user -> user.getUserName().equals(username))) {
-            System.out.println("Error: Username already exists!");
-
-        } else {
-            Customer customer = new Customer(username, password, name, contact);
-            AccountList.add(customer);
-            System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
-            System.out.println("\n#Customer signed up successfully!#\n");
+            System.out.println("Error: Username already exists! Please input another.");
+            return true;
         }
+        return false;
+    }
+
+    public void signUpCustomer(String role, String username, String password, String name, String contact) {
+        Customer customer = new Customer(username, password, name, contact);
+        AccountList.add(customer);
+        System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
+        System.out.println("\n#Customer signed up successfully!#\n");
     }
 
     public void signUpRestaurant(String role, String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
-
-        if (AccountList.stream().anyMatch(user -> user.getUserName().equals(username))) {
-            System.out.println("Error: Username already exists!");
-        } else {
-            Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
-            AccountList.add(restaurant);
-            //add to list
-            RestaurantAccounts.put(restaurant.getUserName(), restaurant);
-            System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
-            System.out.println("\n#Restaurant signed up successfully!#\n");
-        }
-    }
-
-    public boolean userNameVerify(String username) {
-        if (AccountList.stream().anyMatch(user -> user.getUserName().equals(username))) {
-            System.out.println("Error: Username already exists!");
-            System.out.println("Please input another");
-            return false;
-        } else {
-            return true;
-        }
+        Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
+        AccountList.add(restaurant);
+        //add to list
+        RestaurantAccounts.put(restaurant.getUserName(), restaurant);
+        System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
+        System.out.println("\n#Restaurant signed up successfully!#\n");
     }
 
     public Account signIn(String username, String password) {
@@ -228,9 +215,18 @@ public class Server {
         ArrayList<Table> tables = restaurant.getAllTables();
         Table table = tables.get(tableID - 1);
 
-        System.out.print("\nNew Seat: ");
-        int newSeat = in.nextInt();
-        table.setSeatNum(newSeat);
+        boolean isValidSeatNo = false;
+        while (!isValidSeatNo) {
+            System.out.print("\nNew Seat: ");
+            try {
+                int newSeat = Integer.parseInt(in.next());
+                table.setSeatNum(newSeat);
+                isValidSeatNo = true;
+                System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please input again.");
+            }
+        }
     }
 
     public void updateSeatNo(Account ac, int tableID, int seatNum) {
@@ -430,6 +426,17 @@ public class Server {
             }
             entry.getValue().setLastWeekRank(lastWeekRank);
         }
+    }
+
+    public boolean isTableExist(Account ac, int tableID) {
+        Restaurant restaurant = (Restaurant) ac;
+        ArrayList<Table> tables = restaurant.getAllTables();
+        for (Table table : tables) {
+            if (table.getTableID() == tableID) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

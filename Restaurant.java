@@ -3,6 +3,7 @@
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -188,7 +189,7 @@ public class Restaurant extends Account {
     
     @Override
     public void edit(Scanner in) {
-        while (true) {
+        outerloop : while (true) {
             System.out.println("# If you want to back to last page please input X #");
             System.out.println("# Comment is not allowed to change #\n");
             System.out.println("# Change open/close/session time will regenerate timeslots #\n");
@@ -202,61 +203,117 @@ public class Restaurant extends Account {
             System.out.println("8. Session Duration\n");
             System.out.println("9. Table Amount\n");
 
-            System.out.print("Please input what information you want to change in list: ");
-            String input = in.next();
-
-            if (input.charAt(0) == 'X') {
-                return;
-            } else {
-                try {
-                    switch (Integer.parseInt(input)) {
-                        case 1 -> {
-                            System.out.print("Please input new Restaurant Name: ");
-                            setRestaurantName(in.next());
+            boolean isValidOption = false;
+            while (!isValidOption) {
+                System.out.print("Please input what information you want to change in list: ");
+                String input = in.next();
+                in.nextLine();
+                if (input.charAt(0) == 'X') {
+                    break outerloop;
+                } else {
+                    try {
+                        switch (Integer.parseInt(input)) {
+                            case 1 -> {
+                                System.out.print("Please input new Restaurant Name: ");
+                                setRestaurantName(in.next());
+                                System.out.println("Restaurant Name has been changed to " + getRestaurantName());
+                                isValidOption = true;
+                            }
+                            case 2 -> {
+                                System.out.print("Please input new Type: ");
+                                setType(in.next());
+                                System.out.println("Type has been changed to " + getType());
+                                isValidOption = true;
+                            }
+                            case 3 -> {
+                                System.out.print("Please input new Distrct: ");
+                                setDistrict(in.next());
+                                System.out.println("District has been changed to " + getDistrict());
+                                isValidOption = true;
+                            }
+                            case 4 -> {
+                                System.out.print("Please input new Address: ");
+                                setAddress(in.next());
+                                System.out.println("Address has been changed to " + getAddress());
+                                isValidOption = true;
+                            }
+                            case 5 -> {
+                                System.out.print("Please input new Phone: ");
+                                setRestaurantContact(in.next());
+                                System.out.println("Phone has been changed to " + getRestaurantContact());
+                                isValidOption = true;
+                            }
+                            case 6 -> {
+                                boolean isValidOpenTime = false;
+                                while (!isValidOpenTime) {
+                                    System.out.print("Please input new Open Time (HH:mm): ");
+                                    try {
+                                        setOpenTime(LocalTime.parse(in.nextLine()));
+                                        generateTimeslots();
+                                        System.out.println("Open Time has been changed to " + getOpenTime());
+                                        isValidOpenTime = true;
+                                        isValidOption = true;
+                                    } catch (DateTimeParseException e) {
+                                        System.out.println("Invalid input! Please input again.");
+                                    }
+                                }
+                            }
+                            case 7 -> {
+                                boolean isValidCloseTime = false;
+                                while (!isValidCloseTime) {
+                                    System.out.print("Please input new Close Time(HH:mm): ");
+                                    try {
+                                        setCloseTime(LocalTime.parse(in.nextLine()));
+                                        generateTimeslots();
+                                        System.out.println("Close Time has been changed to " + getCloseTime());
+                                        isValidCloseTime = true;
+                                        isValidOption = true;
+                                    } catch (DateTimeParseException e) {
+                                        System.out.println("Invalid input! Please input again.");
+                                    }
+                                }
+                            }
+                            case 8 -> {
+                                boolean isValidSessionDuration = false;
+                                while (!isValidSessionDuration) {
+                                    System.out.print("Please input new Session Duration in mintues: ");
+                                    try {
+                                        int newSessionDuration = Integer.parseInt(in.next());
+                                        setSessionDuration(Duration.ofMinutes(newSessionDuration));
+                                        generateTimeslots();
+                                        System.out.println("Session Duration has been changed to " + getSessionDuration());
+                                        isValidSessionDuration = true;
+                                        isValidOption = true;
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("Invalid input! Please input again.");
+                                    }
+                                }
+                            }
+                            case 9 -> {
+                                boolean isValidTableAmount = false;
+                                while (!isValidTableAmount) {
+                                    System.out.print("Please input new Table Amount: ");
+                                    allTables.clear();
+                                    try {
+                                        initializeTables(Integer.parseInt(in.nextLine()));
+                                        System.out.println("Table Amount has been changed to " + getAllTables().size());
+                                        isValidTableAmount = true;
+                                        isValidOption = true;
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("Invalid input! Please input again.");
+                                    }
+                                }
+                            }
+                            default -> {
+                                System.out.println("Invalid input! Please input again.");
+                            }
                         }
-                        case 2 -> {
-                            System.out.print("Please input new Type: ");
-                            setType(in.next());
-                        }
-                        case 3 -> {
-                            System.out.print("Please input new Distrct: ");
-                            setDistrict(in.next());
-                        }
-                        case 4 -> {
-                            System.out.print("Please input new Address: ");
-                            setAddress(in.next());
-                        }
-                        case 5 -> {
-                            System.out.print("Please input new Phone: ");
-                            setRestaurantContact(in.next());
-                        }
-                        case 6 -> {
-                            System.out.print("Please input new Open Time: ");
-                            setOpenTime(LocalTime.parse(in.next()));
-                            generateTimeslots();
-                        }
-                        case 7 -> {
-                            System.out.print("Please input new Close Time: ");
-                            setCloseTime(LocalTime.parse(in.next()));
-                            generateTimeslots();
-                        }
-                        case 8 -> {
-                            System.out.print("Please input new Session Duration: ");
-                            setSessionDuration(Duration.ofMinutes(in.nextInt()));
-                            generateTimeslots();
-                        }
-                        case 9 -> {
-                            System.out.print("Please input new Table Amount: ");
-                            allTables.clear();
-                            initializeTables(in.nextInt());
-                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input! Please input again.");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input!");
-                } catch (Exception e) {
-                    System.out.printf("Error: %s\n", e.getMessage());
                 }
             }
+            
         }
     }
 

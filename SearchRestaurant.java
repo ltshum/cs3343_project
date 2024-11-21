@@ -33,6 +33,7 @@ public class SearchRestaurant {
         String startTime = in.next();
         System.out.print("How long you prefer to eat(mins)?: ");
         String session = in.next();
+        in.nextLine();
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
         
         //Test
