@@ -21,7 +21,7 @@ public class SignIn {
         //Pass to Home page or Back to Main
         while (true) {
             if (account != null) {
-                System.out.println("\n# Sign in successful! Welcome, " + account.getUserName() + "#\n");
+                System.out.println("\n# Sign in successful! Welcome, " + account.getUserName() + " #\n");
                 Home homePage = new Home(account);
                 homePage.display(in);
                 return;

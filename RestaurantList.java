@@ -15,8 +15,8 @@ public class RestaurantList {
 
         while (true) {
             int count = 1;
-            System.out.println("\n#Here is the result list#");
-            System.out.println("#If you want to leave please input X#\n");
+            System.out.println("\n# Here is the result list #");
+            System.out.println("# If you want to leave please input X #\n");
             for (Restaurant r : result) {
                 System.out.println(count + ". " + server.getListInfo(r));
                 count++;
@@ -42,10 +42,10 @@ public class RestaurantList {
                             }
                             isValidOption = true;
                         } catch (Exception e) {
-                            System.out.println("Invalid input! Please input again.");
+                            System.out.print("\nInvalid input! Please input again.");
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input! Please input again.");
+                        System.out.print("\nInvalid input! Please input again.");
                     }
                 }
             }

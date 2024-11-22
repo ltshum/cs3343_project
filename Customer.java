@@ -84,21 +84,21 @@ public class Customer extends Account {
                             case 1 -> {
                                 System.out.print("Please input new Name: ");
                                 setCustomerName(in.next());
-                                System.out.println("Name has been changed to " + getCustomerName());
+                                System.out.println("\nName has been changed to " + getCustomerName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Phone: ");
                                 setCustomerContact(in.next());
-                                System.out.println("Phone has been changed to " + getCustomerContact());
+                                System.out.println("\nPhone has been changed to " + getCustomerContact() + "\n");
                                 isValidOption = true;
                             }
                             default -> {
-                                System.out.println("Invalid input! Please input again.");
+                                System.out.println("\nInvalid input! Please input again.");
                             }
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input! Please input again.");
+                        System.out.println("\nInvalid input! Please input again.");
                     }
                 }
             }

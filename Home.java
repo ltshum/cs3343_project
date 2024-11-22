@@ -60,10 +60,10 @@ public class Home {
                         System.out.println("Logging out...");
                         return;
                     } else {
-                        System.out.println("Invalid option. Please try again.");
+                        System.out.println("\nInvalid input. Please input again.");
                     }
                 } catch (NumberFormatException inputTypeException) {
-                    System.out.println("Invalid option. Please try again.");
+                    System.out.println("\nInvalid input. Please input again.");
                 }                
             }
             

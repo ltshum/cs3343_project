@@ -28,10 +28,10 @@ public class WeeklyReport {
                 if (op == 1) {
                     isValidOption = true;
                 } else {
-                    System.out.println("Invalid option. Please try again.");
+                    System.out.println("\nInvalid option. Please try again.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid option. Please try again.");
+                System.out.println("\nInvalid option. Please try again.");
             }
         }        
     }
@@ -41,7 +41,7 @@ public class WeeklyReport {
         RestaurantLog thisWeekLog = server.getRestaurantLog(restaurant, "thisWeek");
 
         StringBuilder report = new StringBuilder();
-        report.append("#Here is your weekly report#\n\n");
+        report.append("# Here is your weekly report #\n\n");
 
         report.append("Last week:\n");
         report.append("Rank: ").append(lastWeekLog.getRank()).append("\n");
