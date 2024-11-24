@@ -1,7 +1,9 @@
 
 import java.time.LocalDate;
 
-public class Timeslot {
+public class Timeslot implements Comparable<Timeslot>{
+
+
 
     private LocalDate date;
     private String session;
@@ -51,5 +53,20 @@ public class Timeslot {
         this.bookerName = null;
         this.bookerContact = null;
         this.pplNum = 0;
+    }
+
+    @Override
+    public int compareTo(Timeslot other){
+        if (date != other.date){
+            return date.compareTo(other.date);
+        }
+        String sessionProcessed = session.replace("(", "").replace(")", "");
+        String[] times = sessionProcessed.split("-");
+        for (int i = 0; i < times[0].length(); i++){
+            if (times[0].charAt(i) != times[1].charAt(i)){
+                return Integer.compare(times[0].charAt(i), times[1].charAt(i));
+            }
+        }
+        return 0;
     }
 }

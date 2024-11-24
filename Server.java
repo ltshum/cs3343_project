@@ -17,6 +17,16 @@ public class Server {
     public void addRestaurant(Restaurant ac){
         AccountList.add(ac);
     }
+
+    public ArrayList<Restaurant> getAllRestaurants(){
+        ArrayList<Restaurant> results = new ArrayList<>();
+        for (Account acc : AccountList){
+            if (acc instanceof Restaurant){
+                results.add((Restaurant) acc);
+            }
+        }
+        return results;
+    }
     public void signUpCustomer(String role, String username, String password, String name, String contact) {
 
         if (AccountList.stream().anyMatch(user -> user.getUserName().equals(username))) {
@@ -179,6 +189,16 @@ public class Server {
 
         table.setSeatNum(seatNum);
     }
+
+    public RestaurantLog getRestaurantLog(Restaurant rest, String when){
+        return null;
+    }
+
+    // public ArrayList<Restaurant> searchRestaurants( SearchCriteria search){
+    //     ArrayList<Restaurant> result = new ArrayList<>();
+
+    //     return result;
+    // }
 
     // public String getAllTimeslotInfo(Restaurant restaurant) {
     //     restaurant.getTimeslots();
