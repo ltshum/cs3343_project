@@ -12,7 +12,7 @@ public class SearchCriteria {
     private String type;
     private int ppl;
     private LocalTime startTime;
-    private String duration;
+    private Duration duration;
 
     public boolean isNonNull(String input) {
         return !input.equals("null");
@@ -38,7 +38,7 @@ public class SearchCriteria {
             this.startTime = LocalTime.parse(startTime);
         }
         if (isNonNull(duration)) {
-            this.duration = duration;
+            this.duration = Duration.parse(duration);
         }
     }
 

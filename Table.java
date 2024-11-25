@@ -2,6 +2,7 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Duration;
 
 public class Table {
 
@@ -91,12 +92,12 @@ public class Table {
         return !(customernumber > this.getSeatNum() && !this.bookedTimeSlot.contains(time));
     }
 
-    public boolean canbook(int customernumber, String timeMins) {
+    public boolean canbook(int customernumber, Duration timeMins) {
         if (customernumber > 0 && customernumber > this.getSeatNum()) {
             return false;
         }
 
-        long timeMinsInt = timeMins == null ? 0 : Integer.valueOf(timeMins);
+        long timeMinsInt = timeMins == null ? 0 : timeMins.toMinutes();
 
 
         //boolean available = false;
@@ -131,12 +132,12 @@ public class Table {
         return false;
     }
 
-    public boolean canbook(int customernumber, String timeMins, LocalTime startTime) {
+    public boolean canbook(int customernumber, Duration timeMins, LocalTime startTime) {
         if (customernumber > 0 && customernumber > this.getSeatNum()) {
             return false;
         }
 
-        long timeMinsInt = timeMins == null ? 0 : Integer.valueOf(timeMins);
+        long timeMinsInt = timeMins == null ? 0 : timeMins.toMinutes();
 
         LocalTime startTimeT = startTime;
         LocalTime endTimeT = startTimeT.plusMinutes(timeMinsInt);
