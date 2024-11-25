@@ -45,10 +45,10 @@ public class SearchCriteria {
     public ArrayList<Restaurant> searchRestaurantsIn( ArrayList<Restaurant> restaurants){
         ArrayList<Restaurant> result = new ArrayList<>();
         for (Restaurant r : restaurants){
-            if (restaurantName != null &&  !r.getRestaurantName().equals(restaurantName)){
+            if (restaurantName != null &&  !r.getRestaurantName().contains(restaurantName)){
                 continue;
             }
-            if (district != null && !r.getDistrict().equals(district)){
+            if (district != null && !r.getDistrict().contains(district)){
                 continue;
             }
 
@@ -62,7 +62,7 @@ public class SearchCriteria {
                     continue;
                 }
             }
-            if (type != null && !type.equals(r.getType())){
+            if (type != null && !type.contains(r.getType())){
                 continue;
             }
             ArrayList<Table> tables = r.getAllTables();

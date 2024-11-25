@@ -66,9 +66,6 @@ public class SearchRestaurant {
             }
         }
         
-
-
-        
         String startTime;
         while (true){
             System.out.print("When you want to eat(HH:mm)?: ");
