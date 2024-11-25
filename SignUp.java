@@ -130,7 +130,6 @@ public class SignUp {
 
 
                         server.signUpRestaurant("Restaurant", username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
-                        in.nextLine();
                         isValidRole = true;
                     }
                     case 3 -> {

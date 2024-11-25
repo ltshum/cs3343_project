@@ -65,7 +65,6 @@ public class SearchRestaurant {
                 System.out.println("\nInvalid input! Please input again.");
             }
         }
-        in.nextLine();
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, sessionDuration);
         
         //Test
