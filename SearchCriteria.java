@@ -1,10 +1,9 @@
-import java.util.ArrayList;
-
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 
-public class SearchCriteria {
+public final class SearchCriteria {
 
     private String restaurantName;
     private String district;
@@ -38,7 +37,7 @@ public class SearchCriteria {
             this.startTime = LocalTime.parse(startTime);
         }
         if (isNonNull(duration)) {
-            this.duration = Duration.parse(duration);
+            this.duration = Duration.ofMinutes(Integer.parseInt(duration));
         }
     }
 

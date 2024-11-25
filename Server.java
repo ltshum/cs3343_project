@@ -371,6 +371,11 @@ public class Server {
         return result;
     }
 
+    public ArrayList<Restaurant> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
+        SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
+        return search.searchRestaurantsIn(getRestaurantAccounts());
+    }
+
     public Restaurant getRestaurantAccountByUserName(String username) {
         for (Account account : RestaurantAccounts.values()) {
             if (account.getUserName().equals(username)) {

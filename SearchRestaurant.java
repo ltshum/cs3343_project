@@ -90,10 +90,8 @@ public class SearchRestaurant {
                 System.out.print("Invalid input\n");
             }
         }
-        
-        SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
 
-        ArrayList<Restaurant> results = search.searchRestaurantsIn(server.getRestaurantAccounts());
+        ArrayList<Restaurant> results = server.searchRestaurantsIn(restaurantName, district, rateRange, type, ppl, startTime, session);
         
         RestaurantList RestaurantList = new RestaurantList(results);
         RestaurantList.displayRestaurantList(in,account);
