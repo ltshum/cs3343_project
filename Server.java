@@ -458,16 +458,6 @@ public class Server {
         }
     }
 
-    public boolean isTableExist(Account ac, int tableID) {
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Table> tables = restaurant.getAllTables();
-        for (Table table : tables) {
-            if (table.getTableID() == tableID) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 
 

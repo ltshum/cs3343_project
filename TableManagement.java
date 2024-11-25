@@ -27,10 +27,10 @@ public class TableManagement {
                         case 1 -> {
                             boolean isValidTable = false;
                             while (!isValidTable) {
-                                System.out.print("\nWhich table you want to edit?: ");
+                                System.out.print("\nEnter the table id of the table you want to edit: ");
                                 try {
                                     int tableID = Integer.parseInt(in.nextLine());
-                                    if (server.isTableExist(account, tableID)) {
+                                    if (server.tableValidation((Restaurant) account, tableID)) {
                                         isValidTable = true;
                                         server.updateTableInfo(account, in, tableID);
                                         isValidOption = true;
