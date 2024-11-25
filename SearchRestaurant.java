@@ -104,7 +104,7 @@ public class SearchRestaurant {
         
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
 
-        ArrayList<Restaurant> results = search.searchRestaurantsIn(server.getAllRestaurants());
+        ArrayList<Restaurant> results = search.searchRestaurantsIn(server.getRestaurantAccounts());
         
         //Test
         Restaurant r1 = new Restaurant("AC1", "2", "AC1", "Japan", "Kowloon Tong", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
