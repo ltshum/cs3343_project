@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class Server {
 
     private static final Server instance = new Server();
-    private static ArrayList<Account> AccountList = new ArrayList<>();
-    private Map<String, Account> RestaurantAccounts = new HashMap<>();
-    private Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
-    private Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
+    private static final ArrayList<Account> AccountList = new ArrayList<>();
+    private final Map<String, Account> RestaurantAccounts = new HashMap<>();
+    private final Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
+    private final Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
     private Server() {
     }
@@ -59,7 +59,7 @@ public class Server {
 
     public boolean isUsernameExist(String username) {
         if (AccountList.stream().anyMatch(user -> user.getUserName().equals(username))) {
-            System.out.println("Error: Username already exists! Please input another.");
+            System.out.print("\nError: Username already exists! Please input another.");
             return true;
         }
         return false;
@@ -69,7 +69,7 @@ public class Server {
         Customer customer = new Customer(username, password, name, contact);
         AccountList.add(customer);
         System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
-        System.out.println("\n#Customer signed up successfully!#\n");
+        System.out.println("\n# Customer signed up successfully! #\n");
         return customer;
     }
 
@@ -79,7 +79,7 @@ public class Server {
         //add to list
         RestaurantAccounts.put(restaurant.getUserName(), restaurant);
         System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
-        System.out.println("\n#Restaurant signed up successfully!#\n");
+        System.out.println("\n# Restaurant signed up successfully! #\n");
         return restaurant;
     }
 
@@ -90,6 +90,10 @@ public class Server {
             }
         }
         return null; // Return null if no match found
+    }
+
+    public List<Permission> getPermissions(Account ac) {
+        return ac.getPermissions();
     }
 
     public String getUserDetail(Account ac) {
@@ -181,7 +185,7 @@ public class Server {
             Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant, ac, contact, ppl);
             requiredRestaurant.addBooking(bk);
             ac.addBooking(bk);
-            return "Already booked a seat for you";
+            return "\nAlready booked a seat for you";
         }
     }
 
@@ -226,7 +230,7 @@ public class Server {
                 isValidSeatNo = true;
                 System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please input again.");
+                System.out.print("\nInvalid input! Please input again.");
             }
         }
     }
@@ -401,6 +405,8 @@ public class Server {
 
         }
         
+        // Sort the map by thisWeekRate
+        @SuppressWarnings("unused")
         Map<String, RestaurantLogData> sortedByThisWeekRate = restaurantLogDataMap.entrySet()
             .stream()
             .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
@@ -422,7 +428,9 @@ public class Server {
             entry.getValue().setThisWeekRank(thisWeekRank);
         }
 
-        // Sort the map by lastWeekRate from big to small
+        
+        // Sort the map by lastWeekRate 
+        @SuppressWarnings("unused")
         Map<String, RestaurantLogData> sortedByLastWeekRate = restaurantLogDataMap.entrySet()
                 .stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getLastWeekRate))))

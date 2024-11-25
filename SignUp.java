@@ -8,7 +8,7 @@ public class SignUp {
 
     Server server = Server.getInstance();
 
-    public void SignUp(Scanner in) {
+    public void signUp(Scanner in) {
 
         // Back to Main
         System.out.print("\n# Sign-up for a new account #\n");
@@ -87,7 +87,7 @@ public class SignUp {
                                 openTime = LocalTime.parse(in.next());
                                 isValidOpenTime = true;
                             } catch (DateTimeParseException e) {
-                                System.out.println("\nInvalid time format! Please try again.");
+                                System.out.print("\nInvalid time format! Please try again.");
                             }
                         }
                         //Input closeTime
@@ -99,7 +99,7 @@ public class SignUp {
                                 closeTime = LocalTime.parse(in.next());
                                 isValidCloseTime = true;
                             } catch (DateTimeParseException e) {
-                                System.out.println("\nInvalid time format! Please try again.");
+                                System.out.print("\nInvalid time format! Please try again.");
                             }
                         }
                         //Input sessionDuration
@@ -111,7 +111,7 @@ public class SignUp {
                                 sessionDuration = Duration.ofMinutes(Integer.parseInt(in.next()));
                                 isValidSessionDuration = true;
                             } catch (NumberFormatException e) {
-                                System.out.println("\nInvalid input! Please try again.");
+                                System.out.print("\nInvalid input! Please try again.");
                             }
                         }
 
@@ -124,7 +124,7 @@ public class SignUp {
                                 tableCount = Integer.parseInt(in.next());
                                 isValidTableCount = true;
                             } catch (NumberFormatException e) {
-                                System.out.println("\nInvalid input! Please try again.");
+                                System.out.print("\nInvalid input! Please try again.");
                             }
                         }
 
@@ -137,10 +137,10 @@ public class SignUp {
                         return;
                     }
                     default ->
-                        System.out.println("\n! Invalid role! Please try again. !");
+                        System.out.print("\nInvalid input! Please input again.");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("\n! Invalid input! Please try again. !");
+                System.out.print("\nInvalid input! Please input again.");
             }
             
         }

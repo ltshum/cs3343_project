@@ -31,9 +31,9 @@ public class Profile {
                 try {
                     int op = Integer.parseInt(in.next());
                     in.nextLine();
-                    System.out.println("\n");
                     switch (op) {
                         case 1 -> {
+                            System.out.print("\n");
                             server.updateUserDetail(account, in);
                             isValidOption = true;
                         }
@@ -41,11 +41,11 @@ public class Profile {
                             return;
                         }
                         default -> {
-                            System.out.println("Invalid input! Please try again.");
+                            System.out.print("\nInvalid input! Please try again.");
                         }
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid input! Please try again.");
+                    System.out.print("\nInvalid input! Please try again.");
                 }
             }
             

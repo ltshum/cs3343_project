@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class TableManagement {
 
     Server server = Server.getInstance();
-    private Account account;
+    private final Account account;
 
     public TableManagement(Account account) {
         this.account = account;
@@ -37,10 +37,10 @@ public class TableManagement {
                                         server.updateTableInfo(account, in, tableID);
                                         isValidOption = true;
                                     } else {
-                                        System.out.println("Table does not exist! Please try again.");
+                                        System.out.print("\nTable does not exist! Please try again.");
                                     }
                                 } catch (NumberFormatException e) {
-                                    System.out.println("Invalid input! Please try again.");
+                                    System.out.print("\nInvalid input! Please try again.");
                                 }
                             }
                         }
@@ -48,11 +48,11 @@ public class TableManagement {
                             return;
                         }
                         default -> {
-                            System.out.println("Invalid input! Please try again.");
+                            System.out.print("\nInvalid input! Please try again.");
                         }
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid input! Please try again.");
+                    System.out.print("\nInvalid input! Please try again.");
                 }
             }
         }

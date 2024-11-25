@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Home {
 
-    //Server server = Server.getInstance();
+    Server server = Server.getInstance();
     private final Account account;
 
     public Home(Account account) {
@@ -17,7 +17,7 @@ public class Home {
             System.out.println("\n# Welcome to Home Page #");
             int count = 1;
 
-            List<Permission> list = account.getPermissions();
+            List<Permission> list = server.getPermissions(account);
             for (Permission permission : list) {
                 System.out.println("\n" + count + ". " + permission.getResource());
                 count++;
@@ -60,10 +60,10 @@ public class Home {
                         System.out.println("Logging out...");
                         return;
                     } else {
-                        System.out.println("Invalid option. Please try again.");
+                        System.out.println("\nInvalid input. Please input again.");
                     }
                 } catch (NumberFormatException inputTypeException) {
-                    System.out.println("Invalid option. Please try again.");
+                    System.out.println("\nInvalid input. Please input again.");
                 }                
             }
             

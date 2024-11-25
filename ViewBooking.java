@@ -17,16 +17,16 @@ public class ViewBooking {
     public void displayViewBooking(Scanner in) {
         boolean exitLoop = false;
         while (!exitLoop) {
-            System.out.println("\nHere is your booking record #");
-            System.out.println("#you could leave by input X#");
+            System.out.println("\n# Here is your booking record on " + date + " #");
+            System.out.println("# you could leave by input X #");
             List<Role> roles = account.getRoles();
             for (Role role : roles) {
                 if (role == Role.RESTAURANT) {
-                    System.out.println("#Take attendence input T#");
+                    System.out.println("# Take attendence input T #");
                     isRestaurant = true;
                 }
                 else if (role == Role.CUSTOMER) {
-                    System.out.println("#If you want to make comment please input restaurant number#");
+                    System.out.println("# If you want to make comment please input restaurant number #");
                     isCustomer = true;
                 }
             }
@@ -39,18 +39,18 @@ public class ViewBooking {
             }
 
             System.out.println("\nIf you want to view another date's booking record");
-            System.err.println("please input date [YYYY-MM-DD]");
+            System.out.println("please input date [YYYY-MM-DD]");
 
             boolean isValidOption = false;
             while (!isValidOption) {
                 System.out.print("\nWhat action do you want to do: ");
                 String op = in.nextLine();
                 outerLoop: switch (op) {
-                    case "T": {
+                    case "T" ->  {
                         if (isRestaurant) {
                             String inputSession = "";
                             boolean isValidSession = false;
-                            System.out.print("\n#Input X to exit the attendance taking session#");
+                            System.out.print("\n# Input X to exit the attendance taking session #");
                             while (!isValidSession) {
                                 System.out.print("\nWhich session do you want to take attendance (HH:mm) - (HH:mm): ");
                                 inputSession = in.nextLine(); 
@@ -89,24 +89,21 @@ public class ViewBooking {
                             }
         
                             if (server.takeAttendance(account, date, inputSession, tableID)) {
-                                System.out.println("Attendance taken successfully.");
+                                System.out.println("\nAttendance taken successfully.");
                                 isValidOption = true;
                             } else {
                                 System.out.print("\nThis booking is not exist. Please try again.");
-                                break;
                             }
                         }
                         else {
                             System.out.print("\nInvalid option. Please try again.");
-                            break;
                         }
-                        break;
                     }
-                    case "X":
+                    case "X" -> {
                         exitLoop = true;
                         isValidOption = true;
-                        break;
-                    default:
+                    }
+                    default -> {
                         try {
                             int inputNumber = Integer.parseInt(op);
                             if (isCustomer) {
@@ -114,9 +111,8 @@ public class ViewBooking {
                                 if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
                                     if (!server.checkHasAttend(account, inputNumber, date)) {
                                         isValidOption = false;
-                                        break;
                                     }
-                                    System.out.print("\n#Input X to exit the commenting session#\n");
+                                    System.out.print("\n# Input X to exit the commenting session #\n");
                                     int rate = -1;
                                     while (rate < 0 || rate > 5) {
                                         System.out.print("Please input your rate (0-5): ");
@@ -142,26 +138,23 @@ public class ViewBooking {
                                     if (comment.equals("X")) {
                                         System.out.println("\nExiting commenting session...");
                                         isValidOption = false;
-                                        break;
                                     }
                                     server.makeComment(account, inputNumber, date, rate, comment);
                                 } else {
                                     isValidOption = false;
                                     System.out.print("\nInvalid option. Please try again.");
-                                    break;
                                 }
                             } else {
                                 System.out.print("\nInvalid option. Please try again.");
-                                break;
                             }
                         } catch (NumberFormatException e) {
                             try {
                                 LocalDate parsedDate = LocalDate.parse(op);
                                 isValidOption = true;
                                 date = parsedDate;
-                        } catch (DateTimeParseException ex) {
-                            System.out.print("\nInvalid option. Please try again.");
-                            break;
+                            } catch (DateTimeParseException ex) {
+                                System.out.print("\nInvalid option. Please try again.");
+                            }
                         }
                     }
                 }

@@ -22,7 +22,7 @@ public class Restaurant extends Account {
     private LocalTime closeTime;
     private Duration sessionDuration;
     private ArrayList<Table> allTables = new ArrayList<>();
-    private ArrayList<Comment> allComments = new ArrayList<>();
+    private final ArrayList<Comment> allComments = new ArrayList<>();
     private ArrayList<Booking> allBookings = new ArrayList<>();
 
     //Test
@@ -193,6 +193,7 @@ public class Restaurant extends Account {
             System.out.println("# If you want to back to last page please input X #");
             System.out.println("# Comment is not allowed to change #\n");
             System.out.println("# Change open/close/session time will regenerate timeslots #\n");
+            System.out.println("# Change table amount will clear current tables' inforamtion #\n");
             System.out.println("1. Restaurant Name\n");
             System.out.println("2. Type\n");
             System.out.println("3. District\n");
@@ -216,31 +217,31 @@ public class Restaurant extends Account {
                             case 1 -> {
                                 System.out.print("Please input new Restaurant Name: ");
                                 setRestaurantName(in.next());
-                                System.out.println("Restaurant Name has been changed to " + getRestaurantName());
+                                System.out.println("\nRestaurant Name has been changed to " + getRestaurantName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Type: ");
                                 setType(in.next());
-                                System.out.println("Type has been changed to " + getType());
+                                System.out.println("\nType has been changed to " + getType() + "\n");
                                 isValidOption = true;
                             }
                             case 3 -> {
                                 System.out.print("Please input new Distrct: ");
                                 setDistrict(in.next());
-                                System.out.println("District has been changed to " + getDistrict());
+                                System.out.println("\nDistrict has been changed to " + getDistrict() + "\n");
                                 isValidOption = true;
                             }
                             case 4 -> {
                                 System.out.print("Please input new Address: ");
                                 setAddress(in.next());
-                                System.out.println("Address has been changed to " + getAddress());
+                                System.out.println("\nAddress has been changed to " + getAddress() + "\n");
                                 isValidOption = true;
                             }
                             case 5 -> {
                                 System.out.print("Please input new Phone: ");
                                 setRestaurantContact(in.next());
-                                System.out.println("Phone has been changed to " + getRestaurantContact());
+                                System.out.println("\nPhone has been changed to " + getRestaurantContact() + "\n");
                                 isValidOption = true;
                             }
                             case 6 -> {
@@ -250,11 +251,11 @@ public class Restaurant extends Account {
                                     try {
                                         setOpenTime(LocalTime.parse(in.nextLine()));
                                         generateTimeslots();
-                                        System.out.println("Open Time has been changed to " + getOpenTime());
+                                        System.out.println("\nOpen Time has been changed to " + getOpenTime() + "\n");
                                         isValidOpenTime = true;
                                         isValidOption = true;
                                     } catch (DateTimeParseException e) {
-                                        System.out.println("Invalid input! Please input again.");
+                                        System.out.println("\nInvalid input! Please input again.");
                                     }
                                 }
                             }
@@ -265,11 +266,11 @@ public class Restaurant extends Account {
                                     try {
                                         setCloseTime(LocalTime.parse(in.nextLine()));
                                         generateTimeslots();
-                                        System.out.println("Close Time has been changed to " + getCloseTime());
+                                        System.out.println("\nClose Time has been changed to " + getCloseTime() + "\n");
                                         isValidCloseTime = true;
                                         isValidOption = true;
                                     } catch (DateTimeParseException e) {
-                                        System.out.println("Invalid input! Please input again.");
+                                        System.out.println("\nInvalid input! Please input again.");
                                     }
                                 }
                             }
@@ -281,11 +282,11 @@ public class Restaurant extends Account {
                                         int newSessionDuration = Integer.parseInt(in.next());
                                         setSessionDuration(Duration.ofMinutes(newSessionDuration));
                                         generateTimeslots();
-                                        System.out.println("Session Duration has been changed to " + getSessionDuration());
+                                        System.out.println("\nSession Duration has been changed to " + getSessionDuration() + "\n");
                                         isValidSessionDuration = true;
                                         isValidOption = true;
                                     } catch (NumberFormatException e) {
-                                        System.out.println("Invalid input! Please input again.");
+                                        System.out.println("\nInvalid input! Please input again.");
                                     }
                                 }
                             }
@@ -296,20 +297,20 @@ public class Restaurant extends Account {
                                     allTables.clear();
                                     try {
                                         initializeTables(Integer.parseInt(in.nextLine()));
-                                        System.out.println("Table Amount has been changed to " + getAllTables().size());
+                                        System.out.println("\nTable Amount has been changed to " + getAllTables().size() + "\n");
                                         isValidTableAmount = true;
                                         isValidOption = true;
                                     } catch (NumberFormatException e) {
-                                        System.out.println("Invalid input! Please input again.");
+                                        System.out.println("\nInvalid input! Please input again.");
                                     }
                                 }
                             }
                             default -> {
-                                System.out.println("Invalid input! Please input again.");
+                                System.out.println("\nInvalid input! Please input again.");
                             }
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid input! Please input again.");
+                        System.out.println("\nInvalid input! Please input again.");
                     }
                 }
             }

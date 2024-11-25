@@ -5,7 +5,6 @@ public class BookingProfile {
 
     Server server = Server.getInstance();
     private final Restaurant restaurant;
-    Scanner in = new Scanner(System.in);
     private final Customer ac ;
 
     public BookingProfile(Restaurant restaurant) {
@@ -40,7 +39,7 @@ public class BookingProfile {
                                 System.out.print("Which timeslot do you want to book (HH:mm) - (HH:mm): ");
                                 bookSession = in.nextLine();
                                 if(!server.timeslotValidation(restaurant,bookSession)){
-                                    System.out.println("Not validate! Please input again");
+                                    System.out.println("\nNot validate! Please input again");
                                 } else {
                                     isValidSession = true;
                                 }
@@ -55,12 +54,12 @@ public class BookingProfile {
                                     ppl = Integer.parseInt(in.nextLine());
                                     tableID = server.availableTableID(restaurant, ppl, bookSession, LocalDate.now());
                                     if ( tableID == 0 ){
-                                        System.out.println("Sorry. The restaurant is full at this timeslot or have not enough seats for you.");
+                                        System.out.println("\nSorry. The restaurant is full at this timeslot or have not enough seats for you.");
                                     } else {
                                         isValidPpl = true;
                                     }
                                 } catch (NumberFormatException e) {
-                                    System.out.println("Invalid input! Please try again.");
+                                    System.out.println("\nInvalid input! Please try again.");
                                 }
                                 
                             }
@@ -74,7 +73,7 @@ public class BookingProfile {
                         case 2 -> {
                             System.out.println("Book another day");
                             boolean isValidDate = false;
-                            String dateInput = "";
+                            String dateInput;
                             while (!isValidDate) {
                                 System.out.print("Which date do you want to book (yyyy-MM-dd): ");
                                 dateInput = in.nextLine();
@@ -87,7 +86,7 @@ public class BookingProfile {
                                         System.out.print("Which timeslot do you want to book (HH:mm) - (HH:mm): ");
                                         bookSession = in.nextLine();
                                         if(!server.timeslotValidation(restaurant,bookSession)){
-                                            System.out.println("Not validate! Please input again");
+                                            System.out.println("\nNot validate! Please input again");
                                         } else {
                                             isValidSession = true;
                                         }
@@ -102,12 +101,12 @@ public class BookingProfile {
                                             ppl = Integer.parseInt(in.nextLine());
                                             tableID = server.availableTableID(restaurant, ppl, bookSession, bookingDate);
                                             if ( tableID == 0 ){
-                                                System.out.println("The restaurant is full at this timeslot or have not enough seats for you.");
+                                                System.out.println("\nThe restaurant is full at this timeslot or have not enough seats for you.");
                                             } else {
                                                 isValidPpl = true;
                                             }
                                         } catch (NumberFormatException e) {
-                                            System.out.println("Invalid input! Please try again.");
+                                            System.out.println("\nInvalid input! Please try again.");
                                         }
                                         
                                     }
@@ -117,7 +116,7 @@ public class BookingProfile {
                                     //makeBooking
                                     System.out.println(server.makeBooking(bookingDate, tableID, bookSession, restaurant, ac, contact, ppl));
                                 } catch (Exception e) {
-                                    System.out.println("Not validate! Please input again");
+                                    System.out.println("\nNot validate! Please input again");
                                 }
                             }
                             isValidOption = true;
@@ -125,11 +124,11 @@ public class BookingProfile {
                         case 3 -> {
                             return;
                         }
-                        default -> System.out.println("Invalid option. Please try again.");
+                        default -> System.out.print("\nInvalid option. Please input again.");
                     }
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please try again.");
+                System.out.print("\nInvalid input! Please input again.");
             }
             
         }

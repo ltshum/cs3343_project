@@ -88,10 +88,7 @@ public class Table {
     }
 
     public boolean canbook(int customernumber, Timeslot time) {
-        if (customernumber > this.getSeatNum() && !this.bookedTimeSlot.contains(time)) {
-            return false;
-        }
-        return true;
+        return !(customernumber > this.getSeatNum() && !this.bookedTimeSlot.contains(time));
     }
 
     public boolean canbook(int customernumber, String timeMins) {

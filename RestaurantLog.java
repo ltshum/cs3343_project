@@ -1,10 +1,10 @@
 import java.util.List;
 
 public class RestaurantLog {
-    private int rank;
-    private float rate;
-    private int totalPpl;
-    private List<Comment> comments;
+    private final int rank;
+    private final float rate;
+    private final int totalPpl;
+    private final List<Comment> comments;
 
     public RestaurantLog(int rank, float rate, int totalPpl, List<Comment> comments) {
         this.rank = rank;
