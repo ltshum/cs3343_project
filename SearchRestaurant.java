@@ -1,6 +1,7 @@
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,57 +16,93 @@ public class SearchRestaurant {
         this.account = account;
     }
 
+    private boolean isValidRating(String rateRange){
+        if (rateRange.equals("null")){
+            return true;
+        }
+        if( rateRange.length() == 1 && rateRange.charAt(0)>='0' && rateRange.charAt(0)<='5' ){
+            return true;
+        }
+
+        if (rateRange.length() == 4 && rateRange.charAt(1)=='-' && rateRange.charAt(2)=='-' && rateRange.charAt(0)>='0' && rateRange.charAt(0)<='5' && rateRange.charAt(3)>='0' && rateRange.charAt(3)<='5' && rateRange.charAt(0) <=rateRange.charAt(3)){
+            return true;
+        }
+        return false;
+    }
+
     public void displaySearchRestaurnt(Scanner in) {
         System.out.println("\n# If you  want to leave it empty just enter null #");
         System.out.println("# Rate could input a range #\n");
 
+        //in.nextLine();
         System.out.print("Restaurant Name?: ");
         String restaurantName = in.nextLine();
         System.out.print("Restaurant District?: ");
         String district = in.nextLine();
-        System.out.print("Restaurant Rate(0--5)?: ");
-        String rateRange = in.nextLine();
+        String rateRange;
+        do {
+            System.out.print("Restaurant Rate(0--5)?: ");
+            rateRange = in.nextLine();
+            if (!isValidRating(rateRange)){
+                System.out.print("Invalid input\n");
+            }
+        } while (!isValidRating(rateRange));
+        
         System.out.print("Restaurant Type?: ");
-        String type = in.nextLine();
-        boolean isValidPpl = false;
-        String ppl = null;
-        while (!isValidPpl) {
+        String type = in.next();
+        
+        String ppl;
+        while (true){
             System.out.print("How many ppl?: ");
             ppl = in.nextLine();
-            try {
-                Integer.valueOf(ppl);
-                isValidPpl = true;
-            } catch (NumberFormatException e) {
-                System.out.println("\nInvalid input! Please input again.");
+            if (ppl.equals("null")){
+                break;
+            }
+            try{
+                Integer.parseInt(ppl);
+                break;
+            } catch (NumberFormatException e){
+                System.out.print("Invalid input\n");
             }
         }
         
-        boolean isValidStartTime = false;
-        String startTime = null;
-        while (!isValidStartTime) {
+
+
+        
+        String startTime;
+        while (true){
             System.out.print("When you want to eat(HH:mm)?: ");
             startTime = in.nextLine();
-            try {
+            if (startTime.equals("null")){
+                break;
+            }
+            try{
                 LocalTime.parse(startTime);
-                isValidStartTime = true;
-            } catch (Exception e) {
-                System.out.println("\nInvalid input! Please input again.");
+                break;
+            } catch (DateTimeParseException e){
+                System.out.print("Invalid input\n");
             }
         }
-
-        boolean isValidSessionDuration = false;
-        String sessionDuration = null;
-        while (!isValidSessionDuration) {
+        
+        
+        String session;
+        while (true){
             System.out.print("How long you prefer to eat(mins)?: ");
-            sessionDuration = in.nextLine();
-            try {
-                Integer.valueOf(sessionDuration);
-                isValidSessionDuration = true;
-            } catch (NumberFormatException e) {
-                System.out.println("\nInvalid input! Please input again.");
+            session = in.nextLine();
+            if (session.equals("null")){
+                break;
+            }
+            try{
+                Integer.parseInt(session);
+                break;
+            } catch (NumberFormatException e){
+                System.out.print("Invalid input\n");
             }
         }
-        SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, sessionDuration);
+        
+        SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
+
+        ArrayList<Restaurant> results = search.searchRestaurantsIn(server.getRestaurantAccounts());
         
         //Test
         Restaurant r1 = new Restaurant("AC1", "2", "AC1", "Japan", "Kowloon Tong", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
@@ -78,7 +115,8 @@ public class SearchRestaurant {
         testList.add(r3);
         testList.addAll(server.getRestaurantAccounts());
         
-        RestaurantList testRestaurantList = new RestaurantList(testList);
+        //RestaurantList testRestaurantList = new RestaurantList(server.getAllRestaurants());
+        RestaurantList testRestaurantList = new RestaurantList(results);
         testRestaurantList.displayRestaurantList(in,account);
 
     }

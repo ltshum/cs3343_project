@@ -1,4 +1,4 @@
-
+import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,12 @@ public class Table {
 
     public void addTimeslot(Timeslot timeslot) {
         allTimeslots.add(timeslot);
+        allTimeslots.sort(null);
     }
 
     public void addBookingTimeslot(Timeslot bookingTime) {
         this.bookedTimeSlot.add(bookingTime);
+        this.bookedTimeSlot.sort(null);
     }
 
     public int getTableID() {
@@ -89,4 +91,72 @@ public class Table {
         return !(customernumber > this.getSeatNum() && !this.bookedTimeSlot.contains(time));
     }
 
+    public boolean canbook(int customernumber, String timeMins) {
+        if (customernumber > 0 && customernumber > this.getSeatNum()) {
+            return false;
+        }
+
+        long timeMinsInt = timeMins == null ? 0 : Integer.valueOf(timeMins);
+
+
+        //boolean available = false;
+        for (int i = 0; i < allTimeslots.size(); i++){
+            Timeslot ts = allTimeslots.get(i);
+            if (bookedTimeSlot.contains(ts)){
+                continue;
+            }
+            //current timeslot is available
+
+            LocalTime originalStartT = LocalTime.parse(ts.getSession().split(" - ")[0]);
+            LocalTime currentEndT = LocalTime.parse(ts.getSession().split(" - ")[1]);
+            LocalTime diff = currentEndT.minusNanos(originalStartT.toNanoOfDay());
+            if (diff.toSecondOfDay() >= timeMinsInt){
+                return true;
+            }
+            
+            while (diff.toSecondOfDay() < timeMinsInt){ //if not enough time
+                i++;
+                Timeslot ts_2 = allTimeslots.get(i);
+                if (i >= allTimeslots.size() || bookedTimeSlot.contains(ts_2)){
+                    break;
+                }
+                currentEndT = LocalTime.parse(ts_2.getSession().split(" - ")[1]);
+                diff = currentEndT.minusNanos(originalStartT.toNanoOfDay());
+                if (diff.toSecondOfDay() >= timeMinsInt){
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    public boolean canbook(int customernumber, String timeMins, LocalTime startTime) {
+        if (customernumber > 0 && customernumber > this.getSeatNum()) {
+            return false;
+        }
+
+        long timeMinsInt = timeMins == null ? 0 : Integer.valueOf(timeMins);
+
+        LocalTime startTimeT = startTime;
+        LocalTime endTimeT = startTimeT.plusMinutes(timeMinsInt);
+
+        Timeslot ts;
+        //boolean available = false;
+        for (int i = 0; i < allTimeslots.size(); i++){
+            ts = allTimeslots.get(i);
+            if (LocalTime.parse(ts.getSession().split(" - ")[1]).isBefore(startTimeT) ){
+                continue;
+            }
+            //now the current ts has the start time. Now we need to find the ts that has the end time. If any ts inbetween is in bookedTimeSlot return false
+            if(bookedTimeSlot.contains(ts)){
+                return false;
+            }
+            if (LocalTime.parse(ts.getSession().split(" - ")[1]).isAfter(endTimeT) ){
+                return true;
+            }
+            
+        }
+        return false;
+    }
 }

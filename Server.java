@@ -244,6 +244,12 @@ public class Server {
         table.setSeatNum(seatNum);
     }
 
+    // public ArrayList<Restaurant> searchRestaurants( SearchCriteria search){
+    //     ArrayList<Restaurant> result = new ArrayList<>();
+
+    //     return result;
+    // }
+
     public int getViewBookingRecord(Account ac, LocalDate date) {
         List<Role> roles = ac.getRoles();
         for (Role role : roles) {
