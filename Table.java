@@ -131,14 +131,14 @@ public class Table {
         return false;
     }
 
-    public boolean canbook(int customernumber, String timeMins, String startTime) {
+    public boolean canbook(int customernumber, String timeMins, LocalTime startTime) {
         if (customernumber > 0 && customernumber > this.getSeatNum()) {
             return false;
         }
 
         long timeMinsInt = timeMins == null ? 0 : Integer.valueOf(timeMins);
 
-        LocalTime startTimeT = LocalTime.parse(startTime);
+        LocalTime startTimeT = startTime;
         LocalTime endTimeT = startTimeT.plusMinutes(timeMinsInt);
 
         Timeslot ts;

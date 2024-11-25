@@ -34,7 +34,7 @@ public class SearchRestaurant {
         System.out.println("\n# If you  want to leave it empty just enter null #");
         System.out.println("# Rate could input a range #\n");
 
-        in.nextLine();
+        //in.nextLine();
         System.out.print("Restaurant Name?: ");
         String restaurantName = in.nextLine();
         System.out.print("Restaurant District?: ");

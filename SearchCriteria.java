@@ -12,7 +12,7 @@ public class SearchCriteria {
     private String type;
     private int ppl;
     private LocalTime startTime;
-    private Duration duration;
+    private String duration;
 
     public boolean isNonNull(String input) {
         return !input.equals("null");
@@ -38,7 +38,7 @@ public class SearchCriteria {
             this.startTime = LocalTime.parse(startTime);
         }
         if (isNonNull(duration)) {
-            this.duration = Duration.ofMinutes(Integer.parseInt(duration));
+            this.duration = duration;
         }
     }
 
@@ -69,9 +69,9 @@ public class SearchCriteria {
             for (Table t : tables){
                 boolean status;
                 if (startTime != null){
-                    status = t.canbook(ppl, session, startTime);
+                    status = t.canbook(ppl, duration, startTime);
                 } else {
-                    status = t.canbook(ppl, session);
+                    status = t.canbook(ppl, duration);
                 }
                 if (status){
                     result.add(r);
