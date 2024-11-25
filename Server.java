@@ -22,9 +22,11 @@ public class Server {
     private final Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
     private final Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
-    private Server() {
-    }
+    private Server() { }
 
+    public static Server getInstance() {
+        return instance;
+    }
 
     public boolean isRestaurantRole(Account ac) {
         for (Role role : ac.getRoles()) {
@@ -48,64 +50,17 @@ public class Server {
         RestaurantAccounts.put(restaurant.getUserName(), restaurant);
     }
 
-    public void generateRestaurantLog() {
-        generateRestaurantLogData();
-        for (Account restaurantAc : (RestaurantAccounts.values())) {
-            Restaurant restaurant = (Restaurant) restaurantAc;
-            RestaurantLogData restaurantLogData = restaurantLogDataMap.get(restaurant.getUserName());
-            Map<String, RestaurantLog> restaurantLogs = new HashMap<>();
-            restaurantLogs.put("lastWeek", new RestaurantLog(restaurantLogData.getLastWeekRank(), restaurantLogData.getLastWeekRate(), restaurantLogData.getLastWeekTotalPpl(), restaurantLogData.getLastWeekComments()));
-            restaurantLogs.put("thisWeek", new RestaurantLog(restaurantLogData.getThisWeekRank(), restaurantLogData.getThisWeekRate(), restaurantLogData.getThisWeekTotalPpl(), restaurantLogData.getThisWeekComments()));
-            AllRestaurantLogs.put(restaurant.getUserName(), restaurantLogs);
-        }
-    }
-
-    public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
-        Map<String, RestaurantLog> logs = AllRestaurantLogs.get(restaurant.getUserName());
-        if (logs != null) {
-            return logs.get(period);
-        }
-        return null;
-    }
-
-    public void generateWeeklyReport(Restaurant restaurant) {
-        RestaurantLog lastWeekLog = getRestaurantLog(restaurant, "lastWeek");
-        RestaurantLog thisWeekLog = getRestaurantLog(restaurant, "thisWeek");
-
-        StringBuilder report = new StringBuilder();
-
-        report.append("Last week:\n");
-        report.append("Rank: ").append(lastWeekLog.getRank()).append("\n");
-        report.append("Rate: ").append(lastWeekLog.getRate()).append("\n");
-        report.append("Total ppl: ").append(lastWeekLog.getTotalPpl()).append("\n");
-        report.append("Comment:\n");
-        for (Comment comment : lastWeekLog.getComments()) {
-            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
-        }
-
-        report.append("\nThis week:\n");
-        report.append("Rank: ").append(thisWeekLog.getRank()).append("\n");
-        report.append("Rate: ").append(thisWeekLog.getRate()).append("\n");
-        report.append("Total ppl: ").append(thisWeekLog.getTotalPpl()).append("\n");
-        report.append("Comment:\n");
-        for (Comment comment : thisWeekLog.getComments()) {
-            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
-        }
-
-        report.append("\nRank decrease/increase ").append(thisWeekLog.getRank() - lastWeekLog.getRank()).append("\n");
-        report.append("Rate decrease/increase ").append(thisWeekLog.getRate() - lastWeekLog.getRate()).append("\n");
-        report.append("Total ppl decrease/increase ").append(thisWeekLog.getTotalPpl() - lastWeekLog.getTotalPpl()).append("\n");
-
-        System.out.println(report.toString());
-    }
-
-
-    public static Server getInstance() {
-        return instance;
-    }
-
     public void addRestaurant(Restaurant ac) {
         AccountList.add(ac);
+    }
+
+    public void updateSeatNo(Account ac, int tableID, int seatNum) {
+
+        Restaurant restaurant = (Restaurant) ac;
+        ArrayList<Table> tables = restaurant.getAllTables();
+        Table table = tables.get(tableID - 1);
+
+        table.setSeatNum(seatNum);
     }
 
     public boolean isUsernameExist(String username) {
@@ -189,130 +144,9 @@ public class Server {
         return null;
     }
 
-    public String getRestaurantBookingDetail(Restaurant restaurant) {
-
-        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getUserName());
-        if (requiredRestaurant != null) {
-            return "Rate: " + requiredRestaurant.getRate()
-                        + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
-                        + "\nType: " + requiredRestaurant.getType()
-                        + "\nDistrict: " + requiredRestaurant.getDistrict()
-                        + "\nAddress: " + requiredRestaurant.getAddress()
-                        + "\nPhone: " + requiredRestaurant.getRestaurantContact()
-                        + "\nOpen Time: " + requiredRestaurant.getOpenTime()
-                        + "\nClose Time: " + requiredRestaurant.getCloseTime()
-                        + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
-                        + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
-                        + "\nComment: \n" + requiredRestaurant.getCommentString();
-        }
-        return "Restaurant not found.";
-    }
-
-    public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
-        String[] allTimeslots = ac.getTimeslots().split(" \n");
-        for (String timeslot : allTimeslots) {
-            if (timeslot.equals(bookTimeslot)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean tableValidation(Restaurant ac, int tableID){
-        ArrayList<Table> allTables = ac.getAllTables();
-        for (Table table: allTables) {
-            if (table.getTableID() == tableID){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
-        ArrayList<Table> allTables = getRestaurantAccountByUserName(ac.getUserName()).getAllTables();
-        for (Table table : allTables) {
-            if (table.isTimeslotAvailable(timeslotSession, date)) {
-                if (table.getSeatNum() >= ppl) {
-                    table.setTimeslotUnavailable(timeslotSession, date);
-                    return table.getTableID();
-                }
-            }
-        }
-        return 0;
-    }
-
-    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
-        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getUserName());
-        if (requiredRestaurant == null) {
-            return "Restaurant not found.";
-        } else {
-            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant, ac, contact, ppl);
-            requiredRestaurant.addBooking(bk);
-            ac.addBooking(bk);
-            return "\nAlready booked a seat for you";
-        }
-    }
-
-    public String getListInfo(Restaurant restaurant) {
-        return restaurant.getRestaurantName() + ": " + restaurant.getRate() + " " + restaurant.getType() + " " + restaurant.getDistrict();
-    }
-
     public void updateUserDetail(Account ac, Scanner in) {
         ac.edit(in);
     }
-
-    public void getAllTableInfo(Account ac) {
-
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Table> tables = restaurant.getAllTables();
-
-        StringBuilder tableID = new StringBuilder("                ");
-        StringBuilder seat = new StringBuilder("                ");
-        StringBuilder status = new StringBuilder("                ");
-        for (Table table : tables) {
-            tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
-            seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
-            status.append(String.format("| Status: %-15s ", table.getStatus()));
-        }
-        System.out.println(tableID.toString());
-        System.out.println(seat.toString());
-        System.out.println(status.toString());
-    }
-
-    public void updateTableInfo(Account ac, Scanner in, int tableID) {
-
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Table> tables = restaurant.getAllTables();
-        Table table = tables.get(tableID - 1);
-
-        boolean isValidSeatNo = false;
-        while (!isValidSeatNo) {
-            System.out.print("\nNew Seat: ");
-            try {
-                int newSeat = Integer.parseInt(in.nextLine());
-                table.setSeatNum(newSeat);
-                isValidSeatNo = true;
-                System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");
-            } catch (NumberFormatException e) {
-                System.out.print("\nInvalid input! Please input again.");
-            }
-        }
-    }
-
-    public void updateSeatNo(Account ac, int tableID, int seatNum) {
-
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Table> tables = restaurant.getAllTables();
-        Table table = tables.get(tableID - 1);
-
-        table.setSeatNum(seatNum);
-    }
-
-    // public ArrayList<Restaurant> searchRestaurants( SearchCriteria search){
-    //     ArrayList<Restaurant> result = new ArrayList<>();
-
-    //     return result;
-    // }
 
     public int getViewBookingRecord(Account ac, LocalDate date) {
         List<Role> roles = ac.getRoles();
@@ -386,6 +220,38 @@ public class Server {
         return 0;
     }
 
+    public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
+        String[] allTimeslots = ac.getTimeslots().split(" \n");
+        for (String timeslot : allTimeslots) {
+            if (timeslot.equals(bookTimeslot)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean tableValidation(Restaurant ac, int tableID){
+        ArrayList<Table> allTables = ac.getAllTables();
+        for (Table table: allTables) {
+            if (table.getTableID() == tableID){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean takeAttendance(Account ac, LocalDate date, String inputSession, int tableID) {
+        Restaurant restaurant = (Restaurant) ac;
+        ArrayList<Booking> allbookings = restaurant.getAllBookings();
+        for (Booking booking : allbookings) {
+            if (booking.getDate().equals(date) && booking.getTableID() == tableID && booking.getTimeslot().equals(inputSession)) {
+                booking.takeAttendance();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Booking getBookingToBeComment(Account ac, int inputNumber, LocalDate date) {
         Customer customer = (Customer) ac;
         ArrayList<Booking> allbookings = customer.getAllBookings();
@@ -415,18 +281,6 @@ public class Server {
         }
     }
 
-    public boolean takeAttendance(Account ac, LocalDate date, String inputSession, int tableID) {
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Booking> allbookings = restaurant.getAllBookings();
-        for (Booking booking : allbookings) {
-            if (booking.getDate().equals(date) && booking.getTableID() == tableID && booking.getTimeslot().equals(inputSession)) {
-                booking.takeAttendance();
-                return true;
-            }
-        }
-        return false;
-    }
-
     public ArrayList<Restaurant> getRestaurantAccounts() {
         ArrayList<Restaurant> result = new ArrayList<>();
         for (Account restaurantAc : (RestaurantAccounts.values())) {
@@ -440,6 +294,10 @@ public class Server {
         return search.searchRestaurantsIn(getRestaurantAccounts());
     }
 
+    public String getListInfo(Restaurant restaurant) {
+        return restaurant.getRestaurantName() + ": " + restaurant.getRate() + " " + restaurant.getType() + " " + restaurant.getDistrict();
+    }
+
     public Restaurant getRestaurantAccountByUserName(String username) {
         for (Account account : RestaurantAccounts.values()) {
             if (account.getUserName().equals(username)) {
@@ -447,6 +305,88 @@ public class Server {
             }
         }
         return null;
+    }
+    
+    public String getRestaurantBookingDetail(Restaurant restaurant) {
+
+        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getUserName());
+        if (requiredRestaurant != null) {
+            return "Rate: " + requiredRestaurant.getRate()
+                        + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
+                        + "\nType: " + requiredRestaurant.getType()
+                        + "\nDistrict: " + requiredRestaurant.getDistrict()
+                        + "\nAddress: " + requiredRestaurant.getAddress()
+                        + "\nPhone: " + requiredRestaurant.getRestaurantContact()
+                        + "\nOpen Time: " + requiredRestaurant.getOpenTime()
+                        + "\nClose Time: " + requiredRestaurant.getCloseTime()
+                        + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
+                        + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
+                        + "\nComment: \n" + requiredRestaurant.getCommentString();
+        }
+        return "Restaurant not found.";
+    }
+
+    public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
+        ArrayList<Table> allTables = getRestaurantAccountByUserName(ac.getUserName()).getAllTables();
+        for (Table table : allTables) {
+            if (table.isTimeslotAvailable(timeslotSession, date)) {
+                if (table.getSeatNum() >= ppl) {
+                    table.setTimeslotUnavailable(timeslotSession, date);
+                    return table.getTableID();
+                }
+            }
+        }
+        return 0;
+    }
+    
+    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
+        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getUserName());
+        if (requiredRestaurant == null) {
+            return "Restaurant not found.";
+        } else {
+            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant, ac, contact, ppl);
+            requiredRestaurant.addBooking(bk);
+            ac.addBooking(bk);
+            return "\nAlready booked a seat for you";
+        }
+    }
+
+    public void getAllTableInfo(Account ac) {
+
+        Restaurant restaurant = (Restaurant) ac;
+        ArrayList<Table> tables = restaurant.getAllTables();
+
+        StringBuilder tableID = new StringBuilder("                ");
+        StringBuilder seat = new StringBuilder("                ");
+        StringBuilder status = new StringBuilder("                ");
+        for (Table table : tables) {
+            tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
+            seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
+            status.append(String.format("| Status: %-15s ", table.getStatus()));
+        }
+        System.out.println(tableID.toString());
+        System.out.println(seat.toString());
+        System.out.println(status.toString());
+    }
+    
+    public void updateTableInfo(Account ac, Scanner in, int tableID) {
+
+        Restaurant restaurant = (Restaurant) ac;
+        ArrayList<Table> tables = restaurant.getAllTables();
+        Table table = tables.get(tableID - 1);
+
+        boolean isValidSeatNo = false;
+        while (!isValidSeatNo) {
+            System.out.print("\nNew Seat: ");
+            try {
+                int newSeat = Integer.parseInt(in.nextLine());
+                table.setSeatNum(newSeat);
+                isValidSeatNo = true;
+                System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");
+            } catch (NumberFormatException e) {
+                System.out.print("\nInvalid input! Please input again.");
+            }
+        }
     }
 
     private void generateRestaurantLogData() {
@@ -522,6 +462,56 @@ public class Server {
         }
     }
 
+    public void generateRestaurantLog() {
+        generateRestaurantLogData();
+        for (Account restaurantAc : (RestaurantAccounts.values())) {
+            Restaurant restaurant = (Restaurant) restaurantAc;
+            RestaurantLogData restaurantLogData = restaurantLogDataMap.get(restaurant.getUserName());
+            Map<String, RestaurantLog> restaurantLogs = new HashMap<>();
+            restaurantLogs.put("lastWeek", new RestaurantLog(restaurantLogData.getLastWeekRank(), restaurantLogData.getLastWeekRate(), restaurantLogData.getLastWeekTotalPpl(), restaurantLogData.getLastWeekComments()));
+            restaurantLogs.put("thisWeek", new RestaurantLog(restaurantLogData.getThisWeekRank(), restaurantLogData.getThisWeekRate(), restaurantLogData.getThisWeekTotalPpl(), restaurantLogData.getThisWeekComments()));
+            AllRestaurantLogs.put(restaurant.getUserName(), restaurantLogs);
+        }
+    }
+
+    public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
+        Map<String, RestaurantLog> logs = AllRestaurantLogs.get(restaurant.getUserName());
+        if (logs != null) {
+            return logs.get(period);
+        }
+        return null;
+    }
+
+    public void generateWeeklyReport(Restaurant restaurant) {
+        RestaurantLog lastWeekLog = getRestaurantLog(restaurant, "lastWeek");
+        RestaurantLog thisWeekLog = getRestaurantLog(restaurant, "thisWeek");
+
+        StringBuilder report = new StringBuilder();
+
+        report.append("Last week:\n");
+        report.append("Rank: ").append(lastWeekLog.getRank()).append("\n");
+        report.append("Rate: ").append(lastWeekLog.getRate()).append("\n");
+        report.append("Total ppl: ").append(lastWeekLog.getTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : lastWeekLog.getComments()) {
+            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
+        }
+
+        report.append("\nThis week:\n");
+        report.append("Rank: ").append(thisWeekLog.getRank()).append("\n");
+        report.append("Rate: ").append(thisWeekLog.getRate()).append("\n");
+        report.append("Total ppl: ").append(thisWeekLog.getTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : thisWeekLog.getComments()) {
+            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
+        }
+
+        report.append("\nRank decrease/increase ").append(thisWeekLog.getRank() - lastWeekLog.getRank()).append("\n");
+        report.append("Rate decrease/increase ").append(thisWeekLog.getRate() - lastWeekLog.getRate()).append("\n");
+        report.append("Total ppl decrease/increase ").append(thisWeekLog.getTotalPpl() - lastWeekLog.getTotalPpl()).append("\n");
+
+        System.out.println(report.toString());
+    }
 }
 
 
