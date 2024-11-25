@@ -74,8 +74,7 @@ public class Customer extends Account {
             boolean isValidOption = false;
             while (!isValidOption) {
                 System.out.print("Please input what information you want to change in list: ");
-                String input = in.next();
-                in.nextLine();
+                String input = in.nextLine();
                 if (input.equals("X")) {
                     return;
                 } else {
@@ -83,13 +82,13 @@ public class Customer extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Name: ");
-                                setCustomerName(in.next());
+                                setCustomerName(in.nextLine());
                                 System.out.println("\nName has been changed to " + getCustomerName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Phone: ");
-                                setCustomerContact(in.next());
+                                setCustomerContact(in.nextLine());
                                 System.out.println("\nPhone has been changed to " + getCustomerContact() + "\n");
                                 isValidOption = true;
                             }

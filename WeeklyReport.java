@@ -23,8 +23,7 @@ public class WeeklyReport {
         while (!isValidOption) {
             System.out.print("What action do you want to do?: ");
             try {
-                int op = Integer.parseInt(in.next());
-                in.nextLine();
+                int op = Integer.parseInt(in.nextLine());
                 if (op == 1) {
                     isValidOption = true;
                 } else {

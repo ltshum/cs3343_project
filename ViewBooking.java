@@ -68,8 +68,7 @@ public class ViewBooking {
                             boolean isValidTable = false;
                             while (!isValidTable) {
                                 System.out.print("\nPlease input the table ID: ");
-                                String tableInput = in.next();
-                                in.nextLine();
+                                String tableInput = in.nextLine();
                                 if (tableInput.equals("X")) {
                                     System.out.println("\nExiting attendance taking session...");
                                     break outerLoop;
@@ -111,18 +110,19 @@ public class ViewBooking {
                                 if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
                                     if (!server.checkHasAttend(account, inputNumber, date)) {
                                         isValidOption = false;
-                                    }
-                                    System.out.print("\n# Input X to exit the commenting session #\n");
+                                    } else {
+                                        System.out.print("\n# Input X to exit the commenting session #\n");
                                     int rate = -1;
                                     while (rate < 0 || rate > 5) {
                                         System.out.print("Please input your rate (0-5): ");
                                         if (in.hasNextInt()) {
                                             rate = in.nextInt();
+                                            in.nextLine();
                                             if (rate < 0 || rate > 5) {
                                                 System.out.println("\nInvalid input. Please enter a number between 0 and 5.");
                                             }
                                         } else {
-                                            String input = in.next();
+                                            String input = in.nextLine();
                                             if (input.equals("X")) {
                                                 System.out.println("\nExiting commenting session...");
                                                 isValidOption = false;
@@ -133,13 +133,13 @@ public class ViewBooking {
                                         }
                                     }
                                     System.out.print("Please input your comment: ");
-                                    in.nextLine();
                                     String comment = in.nextLine();
                                     if (comment.equals("X")) {
                                         System.out.println("\nExiting commenting session...");
                                         isValidOption = false;
                                     }
                                     server.makeComment(account, inputNumber, date, rate, comment);
+                                    }
                                 } else {
                                     isValidOption = false;
                                     System.out.print("\nInvalid option. Please try again.");

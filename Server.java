@@ -225,7 +225,7 @@ public class Server {
         while (!isValidSeatNo) {
             System.out.print("\nNew Seat: ");
             try {
-                int newSeat = Integer.parseInt(in.next());
+                int newSeat = Integer.parseInt(in.nextLine());
                 table.setSeatNum(newSeat);
                 isValidSeatNo = true;
                 System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");

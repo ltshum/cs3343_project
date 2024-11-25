@@ -29,8 +29,7 @@ public class Profile {
             while (!isValidOption) {
                 System.out.print("\nWhat action do you want to do?: ");
                 try {
-                    int op = Integer.parseInt(in.next());
-                    in.nextLine();
+                    int op = Integer.parseInt(in.nextLine());
                     switch (op) {
                         case 1 -> {
                             System.out.print("\n");

@@ -21,8 +21,7 @@ public class SignUp {
         while (!isValidRole) {
             System.out.print("\nWhat action do you want to do?: ");
             try {
-                int role = Integer.parseInt(in.next());
-                in.nextLine();
+                int role = Integer.parseInt(in.nextLine());
                 switch (role) {
                     case 1 -> {
                         //Input username
@@ -31,6 +30,7 @@ public class SignUp {
                         while (isExistUserName) {
                             System.out.print("\nPlease input your username: ");
                             username = in.next();
+                            in.nextLine();
                             if (!server.isUsernameExist(username)) {
                                 isExistUserName = false;
                             }
@@ -38,14 +38,14 @@ public class SignUp {
                         //Input password
                         System.out.print("\nPlease input your password: ");
                         String password = in.next();
+                        in.nextLine();
                         //Input customerName
                         System.out.print("\nPlease input your name: ");
-                        String name = in.next();
+                        String name = in.nextLine();
                         //Input customerContact
                         System.out.print("\nPlease input your phone number: ");
-                        String contact = in.next();
+                        String contact = in.nextLine();
                         server.signUpCustomer("Customer", username, password, name, contact);
-                        in.nextLine();
                         isValidRole = true;
                     }
                     case 2 -> {
@@ -65,26 +65,26 @@ public class SignUp {
                         String password = in.next();
                         //Input restaurantName
                         System.out.print("\nPlease input your name: ");
-                        String name = in.next();
+                        String name = in.nextLine();
                         //Input restaurantType
                         System.out.print("\nPlease input your restaurant type: ");
-                        String type = in.next();
+                        String type = in.nextLine();
                         //Input restaurantDistrict
                         System.out.print("\nPlease input your restaurant district: ");
-                        String district = in.next();
+                        String district = in.nextLine();
                         //Input restaurantAddress
                         System.out.print("\nPlease input your restaurant address: ");
-                        String address = in.next();
+                        String address = in.nextLine();
                         //Input restaurantContact
                         System.out.print("\nPlease input your restaurant phone number: ");
-                        String contact = in.next();
+                        String contact = in.nextLine();
                         //Input openTime
                         boolean isValidOpenTime = false;
                         LocalTime openTime = null;
                         while (!isValidOpenTime) {
                             System.out.print("\nPlease input your restaurant open time (HH:mm): ");
                             try {
-                                openTime = LocalTime.parse(in.next());
+                                openTime = LocalTime.parse(in.nextLine());
                                 isValidOpenTime = true;
                             } catch (DateTimeParseException e) {
                                 System.out.print("\nInvalid time format! Please try again.");
@@ -96,7 +96,7 @@ public class SignUp {
                         while (!isValidCloseTime) {
                             System.out.print("\nPlease input your restaurant close time (HH:mm): ");
                             try {
-                                closeTime = LocalTime.parse(in.next());
+                                closeTime = LocalTime.parse(in.nextLine());
                                 isValidCloseTime = true;
                             } catch (DateTimeParseException e) {
                                 System.out.print("\nInvalid time format! Please try again.");
@@ -108,7 +108,7 @@ public class SignUp {
                         while (!isValidSessionDuration) {
                             System.out.print("\nPlease input your session duration in minutes: ");
                             try {
-                                sessionDuration = Duration.ofMinutes(Integer.parseInt(in.next()));
+                                sessionDuration = Duration.ofMinutes(Integer.parseInt(in.nextLine()));
                                 isValidSessionDuration = true;
                             } catch (NumberFormatException e) {
                                 System.out.print("\nInvalid input! Please try again.");
@@ -121,7 +121,7 @@ public class SignUp {
                         while (!isValidTableCount) {
                             System.out.print("\nPlease input your table amount: ");
                             try {
-                                tableCount = Integer.parseInt(in.next());
+                                tableCount = Integer.parseInt(in.nextLine());
                                 isValidTableCount = true;
                             } catch (NumberFormatException e) {
                                 System.out.print("\nInvalid input! Please try again.");

@@ -28,8 +28,7 @@ public class BookingProfile {
         while(!isValidOption) {
             System.out.print("\nWhat action do you want to do?: ");
             try {
-                int op = Integer.parseInt(in.next());
-                in.nextLine(); // Consume the newline character
+                int op = Integer.parseInt(in.nextLine());
                 if(ac instanceof Customer){
                     switch (op) {
                         case 1 -> {
@@ -65,7 +64,7 @@ public class BookingProfile {
                             }
                             
                             System.out.print("What is your contact number: ");
-                            String contact = in.next();
+                            String contact = in.nextLine();
                             //makeBooking
                             System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurant, ac, contact, ppl));
                             isValidOption = true;
@@ -112,7 +111,7 @@ public class BookingProfile {
                                     }
             
                                     System.out.print("What is your contact number: ");
-                                    String contact = in.next();
+                                    String contact = in.nextLine();
                                     //makeBooking
                                     System.out.println(server.makeBooking(bookingDate, tableID, bookSession, restaurant, ac, contact, ppl));
                                 } catch (Exception e) {

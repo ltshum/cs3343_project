@@ -207,8 +207,7 @@ public class Restaurant extends Account {
             boolean isValidOption = false;
             while (!isValidOption) {
                 System.out.print("Please input what information you want to change in list: ");
-                String input = in.next();
-                in.nextLine();
+                String input = in.nextLine();
                 if (input.charAt(0) == 'X') {
                     break outerloop;
                 } else {
@@ -216,31 +215,31 @@ public class Restaurant extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Restaurant Name: ");
-                                setRestaurantName(in.next());
+                                setRestaurantName(in.nextLine());
                                 System.out.println("\nRestaurant Name has been changed to " + getRestaurantName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Type: ");
-                                setType(in.next());
+                                setType(in.nextLine());
                                 System.out.println("\nType has been changed to " + getType() + "\n");
                                 isValidOption = true;
                             }
                             case 3 -> {
                                 System.out.print("Please input new Distrct: ");
-                                setDistrict(in.next());
+                                setDistrict(in.nextLine());
                                 System.out.println("\nDistrict has been changed to " + getDistrict() + "\n");
                                 isValidOption = true;
                             }
                             case 4 -> {
                                 System.out.print("Please input new Address: ");
-                                setAddress(in.next());
+                                setAddress(in.nextLine());
                                 System.out.println("\nAddress has been changed to " + getAddress() + "\n");
                                 isValidOption = true;
                             }
                             case 5 -> {
                                 System.out.print("Please input new Phone: ");
-                                setRestaurantContact(in.next());
+                                setRestaurantContact(in.nextLine());
                                 System.out.println("\nPhone has been changed to " + getRestaurantContact() + "\n");
                                 isValidOption = true;
                             }
@@ -279,7 +278,7 @@ public class Restaurant extends Account {
                                 while (!isValidSessionDuration) {
                                     System.out.print("Please input new Session Duration in mintues: ");
                                     try {
-                                        int newSessionDuration = Integer.parseInt(in.next());
+                                        int newSessionDuration = Integer.parseInt(in.nextLine());
                                         setSessionDuration(Duration.ofMinutes(newSessionDuration));
                                         generateTimeslots();
                                         System.out.println("\nSession Duration has been changed to " + getSessionDuration() + "\n");

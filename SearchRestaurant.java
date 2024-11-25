@@ -20,18 +20,18 @@ public class SearchRestaurant {
         System.out.println("# Rate could input a range #\n");
 
         System.out.print("Restaurant Name?: ");
-        String restaurantName = in.next();
+        String restaurantName = in.nextLine();
         System.out.print("Restaurant District?: ");
-        String district = in.next();
+        String district = in.nextLine();
         System.out.print("Restaurant Rate(0--5)?: ");
-        String rateRange = in.next();
+        String rateRange = in.nextLine();
         System.out.print("Restaurant Type?: ");
-        String type = in.next();
+        String type = in.nextLine();
         boolean isValidPpl = false;
         String ppl = null;
         while (!isValidPpl) {
             System.out.print("How many ppl?: ");
-            ppl = in.next();
+            ppl = in.nextLine();
             try {
                 Integer.valueOf(ppl);
                 isValidPpl = true;
@@ -44,7 +44,7 @@ public class SearchRestaurant {
         String startTime = null;
         while (!isValidStartTime) {
             System.out.print("When you want to eat(HH:mm)?: ");
-            startTime = in.next();
+            startTime = in.nextLine();
             try {
                 LocalTime.parse(startTime);
                 isValidStartTime = true;
@@ -57,7 +57,7 @@ public class SearchRestaurant {
         String sessionDuration = null;
         while (!isValidSessionDuration) {
             System.out.print("How long you prefer to eat(mins)?: ");
-            sessionDuration = in.next();
+            sessionDuration = in.nextLine();
             try {
                 Integer.valueOf(sessionDuration);
                 isValidSessionDuration = true;

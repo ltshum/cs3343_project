@@ -25,8 +25,7 @@ public class RestaurantList {
             boolean isValidOption = false;
             while (!isValidOption) {
                 System.out.print("\nWhich restaurant you want to view: ");
-                String input = in.next();
-                in.nextLine();
+                String input = in.nextLine();
                 if (input.equals("X")) {
                     return;
                 } else {
