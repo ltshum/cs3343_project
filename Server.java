@@ -92,6 +92,10 @@ public class Server {
         return null; // Return null if no match found
     }
 
+    public List<Permission> getPermissions(Account ac) {
+        return ac.getPermissions();
+    }
+
     public String getUserDetail(Account ac) {
         System.out.println("\nUsername: " + ac.getUserName() + "\nPassword: " + ac.getPassword());
         List<Role> roles = ac.getRoles();
