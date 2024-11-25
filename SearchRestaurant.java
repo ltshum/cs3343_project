@@ -115,6 +115,7 @@ public class SearchRestaurant {
         testList.add(r1);
         testList.add(r2);
         testList.add(r3);
+        testList.addAll(server.getRestaurantAccounts());
         
         //RestaurantList testRestaurantList = new RestaurantList(server.getAllRestaurants());
         RestaurantList testRestaurantList = new RestaurantList(results);

@@ -21,26 +21,36 @@ public class RestaurantList {
                 System.out.println(count + ". " + server.getListInfo(r));
                 count++;
             }
-            System.out.print("\nWhich restaurant you want to view: ");
-            String input = in.next();
-            if (input.charAt(0) == 'X') {
-                return;
-            } else {
-                try {
-                    int op = Integer.parseInt(input);
-                    if(ac instanceof Customer){
-                        BookingProfile bookingProfile = new BookingProfile(result.get(op - 1),ac);
-                        bookingProfile.displayBookingProfile(in);
-                    }else{
-                        BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));
-                        bookingProfile.displayBookingProfile(in);
+
+            boolean isValidOption = false;
+            while (!isValidOption) {
+                System.out.print("\nWhich restaurant you want to view: ");
+                String input = in.next();
+                in.nextLine();
+                if (input.equals("X")) {
+                    return;
+                } else {
+                    try {
+                        int op = Integer.parseInt(input);
+                        try {
+                            if (ac instanceof Customer customer){
+                                BookingProfile bookingProfile = new BookingProfile(result.get(op - 1), customer);
+                                bookingProfile.displayBookingProfile(in);
+                            }else{
+                                BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));
+                                bookingProfile.displayBookingProfile(in);
+                            }
+                            isValidOption = true;
+                        } catch (Exception e) {
+                            System.out.println("Invalid input! Please input again.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid input! Please input again.");
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input!");
-                } catch (Exception e) {
-                    System.out.printf("Error: %s\n", e.getMessage());
                 }
             }
+            
+            
         }
     }
 }

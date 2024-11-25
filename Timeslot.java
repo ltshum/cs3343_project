@@ -41,6 +41,10 @@ public class Timeslot implements Comparable<Timeslot>{
         return pplNum;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     public void book(String bookerName, String bookerContact, int pplNum) {
         this.status = false;
         this.bookerName = bookerName;
@@ -69,4 +73,29 @@ public class Timeslot implements Comparable<Timeslot>{
         }
         return 0;
     }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public void setBookerName(String bookerName) {
+        this.bookerName = bookerName;
+    }
+
+    public void setBookerContact(String bookerContact) {
+        this.bookerContact = bookerContact;
+    }
+
+    public void setPplNum(int pplNum) {
+        this.pplNum = pplNum;
+    }
+
 }

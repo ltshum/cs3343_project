@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Scanner;
 
 public class WeeklyReport {
@@ -15,15 +14,26 @@ public class WeeklyReport {
     }
 
     public void displayWeeklyReport(Scanner in) {
+        server.generateRestaurantLog();
         String report = generateWeeklyReport();
         System.out.println(report);
-        System.out.println("\n1. Exit");
-        int choice = in.nextInt();
-        if (choice == 1) {
-            return;
-        } else {
-            System.out.println("Invalid option. Please try again.");
-        }
+        System.out.println("1. Exit\n");
+       
+        boolean isValidOption = false;
+        while (!isValidOption) {
+            System.out.print("What action do you want to do?: ");
+            try {
+                int op = Integer.parseInt(in.next());
+                in.nextLine();
+                if (op == 1) {
+                    isValidOption = true;
+                } else {
+                    System.out.println("Invalid option. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }        
     }
 
     private String generateWeeklyReport() {

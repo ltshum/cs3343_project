@@ -23,41 +23,50 @@ public class Home {
                 count++;
             }
             System.out.println("\n" + count + ". " + "LOGOUT\n");
-            System.out.print("What action do you want to do?: ");
-            int op = in.nextInt();
-            if (op >= 1 && op <= list.size()) {
-                Resource selectedResource = list.get(op - 1).getResource();
-                //System.out.println("Selected resource: " + selectedResource);
-                switch (selectedResource) {
-                    case PROFILE -> {
-                        Profile profilePage = new Profile(account);
-                        profilePage.displayProfile(in);
+            boolean isValidOption = false;
+            while (!isValidOption) {
+                System.out.print("What action do you want to do?: ");
+                try {
+                    int op = Integer.parseInt(in.nextLine());
+                    if (op >= 1 && op <= list.size()) {
+                        isValidOption = true;
+                        Resource selectedResource = list.get(op - 1).getResource();
+                        //System.out.println("Selected resource: " + selectedResource);
+                        switch (selectedResource) {
+                            case PROFILE -> {
+                                Profile profilePage = new Profile(account);
+                                profilePage.displayProfile(in);
+                            }
+                            case TABLE_MANAGEMENT -> {
+                                TableManagement tableManagementPage = new TableManagement(account);
+                                tableManagementPage.displayTableManagement(in);
+                            }
+                            case VIEW_BOOKING -> {
+                                ViewBooking viewBooking = new ViewBooking(account);
+                                viewBooking.displayViewBooking(in);
+                            }
+                            case SEARCH_RESTAURANT -> {
+                                SearchRestaurant searchRestaurantPage = new SearchRestaurant(account);
+                                searchRestaurantPage.displaySearchRestaurnt(in);
+                            }
+                            case WEEKLY_REPORT -> {
+                                WeeklyReport weeklyReport = new WeeklyReport(account);
+                                weeklyReport.displayWeeklyReport(in);
+                            }
+                            default ->
+                                System.out.println("Invalid selection.");
+                        }
+                    } else if (op == list.size() + 1) {
+                        System.out.println("Logging out...");
+                        return;
+                    } else {
+                        System.out.println("Invalid option. Please try again.");
                     }
-                    case TABLE_MANAGEMENT -> {
-                        TableManagement tableManagementPage = new TableManagement(account);
-                        tableManagementPage.displayTableManagement(in);
-                    }
-                    case VIEW_BOOKING -> {
-                        ViewBooking viewBooking = new ViewBooking(account);
-                        viewBooking.displayViewBooking(in);
-                    }
-                    case SEARCH_RESTAURANT -> {
-                        SearchRestaurant searchRestaurantPage = new SearchRestaurant(account);
-                        searchRestaurantPage.displaySearchRestaurnt(in);
-                    }
-                    case WEEKLY_REPORT -> {
-                        WeeklyReport weeklyReport = new WeeklyReport(account);
-                        weeklyReport.displayWeeklyReport(in);
-                    }
-                    default ->
-                        System.out.println("Invalid selection.");
-                }
-            } else if (op == list.size() + 1) {
-                System.out.println("Logging out...");
-                return;
-            } else {
-                System.out.println("Invalid option. Please try again.");
+                } catch (NumberFormatException inputTypeException) {
+                    System.out.println("Invalid option. Please try again.");
+                }                
             }
+            
         }
     }
 }

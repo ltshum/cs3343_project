@@ -1,39 +1,101 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
 
+import java.time.LocalDate;
 
 public class Booking {
-    private LocalTime startTime;// To store booking time
-    private LocalTime endTime;
-    private int numberOfSeats; // To store number of seats
-    private LocalDate bookingdate;
-    private String contactnumber;
-    public Booking( LocalTime bookingTime, LocalTime bktime,int numberOfSeats,String contactnumber) {
-        this.startTime = bookingTime;
-        this.endTime = bktime;
-        this.numberOfSeats = numberOfSeats;
-        this.contactnumber=contactnumber;
-        this.bookingdate = LocalDate.now();
-    }
-    public Booking(LocalTime bookingTime, LocalTime bktime,int numberOfSeats,LocalDate bookingdate,String contactnumber) {
-        this.startTime = bookingTime;
-        this.endTime = bktime;
-        this.numberOfSeats = numberOfSeats;
-        this.bookingdate =bookingdate;
-        this.contactnumber=contactnumber;
+
+    private LocalDate date;
+    private int tableID;
+    private String timeslot;
+    private Restaurant restaurant;
+    private Customer customer;
+    private String customerContact;
+    private int ppl;
+    private boolean arrive = false;
+
+    public Booking(LocalDate date, int tableID, String timeslot, Restaurant restaurant, Customer customer, String customerContact, int ppl) {
+        this.date = date;
+        this.tableID = tableID;
+        this.timeslot = timeslot;
+        this.restaurant = restaurant;
+        this.customer = customer;
+        this.customerContact = customerContact;
+        this.ppl = ppl;
     }
 
-    public Booking(LocalTime bookingtime, int customernumber, LocalDate bookingdate2, String contactnumber2) {
-        //TODO Auto-generated constructor stub
-    }
-    // Method to handle booking success
-    public void bookingSuccess() {
-        System.out.println("Booking confirmed!");
-        System.out.println("Booking Time: " + startTime+" - "+ endTime);
-        System.out.println("Number of Seats: " + numberOfSeats);
-        System.out.println("Date: " + bookingdate);
-        System.out.println("Number: " + contactnumber);
+    // Getter methods
+    public LocalDate getDate() {
+        return date;
     }
 
-    // Add getters for the fields if needed
+    public int getTableID() {
+        return tableID;
+    }
+
+    public String getTimeslot() {
+        return timeslot;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public String getRestaurantName() {
+        return restaurant.getRestaurantName();
+    }
+
+    public String getCustomerName() {
+        return customer.getCustomerName();
+    }
+
+    public String getCustomerContact() {
+        return customerContact;
+    }
+
+    public int getPpl() {
+        return ppl;
+    }
+
+    public boolean hasArrived() {
+        return arrive;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setTableID(int tableID) {
+        this.tableID = tableID;
+    }
+
+    public void setTimeslot(String timeslot) {
+        this.timeslot = timeslot;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setCustomerContact(String customerContact) {
+        this.customerContact = customerContact;
+    }
+
+    public void setPpl(int ppl) {
+        this.ppl = ppl;
+    }
+
+    public void setArrive(boolean arrive) {
+        this.arrive = arrive;
+    }
+
+    public void takeAttendance() {
+        arrive = true;
+    }
 }
