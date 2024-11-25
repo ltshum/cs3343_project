@@ -49,7 +49,7 @@ public class SearchRestaurant {
         } while (!isValidRating(rateRange));
         
         System.out.print("Restaurant Type?: ");
-        String type = in.next();
+        String type = in.nextLine();
         
         String ppl;
         while (true){
