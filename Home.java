@@ -1,5 +1,4 @@
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Home {
@@ -15,22 +14,19 @@ public class Home {
 
         while (true) {
             System.out.println("\n# Welcome to Home Page #");
-            int count = 1;
 
-            List<Permission> list = server.getPermissions(account);
-            for (Permission permission : list) {
-                System.out.println("\n" + count + ". " + permission.getResource());
-                count++;
-            }
+            int count = server.getPermissionNumber(account);
+            
+            
             System.out.println("\n" + count + ". " + "LOGOUT\n");
             boolean isValidOption = false;
             while (!isValidOption) {
                 System.out.print("What action do you want to do?: ");
                 try {
                     int op = Integer.parseInt(in.nextLine());
-                    if (op >= 1 && op <= list.size()) {
+                    if (op >= 1 && op <= server.getPermissionSize(account)) {
                         isValidOption = true;
-                        Resource selectedResource = list.get(op - 1).getResource();
+                        Resource selectedResource = server.getPermissionResource(account ,op);
                         //System.out.println("Selected resource: " + selectedResource);
                         switch (selectedResource) {
                             case PROFILE -> {
@@ -56,7 +52,7 @@ public class Home {
                             default ->
                                 System.out.println("Invalid selection.");
                         }
-                    } else if (op == list.size() + 1) {
+                    } else if (op == server.getPermissionSize(account) + 1) {
                         System.out.println("Logging out...");
                         return;
                     } else {

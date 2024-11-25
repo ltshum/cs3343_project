@@ -1,5 +1,4 @@
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Profile {
@@ -15,11 +14,9 @@ public class Profile {
         while (true) { 
             System.out.println("\n# Here is your information #");
             System.out.println("\n# Username is not allowed to change #");
-            List<Role> roles = account.getRoles();
-            for (Role role : roles) {
-                if (role == Role.RESTAURANT) {
-                    System.out.println("# Comment is not allowed to change #");
-                }
+            
+            if (server.isRestaurantRole(account)) {
+                System.out.println("# Comment is not allowed to change #");
             }
             System.out.println(server.getUserDetail(account));
             System.out.println("\n1. Edit");

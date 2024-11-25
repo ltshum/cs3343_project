@@ -33,6 +33,9 @@ public class SearchRestaurant {
         String restaurantName = in.nextLine();
         System.out.print("Restaurant District?: ");
         String district = in.nextLine();
+        System.out.print("Restaurant Type?: ");
+        String type = in.nextLine();
+
         String rateRange;
         do {
             System.out.print("Restaurant Rate(0--5)?: ");
@@ -41,9 +44,6 @@ public class SearchRestaurant {
                 System.out.print("Invalid input\n");
             }
         } while (!isValidRating(rateRange));
-        
-        System.out.print("Restaurant Type?: ");
-        String type = in.nextLine();
         
         String ppl;
         while (true){

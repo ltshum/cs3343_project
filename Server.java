@@ -25,6 +25,25 @@ public class Server {
     private Server() {
     }
 
+
+    public boolean isRestaurantRole(Account ac) {
+        for (Role role : ac.getRoles()) {
+            if (role == Role.RESTAURANT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isCustomerRole(Account ac) {
+        for (Role role : ac.getRoles()) {
+            if (role == Role.CUSTOMER) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addRestaurantAccount(Restaurant restaurant) {
         RestaurantAccounts.put(restaurant.getUserName(), restaurant);
     }
@@ -48,6 +67,38 @@ public class Server {
         }
         return null;
     }
+
+    public void generateWeeklyReport(Restaurant restaurant) {
+        RestaurantLog lastWeekLog = getRestaurantLog(restaurant, "lastWeek");
+        RestaurantLog thisWeekLog = getRestaurantLog(restaurant, "thisWeek");
+
+        StringBuilder report = new StringBuilder();
+
+        report.append("Last week:\n");
+        report.append("Rank: ").append(lastWeekLog.getRank()).append("\n");
+        report.append("Rate: ").append(lastWeekLog.getRate()).append("\n");
+        report.append("Total ppl: ").append(lastWeekLog.getTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : lastWeekLog.getComments()) {
+            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
+        }
+
+        report.append("\nThis week:\n");
+        report.append("Rank: ").append(thisWeekLog.getRank()).append("\n");
+        report.append("Rate: ").append(thisWeekLog.getRate()).append("\n");
+        report.append("Total ppl: ").append(thisWeekLog.getTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : thisWeekLog.getComments()) {
+            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
+        }
+
+        report.append("\nRank decrease/increase ").append(thisWeekLog.getRank() - lastWeekLog.getRank()).append("\n");
+        report.append("Rate decrease/increase ").append(thisWeekLog.getRate() - lastWeekLog.getRate()).append("\n");
+        report.append("Total ppl decrease/increase ").append(thisWeekLog.getTotalPpl() - lastWeekLog.getTotalPpl()).append("\n");
+
+        System.out.println(report.toString());
+    }
+
 
     public static Server getInstance() {
         return instance;
@@ -92,8 +143,21 @@ public class Server {
         return null; // Return null if no match found
     }
 
-    public List<Permission> getPermissions(Account ac) {
-        return ac.getPermissions();
+    public int getPermissionNumber(Account ac) {
+        int count = 1;
+        for(Permission permission: ac.getPermissions()) {
+            System.out.println("\n" + count + ". " + permission.getResource());
+            count++;
+        }
+        return count;
+    }
+
+    public int getPermissionSize(Account ac) {
+        return ac.getPermissions().size();
+    }
+
+    public Resource getPermissionResource(Account ac, int inputNumber) {
+        return ac.getPermissions().get(inputNumber - 1).getResource();
     }
 
     public String getUserDetail(Account ac) {

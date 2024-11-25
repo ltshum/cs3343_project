@@ -1,6 +1,5 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 
 public class ViewBooking {
@@ -19,16 +18,13 @@ public class ViewBooking {
         while (!exitLoop) {
             System.out.println("\n# Here is your booking record on " + date + " #");
             System.out.println("# you could leave by input X #");
-            List<Role> roles = account.getRoles();
-            for (Role role : roles) {
-                if (role == Role.RESTAURANT) {
-                    System.out.println("# Take attendence input T #");
-                    isRestaurant = true;
-                }
-                else if (role == Role.CUSTOMER) {
-                    System.out.println("# If you want to make comment please input restaurant number #");
-                    isCustomer = true;
-                }
+            if (server.isRestaurantRole(account)) {
+                System.out.println("# Take attendence input T #");
+                isRestaurant = true;
+            } else if (server.isCustomerRole(account)) {
+                System.out.println("# If you want to make comment please input restaurant number #");
+                isCustomer = true;
+
             }
 
             System.out.println("\n[" + date + "]");
