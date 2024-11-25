@@ -55,6 +55,7 @@ public class SignUp {
                         while (isExistUserName) {
                             System.out.print("\nPlease input your username: ");
                             username = in.next();
+                            in.nextLine();
                             if (!server.isUsernameExist(username)) {
                                 isExistUserName = false;
                             }
@@ -63,6 +64,7 @@ public class SignUp {
                         //Input password
                         System.out.print("\nPlease input your password: ");
                         String password = in.next();
+                        in.nextLine();
                         //Input restaurantName
                         System.out.print("\nPlease input your name: ");
                         String name = in.nextLine();
