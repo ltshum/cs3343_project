@@ -77,7 +77,7 @@ public final class SearchCriteria {
 
     // total similarity score between restaurant info and search criteria
     // +1: match, +0: mismatch
-    // name score ranges between 0 and 1
+    // word score ranges between 0 and 1
     // result = 0: complete mismatch, do not add to results
     public int getSearchScore(Restaurant r) {
         float result = 0;
