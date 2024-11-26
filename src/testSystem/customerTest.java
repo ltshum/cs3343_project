@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterEach;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -31,12 +30,7 @@ public class customerTest {
 	}
 	
 	public void setInput(String[] in) {
-		String input = "";
-		for (String i : in) {
-			input += i + System.lineSeparator();
-		}
-		System.setIn(new ByteArrayInputStream(input.getBytes()));
-		scanner = new Scanner(System.in);
+		scanner = testInput.input(in);
 	}
 	// Preparation end
 
