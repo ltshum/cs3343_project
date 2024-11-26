@@ -1,0 +1,15 @@
+package test;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+
+public class systemTest {
+
+	@Test
+	public void test() {
+	 
+	}
+
+}

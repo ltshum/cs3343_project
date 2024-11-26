@@ -1,3 +1,4 @@
+package src;
 
 import java.time.Duration;
 import java.time.LocalTime;
