@@ -296,7 +296,10 @@ public class Server {
     }
 
     public String getListInfo(Restaurant restaurant) {
-        return restaurant.getRestaurantName() + ": " + restaurant.getRate() + " " + restaurant.getType() + " " + restaurant.getDistrict();
+        return restaurant.getRestaurantName() + 
+                "\n   Rate: " + restaurant.getRate() + 
+                "\n   District: " + restaurant.getDistrict() + 
+                "\n   Type: " + restaurant.getType();
     }
 
     public Restaurant getRestaurantAccountByUserName(String username) {
