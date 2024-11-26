@@ -20,7 +20,7 @@ public class customerTest {
 	
 	@BeforeEach
 	public void setUp() throws Exception {
-		customer = new Customer("username", "password", "name", "contact");
+		customer = new Customer("username", "password", "name", "12345678");
 	}
 	
 	@AfterEach
@@ -34,6 +34,15 @@ public class customerTest {
 	}
 	// Preparation end
 
+	
+	@Test
+	public void test_edit_InvalidSelections() {
+		String[] input = {"3", "J", "1", "testInvalidSelections", "X"};
+		setInput(input);
+
+		customer.edit(scanner);
+		assertEquals("testInvalidSelections", customer.getCustomerName());
+	}
 	
 	@Test
 	public void test_edit_SetName() {
@@ -54,15 +63,6 @@ public class customerTest {
 	}
 	
 	@Test
-	public void test_edit_InvalidSelections() {
-		String[] input = {"3", "J", "1", "testInvalidSelections", "X"};
-		setInput(input);
-
-		customer.edit(scanner);
-		assertEquals("testInvalidSelections", customer.getCustomerName());
-	}
-	
-	@Test
 	public void test_edit_InvalidPhone() {
 		String[] input = {"2", "testInvalidPhone", "735719", "X"};
 		setInput(input);
@@ -70,4 +70,5 @@ public class customerTest {
 		customer.edit(scanner);
 		assertEquals("735719", customer.getCustomerContact());
 	}
+	
 }
