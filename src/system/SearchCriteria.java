@@ -2,6 +2,7 @@ package system;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 
 public final class SearchCriteria {
@@ -42,29 +43,104 @@ public final class SearchCriteria {
         }
     }
 
-    public ArrayList<Restaurant> searchRestaurantsIn( ArrayList<Restaurant> restaurants){
+    // divide-and-conquer algorithm (how complex)
+    // returns similarity score between original name and search keyword
+    // not using String.compareTo because no normal human would think "eat" is closer to "bibliography" than "seat"
+    // return {a, b}: a = score, b = weight
+    // precondition: both name and keyword are not null
+    public float[] getWordScore(String name, String keyword) {
+        if (keyword.length() <= 1) {
+            float[] result = {name.contains(keyword) ? 1 : 0, 1};
+            return result;
+        }
+        else {
+            int bp = (int) Math.floor(keyword.length() / 2);
+            String key1 = keyword.substring(0, bp);
+            String key2 = keyword.substring(bp);
+
+            float[] result = {name.contains(keyword) ? 1 : 0, 1};
+            result[0] += getWordScore(name, key1)[0] + getWordScore(name, key2)[0];
+            result[1] += getWordScore(name, key1)[1] + getWordScore(name, key2)[1];
+            return result;
+        }
+    }
+
+    public boolean isAllNull() {
+        return restaurantName == null
+                && district == null
+                && rateRange == null
+                && type == null
+                && ppl == 0
+                && startTime == null
+                && duration == null;
+    }
+
+    // total similarity score between restaurant info and search criteria
+    // +1: match, +0: mismatch
+    // name score ranges between 0 and 1
+    // result = 0: complete mismatch, do not add to results
+    public int getSearchScore(Restaurant r) {
+        float result = 0;
+
+        if(isAllNull()) {
+            // System.out.println("all null");
+            return 1;
+        }
+
+        if (restaurantName != null) {
+            float[] nameScore = getWordScore(r.getRestaurantName(), restaurantName);
+            result += nameScore[0] / nameScore[1];
+        }
+
+        if (district != null) {
+            float[] districtScore = getWordScore(r.getDistrict(), district);
+            result += districtScore[0] / districtScore[1];
+        }
+
+        if (rateRange != null){
+            int minRate = rateRange.charAt(0) - '0';
+            int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
+            result += r.getRate() > minRate && r.getRate() < maxRate ? 1 : 0;
+        }
+
+        if (type != null) {
+            float[] typeScore = getWordScore(r.getType(), type);
+            result += typeScore[0] / typeScore[1];
+        }
+
+        // System.out.printf("%s score: %f\n", r.getRestaurantName(), result);
+
+        return (int) Math.ceil(result * 100); // higher accuracy for comparator
+    }
+
+    public ArrayList<Restaurant> searchRestaurantsIn(ArrayList<Restaurant> restaurants){
         ArrayList<Restaurant> result = new ArrayList<>();
         for (Restaurant r : restaurants){
-            if (restaurantName != null &&  !r.getRestaurantName().contains(restaurantName)){
-                continue;
-            }
-            if (district != null && !r.getDistrict().contains(district)){
+            // if (restaurantName != null && !r.getRestaurantName().contains(restaurantName)){
+            //     continue;
+            // }
+            // if (district != null && !r.getDistrict().contains(district)){
+            //     continue;
+            // }
+
+            // if (rateRange != null){
+            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getRate()){
+            //         continue;
+            //     }
+            //     int minRate = rateRange.charAt(0) - '0';
+            //     int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
+            //     if (r.getRate() > maxRate || r.getRate() < minRate){
+            //         continue;
+            //     }
+            // }
+            // if (type != null && !type.contains(r.getType())){
+            //     continue;
+            // }
+
+            if (getSearchScore(r) == 0) {
                 continue;
             }
 
-            if (rateRange != null){
-                if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getRate()){
-                    continue;
-                }
-                int minRate = rateRange.charAt(0) - '0';
-                int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
-                if (r.getRate() > maxRate || r.getRate() < minRate){
-                    continue;
-                }
-            }
-            if (type != null && !type.contains(r.getType())){
-                continue;
-            }
             ArrayList<Table> tables = r.getAllTables();
             for (Table t : tables){
                 boolean status;
@@ -78,11 +154,16 @@ public final class SearchCriteria {
                     break;
                 }
             }
-
+        }
             // if (ppl >0 && ppl < r.get)
 
-            
-        }
+        Comparator<Restaurant> sorter = new Comparator<Restaurant>() {
+            @Override
+            public int compare(final Restaurant r1, final Restaurant r2) {
+                return getSearchScore(r1) - getSearchScore(r2);
+            }
+        };
+        result.sort(sorter.reversed());
         return result;
     }
 }
