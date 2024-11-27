@@ -24,7 +24,6 @@ public class Table {
     public void addTimeslot(String session) {
         Timeslot timeslot = new Timeslot(session);
         allTimeslots.add(timeslot);
-        allTimeslots.sort(null);
     }
 
     public void addBookingTimeslot(Timeslot bookingTime) {

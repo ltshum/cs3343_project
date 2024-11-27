@@ -1,12 +1,12 @@
 package system;
 
+import acm.Role;
 import java.time.LocalDate;
-// Other imports as needed
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
-
-import acm.Role;
 
 public class Customer extends Account {
 
@@ -97,6 +97,7 @@ public class Customer extends Account {
 
     @Override
     public int getBookingRecord(LocalDate date) {
+        Collections.sort(allBookings, Comparator.comparing(Booking::getBookingTimeslot));
         String bookingString = "";
         int index = 0;
         for (Booking booking : allBookings) {
@@ -111,5 +112,11 @@ public class Customer extends Account {
 
     public void addBooking(Booking bk) {
         this.allBookings.add(bk);
+    }
+
+    @Override
+    protected void updateSeatNo(int tableID, int seatNum) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateSeatNo'");
     }
 }

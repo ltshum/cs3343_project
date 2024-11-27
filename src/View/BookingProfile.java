@@ -2,7 +2,6 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-
 import system.Customer;
 import system.Restaurant;
 import system.Server;
@@ -37,7 +36,7 @@ public class BookingProfile {
             try {
                 int op = Integer.parseInt(in.nextLine());
                 if (ac instanceof Customer) {
-                    switch (op) {
+                    outerloop: switch (op) {
                         case 1 -> {
                             boolean isValidSession = false;
                             String bookSession = "";
@@ -61,9 +60,9 @@ public class BookingProfile {
                                     tableID = server.availableTableID(restaurant, ppl, bookSession, LocalDate.now());
                                     if (tableID == 0) {
                                         System.out.println("\nSorry. The restaurant is full at this timeslot or have not enough seats for you.");
-                                    } else {
-                                        isValidPpl = true;
+                                        break outerloop;
                                     }
+                                    isValidPpl = true;
                                 } catch (NumberFormatException e) {
                                     System.out.println("\nInvalid input! Please try again.");
                                 }
