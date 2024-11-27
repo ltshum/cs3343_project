@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import View.Home;
 import system.Booking;
+import system.Comment;
 import system.Customer;
 import system.Restaurant;
 import system.Server;
@@ -568,7 +569,6 @@ public class restaurantTest {
     public void test_getTimeslots_ZeroDuration() {
     	
         restaurant.setSessionDuration(Duration.ZERO);
-        System.out.println("This is the error case entery");
         String expected = "10:00 - 11:00 \n" +
                 "11:00 - 12:00 \n" +
                 "12:00 - 13:00 \n" +
@@ -579,7 +579,6 @@ public class restaurantTest {
                 "17:00 - 18:00 \n" +
                 "18:00 - 19:00 \n" +
                 "19:00 - 20:00 \n";; // No valid time slots with zero session duration
-                System.out.println("This is the error case "+restaurant.getTimeslots());
         assertEquals(expected, restaurant.getTimeslots());
     }
     
@@ -683,7 +682,313 @@ public class restaurantTest {
                           "19:00 - 20:00 \n";
         assertEquals(expected, restaurant.getTimeslots());
     }
+    
+    @Test
+    public void testTableValidation_TableExists() {
+        // Given: Adding a table with ID 1
+        Table table = new Table(1);
+        restaurant.setAllTables(new ArrayList<>());
+        restaurant.getAllTables().add(table);
+
+        // When: Validating table ID 1
+        boolean result = restaurant.tableValidation(1);
+
+        // Then: Should return true
+        assertTrue(result);
+    }
+
+    @Test
+    public void testTableValidation_TableDoesNotExist() {
+        // Given: Adding a table with ID 1
+        Table table = new Table(1);
+        restaurant.setAllTables(new ArrayList<>());
+        restaurant.getAllTables().add(table);
+
+        // When: Validating a non-existent table ID 2
+        boolean result = restaurant.tableValidation(2);
+
+        // Then: Should return false
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTableValidation_NoTables() {
+        // Given: No tables in the restaurant
+        restaurant.setAllTables(new ArrayList<>());
+
+        // When: Validating any table ID
+        boolean result = restaurant.tableValidation(1);
+
+        // Then: Should return false
+        assertFalse(result);
+    }
+    @Test 
+    public void TestValidupdateTableInfo() {
+    	String[] input = { "10"};
+		setInput(input);
+		restaurant.updateTableInfo(scanner,1);
+		assertEquals(10, restaurant.getAllTables().get(0).getSeatNum());
+		assertEquals(0, restaurant.getAllTables().get(1).getSeatNum());
+
+    }
+    
+    @Test 
+    public void TestInvalidupdateTableInfo1() {
+    	String[] input = { "-1","23","X"};
+		setInput(input);
+		System.out.println("THis is the part for the updating setaNum and this the old setNUm "+restaurant.getAllTables().get(0).getSeatNum());
+		restaurant.updateTableInfo(scanner,1);
+		assertEquals(23, restaurant.getAllTables().get(0).getSeatNum());
+		assertEquals(0, restaurant.getAllTables().get(1).getSeatNum());
+
+    }
+    
+    @Test 
+    public void TestInvalidupdateTableInfo2() {
+    	String[] input = { "HI","10"};
+		setInput(input);
+		restaurant.updateTableInfo(scanner,1);
+		assertEquals(10, restaurant.getAllTables().get(0).getSeatNum());
+		assertEquals(0, restaurant.getAllTables().get(1).getSeatNum());
+
+    }
+    @Test
+    public void test_getAllCommentList() {
+	    String customerName = "User3";
+	    String content = "This is a great restaurant!";
+	    int rate = 5;
+	    Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
+	    Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
+	    Comment cm3=new Comment(customerName, content, rate, LocalDate.now().plusDays(2));	
+	    restaurant.getAllCommentsList().add(cm3);
+	    ArrayList<Comment> cmList=new ArrayList<Comment>();
+	    cmList.add(cm1);
+	    cmList.add(cm2);
+	    cmList.add(cm3);
+	    assertEquals(3, restaurant.getAllCommentsList().size());
+	    for(int i=0;i<restaurant.getAllCommentsList().size();i++) {
+		    assertEquals(cmList.get(i).getCommentCustomerName(),restaurant.getAllCommentsList().get(i).getCommentCustomerName());
+		    assertEquals(cmList.get(i).getCommentContent(),restaurant.getAllCommentsList().get(i).getCommentContent());
+		    assertEquals(cmList.get(i).getCommentRate(),restaurant.getAllCommentsList().get(i).getCommentRate(),0.01);
+		    assertEquals(cmList.get(i).getCommentDate(),restaurant.getAllCommentsList().get(i).getCommentDate());
+
+		    }
+    }
+    @Test
+    public void testGetAllComments_Empty() {
+        // Test when there are no comments
+        String result = restaurant.getAllComments();
+        assertEquals("User1: Great 3.0\nUser2: Good 4.0\n", result);
+    }
+
+    @Test
+    public void testGetAllComments_SingleComment() {
+        // Test when there is a single comment
+        Comment comment = new Comment("John", "Great food!", 5,LocalDate.now());
+        restaurant.getAllCommentsList().add(comment);
+
+        String result = restaurant.getAllComments();
+        String expected = "User1: Great 3.0\nUser2: Good 4.0\nJohn: Great food! 5.0\n";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetAllComments_MultipleComments() {
+        // Test when there are multiple comments
+        Comment comment1 = new Comment("Alice", "Loved it!", 4,LocalDate.now());
+        Comment comment2 = new Comment("Bob", "Not bad.", 3,LocalDate.now());
+        restaurant.getAllCommentsList().add(comment1);
+        restaurant.getAllCommentsList().add(comment2);
+        String result = restaurant.getAllComments();
+        String expected = "User1: Great 3.0\nUser2: Good 4.0\nAlice: Loved it! 4.0\nBob: Not bad. 3.0\n";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetAllComments_CommentWithEmptyContent() {
+        // Test when there is a comment with empty content
+        Comment comment = new Comment("Charlie", "", 2,LocalDate.now());
+        restaurant.getAllCommentsList().add(comment);
+        String result = restaurant.getAllComments();
+        String expected = "User1: Great 3.0\nUser2: Good 4.0\nCharlie:  2.0\n"; // Expecting the string to handle empty content
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testGetAllComments_CommentWithZeroRate() {
+        // Test when there is a comment with a rate of zero
+        Comment comment = new Comment("Diana", "Okay.", 0,LocalDate.now());
+        restaurant.getAllCommentsList().add(comment);
+
+        String result = restaurant.getAllComments();
+        String expected = "User1: Great 3.0\nUser2: Good 4.0\nDiana: Okay. 0.0\n"; // Expecting the string to handle zero rating
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    public void testgetProfileDetail() {
+    	String res="Rate: " + "0.0"
+            + "\nRestaurant Name: " + "name"
+            + "\nType: " + "type"
+            + "\nDistrict: " + "district"
+            + "\nAddress: " + "address"
+            + "\nPhone: " + "12345678"
+            + "\nOpen Time: " + "10:00"
+            + "\nClose Time: " + "20:00"
+            + "\nSession Duration: " +   "60mins"
+            + "\nTable Amount: 3" + 
+            "\n\nTimeslot: \n" + "10:00 - 11:00 \n" +
+            "11:00 - 12:00 \n" +
+            "12:00 - 13:00 \n" +
+            "13:00 - 14:00 \n" +
+            "14:00 - 15:00 \n" +
+            "15:00 - 16:00 \n" +
+            "16:00 - 17:00 \n" +
+            "17:00 - 18:00 \n" +
+            "18:00 - 19:00 \n" +
+            "19:00 - 20:00 \n"
+            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+    	assertEquals(res,restaurant.getProfileDetail());
+    }
+    
+    @Test
+    public void testgetProfileDetailaddComment() {
+    	String res="Rate: " + "0.0"
+            + "\nRestaurant Name: " + "name"
+            + "\nType: " + "type"
+            + "\nDistrict: " + "district"
+            + "\nAddress: " + "address"
+            + "\nPhone: " + "12345678"
+            + "\nOpen Time: " + "10:00"
+            + "\nClose Time: " + "20:00"
+            + "\nSession Duration: " +   "60mins"
+            + "\nTable Amount: 3" + 
+            "\n\nTimeslot: \n" + "10:00 - 11:00 \n" +
+            "11:00 - 12:00 \n" +
+            "12:00 - 13:00 \n" +
+            "13:00 - 14:00 \n" +
+            "14:00 - 15:00 \n" +
+            "15:00 - 16:00 \n" +
+            "16:00 - 17:00 \n" +
+            "17:00 - 18:00 \n" +
+            "18:00 - 19:00 \n" +
+            "19:00 - 20:00 \n"
+            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\nChris: Awful 1.0\n";
+    	Comment comment = new Comment("Chris", "Awful", 1,LocalDate.now());
+        restaurant.getAllCommentsList().add(comment);
+    	assertEquals(res,restaurant.getProfileDetail());
+    }
+    @Test
+    public void testGetBookingRecord_NoBookings() {
+        // Test when there are no bookings for the given date
+    	LocalDate bookingDate=LocalDate.now();
+    	int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(0, totalBookings);
+    }
+
+    @Test
+    public void testGetBookingRecord_BookingsOnDifferentDate() {
+        // Test when bookings exist but are on a different date
+        LocalDate differentDate = LocalDate.of(2023, 11, 26);
+    	LocalDate bookingDate=LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+        restaurant.addBooking(booking); // Assuming this method exists
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals( 0, totalBookings);
+    }
+
+    @Test
+    public void testGetBookingRecord_SingleBooking() {
+        // Test when there is a single booking for the given date
+    	LocalDate bookingDate=LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+        restaurant.addBooking(booking);
+
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals( 1, totalBookings);
+    }
+
+    @Test
+    public void testGetBookingRecord_MultipleBookingsSameTimeSlot() {
+    	LocalDate bookingDate=LocalDate.now();
+        Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
+        Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
+
+        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer1,customer1.getCustomerContact(),2);
+        Booking booking2 = new Booking(bookingDate,1,"13:00-14:00",restaurant,customer2,customer2.getCustomerContact(),2);
+        // Test when there are multiple bookings for the same time slot on the given date
+      
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals( 2, totalBookings);
+    }
+
+    
+
+    @Test
+    public void testGetBookingRecord_BookingHasArrived() {
+    	LocalDate bookingDate=LocalDate.now();
+
+    	Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
+
+        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer1,customer1.getCustomerContact(),2);
+        booking1.takeAttendance();
+        restaurant.addBooking(booking1);
+
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals("Total bookings should be one", 1, totalBookings);
+    }
+    @Test
+    public void testGetBookingRecord_MultipleBookingsDifferentTimeSlots() {
+        // Test when there are multiple bookings for different time slots on the same date
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
+        Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
+
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant, customer1, customer1.getCustomerContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 2, "13:00-14:00", restaurant, customer2, customer2.getCustomerContact(), 4); // Different time slot
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
         
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(2, totalBookings);
+    }
+
+    @Test
+    public void testGetBookingRecord_EmptyTimeSlot() {
+        // Test when a booking has an empty time slot
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(bookingDate, 1, "", restaurant, customer, customer.getCustomerContact(), 2); // Empty time slot
+        restaurant.addBooking(booking);
+        
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(1, totalBookings); // Should still count the booking
+    }
+
+    @Test
+    public void testGetBookingRecord_GroupedBookingsOutput() {
+        // Test grouping logic with multiple bookings at the same time
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
+        Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
+
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant, customer1, customer1.getCustomerContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 1, "12:00-13:00", restaurant, customer2, customer2.getCustomerContact(), 4); // Same time slot
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+        
+        // Capture the output to validate grouping
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(2, totalBookings);
+        
+        // Additional checks can be added if needed to validate printed output
+    }
 }
+
+
 
 

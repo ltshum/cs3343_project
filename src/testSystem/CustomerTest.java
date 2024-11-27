@@ -42,14 +42,14 @@ public class CustomerTest {
     }
 
     @Test
-    public void testConstructor() {
-        assertNotNull(customer);
-        assertEquals("testUser", customer.getUserName());
-        assertEquals("password123", customer.getPassword());
+    public void testCustomerConstructor() {
+        // Verify that the constructor initializes fields correctly
         assertEquals("John Doe", customer.getCustomerName());
         assertEquals("123456789", customer.getCustomerContact());
-        assertTrue(customer.getAllWrittenComment().isEmpty());
+        assertNotNull(customer.getAllBookings());
         assertTrue(customer.getAllBookings().isEmpty());
+        assertEquals("Username should be 'testUser'", "testUser", customer.getAccountUserName());
+        assertEquals("Password should be 'password123'", "password123", customer.getAccountPassword());
     }
 
     @Test
@@ -180,4 +180,103 @@ public class CustomerTest {
         assertEquals("John Doe", customer.getCustomerName());
         assertEquals("123456789", customer.getCustomerContact());
     }
-}
+    @Test
+    public void testgetProfileDetail() {
+    	String res= "Name: John Doe" 
+        + "\nPhone: 123456789" ;
+    	assertEquals(res,customer.getProfileDetail());
+    }
+    
+    @Test
+    public void testGetBookingRecord_GroupedBookingsOutput() {
+        // Test grouping logic with multiple bookings at the same time
+        LocalDate bookingDate = LocalDate.now();
+        Restaurant restaurant1 = new Restaurant("username",
+                "password",
+                "name",
+                "type",
+                "district",
+                "address",
+                "12345678",
+                LocalTime.parse("10:00"),
+                LocalTime.parse("20:00"),
+                Duration.ofMinutes(60),
+                3);
+        Restaurant restaurant2 = new Restaurant("username",
+                "password",
+                "name2",
+                "type",
+                "district",
+                "address",
+                "987654321",
+                LocalTime.parse("11:00"),
+                LocalTime.parse("23:00"),
+                Duration.ofMinutes(30),
+                3);
+
+
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant1, customer, customer.getCustomerContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 1, "12:00-13:00", restaurant2, customer, customer.getCustomerContact(), 4); // Same time slot
+        customer.addBooking(booking1);
+        customer.addBooking(booking2);
+        
+        // Capture the output to validate grouping     
+            int totalBookings = customer.getBookingRecord(bookingDate);
+            assertEquals(2, totalBookings);
+        }
+    @Test
+    public void testGetBookingRecord_BookingsOnDifferentDate() {
+        LocalDate differentDate = LocalDate.of(2023, 11, 26);
+        Restaurant restaurant1 = new Restaurant("username",
+                "password",
+                "name",
+                "type",
+                "district",
+                "address",
+                "12345678",
+                LocalTime.parse("10:00"),
+                LocalTime.parse("20:00"),
+                Duration.ofMinutes(60),
+                3);
+        Booking booking1 = new Booking(differentDate, 1, "12:00-13:00", restaurant1, customer, customer.getCustomerContact(), 2);
+
+        customer.addBooking(booking1);
+       
+        LocalDate bookingDate = LocalDate.now();
+        int totalBookings = customer.getBookingRecord(bookingDate);
+        assertEquals(0, totalBookings);
+    }
+
+    @Test
+    public void testGetBookingRecord_SingleBooking() {
+        // Test when there is a single booking for the given date LocalDate differentDate = LocalDate.of(2023, 11, 26);
+        Restaurant restaurant1 = new Restaurant("username",
+                "password",
+                "name",
+                "type",
+                "district",
+                "address",
+                "12345678",
+                LocalTime.parse("10:00"),
+                LocalTime.parse("20:00"),
+                Duration.ofMinutes(60),
+                3);
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant1, customer, customer.getCustomerContact(), 2);
+        customer.addBooking(booking1);
+
+        int totalBookings = customer.getBookingRecord(bookingDate);
+        assertEquals(1, totalBookings);
+    }
+
+  
+    @Test
+    public void testGetBookingRecord_EmptyBookingString() {
+        // Test when there are no bookings and ensure the output is an empty string
+        LocalDate bookingDate = LocalDate.now();
+        int output = customer.getBookingRecord(bookingDate); // Capture printed output
+        assertEquals("0", Integer.toString(output)); // Adjust as necessary for your implementation
+    }
+        // Additional checks can be added if needed to validate printed output
+    }
+
