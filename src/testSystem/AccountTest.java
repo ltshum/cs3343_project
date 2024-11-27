@@ -22,13 +22,7 @@ import java.util.Scanner;
 
 
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+
 
 public class AccountTest {
 
@@ -132,13 +126,19 @@ public class AccountTest {
         assertEquals(10, Account.getIdCounter());
     }
 
-    // New Test Cases for 100% Coverage
 
     @Test
     public void testHasNoPermissions() {
         // Test with an account that has no permissions
         Account emptyAccount = new Customer("user", "password", "John Doe", "123456789");
         assertTrue(emptyAccount.hasPermission(Resource.PROFILE, Privilege.READ));
+    }
+    
+    @Test
+    public void testHasPermissions() {
+        // Test with an account that has no permissions
+        Account emptyAccount = new Customer("user", "password", "John Doe", "123456789");
+        assertFalse(emptyAccount.hasPermission(Resource.PROFILE, Privilege.DELETE));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -158,4 +158,7 @@ public class AccountTest {
         account.edit(scanner);
         assertNotEquals("", account.getUserName()); // Ensure the name isn't set to empty
     }
+    
+    
+    
 }

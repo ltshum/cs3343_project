@@ -42,9 +42,7 @@ public class Customer extends Account {
         return customerContact;
     }
 
-    public ArrayList<Integer> getAllRestaurant() {
-        return allRestaurant;
-    }
+    
 
     public ArrayList<String> getAllWrittenComment() {
         return allWrittenComment;
@@ -58,9 +56,7 @@ public class Customer extends Account {
         this.customerContact = customerContact;
     }
 
-    public void setAllRestaurant(ArrayList<Integer> allRestaurant) {
-        this.allRestaurant = allRestaurant;
-    }
+    
 
     public void setAllWrittenComment(ArrayList<String> allWrittenComment) {
         this.allWrittenComment = allWrittenComment;
