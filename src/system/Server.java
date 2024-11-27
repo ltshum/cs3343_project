@@ -51,22 +51,27 @@ public class Server {
         return false;
     }
 
-    public Customer signUpCustomer(String username, String password, String name, String contact) {
-        Customer customer = new Customer(username, password, name, contact);
-        AccountList.add(customer);
-        System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
-        System.out.println("\n# Customer signed up successfully! #\n");
-        return customer;
-    }
-
-    public Restaurant signUpRestaurant(String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
-        Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
-        AccountList.add(restaurant);
-        //add to list
-        RestaurantAccounts.put(restaurant.getAccountUserName(), restaurant);
-        System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nRestaurant Name: " + name + "\nType: " + type + "\nAddress: " + address + "\nPhone: " + contact + "\nOpen Time: " + openTime + "\nClose Time: " + closeTime + "\nSession Duration: " + sessiDuration + "\nTable Amount: " + tableNum);
-        System.out.println("\n# Restaurant signed up successfully! #\n");
-        return restaurant;
+    public Account signUp(String role, String userName, String password, String name, String contact,
+            String type, String district, String address,
+            LocalTime openTime, LocalTime closeTime,
+            Duration sessionDuration, int tableNum) {
+        if (role.equals("CUSTOMER")) {
+            // Create a Customer account
+            Customer customer = new Customer(userName, password, name, contact);
+            System.out.println("\n# Customer signed up successfully! #");
+            AccountList.add(customer);
+            return customer;
+        } else if (role.equals("RESTAURANT")) {
+            // Create a Restaurant account
+            Restaurant restaurant = new Restaurant(userName, password, name, type, district, address, contact,
+                    openTime, closeTime, sessionDuration, tableNum);
+            System.out.println("\n# Restaurant signed up successfully! #");
+            AccountList.add(restaurant);
+            return restaurant;
+        } else {
+            System.out.println("\nError: Invalid role! Please specify 'CUSTOMER' or 'RESTAURANT'.");
+            return null;
+        }
     }
 
     public Account signIn(String username, String password) {
