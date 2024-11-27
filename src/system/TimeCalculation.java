@@ -1,9 +1,10 @@
 package system;
+
 import java.time.LocalTime;
 import java.util.Scanner;
 
-
 public class TimeCalculation {
+
     public static void main(String[] args) {
         long min;
         try (Scanner in = new Scanner(System.in)) {

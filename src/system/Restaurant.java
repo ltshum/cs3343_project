@@ -203,7 +203,7 @@ public class Restaurant extends Account {
     public String getAllComments() {
         String result = "";
         for (Comment cm : allComments) {
-            result = result + cm.getCustomer_name() + ": " + cm.getContent() + " " + cm.getRate() + "\n";
+            result = result + cm.getCommentCustomerName() + ": " + cm.getCommentContent() + " " + cm.getCommentRate() + "\n";
         }
         return result;
     }
@@ -428,7 +428,7 @@ public class Restaurant extends Account {
 
     @Override
     public int getBookingRecord(LocalDate date) {
-        Collections.sort(allBookings, Comparator.comparing(Booking::getTimeslot));
+        Collections.sort(allBookings, Comparator.comparing(Booking::getBookingTimeslot));
         int totalBookings = 0;
         ArrayList<Booking> requiredBookings = new ArrayList<>();
         for (Booking booking : allBookings) {
@@ -442,7 +442,7 @@ public class Restaurant extends Account {
         for (Booking booking : requiredBookings) {
             boolean added = false;
             for (List<Booking> group : groupedBookings) {
-                if (!group.isEmpty() && group.get(0).getTimeslot().equals(booking.getTimeslot())) {
+                if (!group.isEmpty() && group.get(0).getBookingTimeslot().equals(booking.getBookingTimeslot())) {
                     group.add(booking);
                     added = true;
                     break;
@@ -455,17 +455,17 @@ public class Restaurant extends Account {
             }
         }
         for (List<Booking> group : groupedBookings) {
-            System.out.println(group.get(0).getTimeslot());
+            System.out.println(group.get(0).getBookingTimeslot());
             StringBuilder tableID = new StringBuilder("            ");
             StringBuilder booker = new StringBuilder("            ");
             StringBuilder ppl = new StringBuilder("            ");
             StringBuilder contact = new StringBuilder("            ");
             StringBuilder arrived = new StringBuilder("            ");
             for (Booking booking : group) {
-                tableID.append(String.format("| Table ID: %-13d ", booking.getTableID()));
-                booker.append(String.format("| Booker: %-13s ", booking.getCustomer().getCustomerName()));
-                ppl.append(String.format("| Ppl No: %-13s ", booking.getPpl()));
-                contact.append(String.format("| Contact: %-13s ", booking.getCustomerContact()));
+                tableID.append(String.format("| Table ID: %-13d ", booking.getBookingTableID()));
+                booker.append(String.format("| Booker: %-13s ", booking.getBookingCustomer().getCustomerName()));
+                ppl.append(String.format("| Ppl No: %-13s ", booking.getBookingPpl()));
+                contact.append(String.format("| Contact: %-13s ", booking.getBookingCustomerContact()));
                 arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
             }
             System.out.println(tableID.toString());

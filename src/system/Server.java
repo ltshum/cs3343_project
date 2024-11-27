@@ -10,12 +10,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import acm.Permission;
 import acm.Resource;
+import acm.Role;
 
 public class Server {
 
@@ -101,7 +103,7 @@ public class Server {
 
     public String getRestaurantCommentString(Restaurant ac) {
         String result = "";
-        for (Comment cm : ac.getAllComments()) {
+        for (Comment cm : ac.getAllCommentsList()) {
             result = result + cm.getCommentCustomerName() + ": " + cm.getCommentContent() + " " + cm.getCommentRate() + "\n";
         }
         return result;

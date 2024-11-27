@@ -23,8 +23,16 @@ public class Booking {
         this.ppl = ppl;
     }
 
-    public String getCustomerBookingData(){
+    public String getCustomerBookingData() {
         return restaurant.getRestaurantName() + ": " + timeslot + " " + ppl + "ppl" + "\n";
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 
     // Getter methods

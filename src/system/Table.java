@@ -1,9 +1,10 @@
 package system;
-import java.time.LocalTime;
+
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.Duration;
 
 public class Table {
 
@@ -54,7 +55,7 @@ public class Table {
     public boolean isTimeslotAvailable(String timeslotSession, LocalDate date) {
         for (Timeslot timeslot : bookedTimeSlot) {
             if (timeslot.getTimeslotSession().equals(timeslotSession) && timeslot.getTimeslotDate().equals(date)) {
-                return false; 
+                return false;
             }
         }
         return true;
@@ -97,11 +98,10 @@ public class Table {
 
         long timeMinsInt = timeMins == null ? 0 : timeMins.toMinutes();
 
-
         //boolean available = false;
-        for (int i = 0; i < allTimeslots.size(); i++){
+        for (int i = 0; i < allTimeslots.size(); i++) {
             Timeslot ts = allTimeslots.get(i);
-            if (bookedTimeSlot.contains(ts)){
+            if (bookedTimeSlot.contains(ts)) {
                 continue;
             }
             //current timeslot is available
@@ -109,24 +109,24 @@ public class Table {
             LocalTime originalStartT = LocalTime.parse(ts.getTimeslotSession().split(" - ")[0]);
             LocalTime currentEndT = LocalTime.parse(ts.getTimeslotSession().split(" - ")[1]);
             LocalTime diff = currentEndT.minusNanos(originalStartT.toNanoOfDay());
-            if (diff.toSecondOfDay() >= timeMinsInt){
+            if (diff.toSecondOfDay() >= timeMinsInt) {
                 return true;
             }
-            
-            while (diff.toSecondOfDay() < timeMinsInt){ //if not enough time
+
+            while (diff.toSecondOfDay() < timeMinsInt) { //if not enough time
                 i++;
                 Timeslot ts_2 = allTimeslots.get(i);
-                if (i >= allTimeslots.size() || bookedTimeSlot.contains(ts_2)){
+                if (i >= allTimeslots.size() || bookedTimeSlot.contains(ts_2)) {
                     break;
                 }
                 currentEndT = LocalTime.parse(ts_2.getTimeslotSession().split(" - ")[1]);
                 diff = currentEndT.minusNanos(originalStartT.toNanoOfDay());
-                if (diff.toSecondOfDay() >= timeMinsInt){
+                if (diff.toSecondOfDay() >= timeMinsInt) {
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -142,19 +142,19 @@ public class Table {
 
         Timeslot ts;
         //boolean available = false;
-        for (int i = 0; i < allTimeslots.size(); i++){
+        for (int i = 0; i < allTimeslots.size(); i++) {
             ts = allTimeslots.get(i);
-            if (LocalTime.parse(ts.getTimeslotSession().split(" - ")[1]).isBefore(startTimeT) ){
+            if (LocalTime.parse(ts.getTimeslotSession().split(" - ")[1]).isBefore(startTimeT)) {
                 continue;
             }
             //now the current ts has the start time. Now we need to find the ts that has the end time. If any ts inbetween is in bookedTimeSlot return false
-            if(bookedTimeSlot.contains(ts)){
+            if (bookedTimeSlot.contains(ts)) {
                 return false;
             }
-            if (LocalTime.parse(ts.getTimeslotSession().split(" - ")[1]).isAfter(endTimeT) ){
+            if (LocalTime.parse(ts.getTimeslotSession().split(" - ")[1]).isAfter(endTimeT)) {
                 return true;
             }
-            
+
         }
         return false;
     }
