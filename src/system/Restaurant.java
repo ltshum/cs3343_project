@@ -103,7 +103,8 @@ public class Restaurant extends Account {
         return 0;
     }
 
-    public void getAllTableInfo() {
+    public StringBuilder getAllTableInfo() {
+        StringBuilder result= new StringBuilder();
         StringBuilder tableID = new StringBuilder("                ");
         StringBuilder seat = new StringBuilder("                ");
         StringBuilder status = new StringBuilder("                ");
@@ -112,9 +113,12 @@ public class Restaurant extends Account {
             seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
             status.append(String.format("| Status: %-15s ", table.getStatus()));
         }
-        System.out.println(tableID.toString());
-        System.out.println(seat.toString());
-        System.out.println(status.toString());
+
+        result.append(tableID.toString()).append("\n");
+        result.append(seat.toString()).append("\n");
+        result.append(status.toString()).append("\n");
+        System.out.println(result.toString());
+        return result;
     }
 
     public void updateTableInfo(Scanner in, int tableID) {
