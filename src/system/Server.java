@@ -10,14 +10,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import acm.Permission;
 import acm.Resource;
-import acm.Role;
 
 public class Server {
 
@@ -101,14 +99,6 @@ public class Server {
         return ac.getAccountPermissions().get(inputNumber - 1).getResource();
     }
 
-    public String getRestaurantCommentString(Restaurant ac) {
-        String result = "";
-        for (Comment cm : ac.getAllCommentsList()) {
-            result = result + cm.getCommentCustomerName() + ": " + cm.getCommentContent() + " " + cm.getCommentRate() + "\n";
-        }
-        return result;
-    }
-
     public String getUserDetail(Account ac) {
         System.out.println("\nUsername: " + ac.getAccountUserName() + "\nPassword: " + ac.getAccountPassword());
         return ac.getProfileDetail();
@@ -119,75 +109,7 @@ public class Server {
     }
 
     public int getViewBookingRecord(Account ac, LocalDate date) {
-        List<Role> roles = ac.getRoles();
-        for (Role role : roles) {
-            if (role == Role.CUSTOMER) {
-                Customer customer = (Customer) ac;
-                ArrayList<Booking> allbookings = customer.getAllBookings();
-                String bookingString = "";
-                int index = 0;
-                for (Booking booking : allbookings) {
-                    if (booking.getBookingDate().equals(date)) {
-                        index++;
-                        bookingString += index + ". " + booking.getBookingRestaurant().getRestaurantName() + ": " + booking.getBookingTimeslot() + " " + booking.getBookingPpl() + "ppl" + "\n";
-                    }
-                }
-                System.out.println(bookingString);
-                return index;
-            }
-            if (role == Role.RESTAURANT) {
-                Restaurant restaurant = (Restaurant) ac;
-                ArrayList<Booking> allbookings = restaurant.getAllBookings();
-                Collections.sort(allbookings, Comparator.comparing(Booking::getBookingTimeslot));
-                int totalBookings = 0;
-                ArrayList<Booking> requiredBookings = new ArrayList<>();
-                for (Booking booking : allbookings) {
-                    if (booking.getBookingDate().equals(date)) {
-                        totalBookings++;
-                        requiredBookings.add(booking);
-                    }
-                }
-                List<List<Booking>> groupedBookings = new ArrayList<>();
-
-                for (Booking booking : requiredBookings) {
-                    boolean added = false;
-                    for (List<Booking> group : groupedBookings) {
-                        if (!group.isEmpty() && group.get(0).getBookingTimeslot().equals(booking.getBookingTimeslot())) {
-                            group.add(booking);
-                            added = true;
-                            break;
-                        }
-                    }
-                    if (!added) {
-                        List<Booking> newGroup = new ArrayList<>();
-                        newGroup.add(booking);
-                        groupedBookings.add(newGroup);
-                    }
-                }
-                for (List<Booking> group : groupedBookings) {
-                    System.out.println(group.get(0).getBookingTimeslot());
-                    StringBuilder tableID = new StringBuilder("            ");
-                    StringBuilder booker = new StringBuilder("            ");
-                    StringBuilder ppl = new StringBuilder("            ");
-                    StringBuilder contact = new StringBuilder("            ");
-                    StringBuilder arrived = new StringBuilder("            ");
-                    for (Booking booking : group) {
-                        tableID.append(String.format("| Table ID: %-13d ", booking.getBookingTableID()));
-                        booker.append(String.format("| Booker: %-13s ", booking.getBookingCustomer().getCustomerName()));
-                        ppl.append(String.format("| Ppl No: %-13s ", booking.getBookingPpl()));
-                        contact.append(String.format("| Contact: %-13s ", booking.getBookingCustomerContact()));
-                        arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
-                    }
-                    System.out.println(tableID.toString());
-                    System.out.println(booker.toString());
-                    System.out.println(ppl.toString());
-                    System.out.println(contact.toString());
-                    System.out.println(arrived.toString());
-                }
-                return totalBookings;
-            }
-        }
-        return 0;
+        return ac.getBookingRecord(date);
     }
 
     public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
