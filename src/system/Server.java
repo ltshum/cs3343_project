@@ -69,7 +69,6 @@ public class Server {
             AccountList.add(restaurant);
             return restaurant;
         } else {
-            System.out.println("\nError: Invalid role! Please specify 'CUSTOMER' or 'RESTAURANT'.");
             return null;
         }
     }
