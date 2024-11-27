@@ -1,7 +1,9 @@
 package system;
+
 import java.util.List;
 
 public class RestaurantLog {
+
     private final int rank;
     private final float rate;
     private final int totalPpl;

@@ -1,6 +1,10 @@
-package system;
+package View;
 
 import java.util.Scanner;
+
+import acm.Resource;
+import system.Account;
+import system.Server;
 
 public class Home {
 
@@ -17,7 +21,7 @@ public class Home {
             System.out.println("\n# Welcome to Home Page #");
 
             int count = server.getPermissionNumber(account);
-            
+
             System.out.println("\n" + count + ". " + "LOGOUT\n");
             boolean isValidOption = false;
             while (!isValidOption) {
@@ -26,7 +30,7 @@ public class Home {
                     int op = Integer.parseInt(in.nextLine());
                     if (op >= 1 && op <= server.getPermissionSize(account)) {
                         isValidOption = true;
-                        Resource selectedResource = server.getPermissionResource(account ,op);
+                        Resource selectedResource = server.getPermissionResource(account, op);
                         //System.out.println("Selected resource: " + selectedResource);
                         switch (selectedResource) {
                             case PROFILE -> {
@@ -60,9 +64,9 @@ public class Home {
                     }
                 } catch (NumberFormatException inputTypeException) {
                     System.out.println("\nInvalid input. Please input again.");
-                }                
+                }
             }
-            
+
         }
     }
 }

@@ -1,6 +1,10 @@
-package system;
+package View;
 
 import java.util.Scanner;
+
+import system.Account;
+import system.Restaurant;
+import system.Server;
 
 public class TableManagement {
 
@@ -17,7 +21,6 @@ public class TableManagement {
             server.getAllTableInfo(account);
             System.out.println("\n1. Edit");
             System.out.println("\n2. Back");
-        
 
             boolean isValidOption = false;
             while (!isValidOption) {
@@ -56,7 +59,5 @@ public class TableManagement {
             }
         }
 
-        
-        
     }
 }

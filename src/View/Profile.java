@@ -1,6 +1,10 @@
-package system;
+package View;
 
 import java.util.Scanner;
+
+import system.Account;
+import system.Restaurant;
+import system.Server;
 
 public class Profile {
 
@@ -12,10 +16,10 @@ public class Profile {
     }
 
     public void displayProfile(Scanner in) {
-        while (true) { 
+        while (true) {
             System.out.println("\n# Here is your information #");
             System.out.println("\n# Username is not allowed to change #");
-            
+
             if (account instanceof Restaurant) {
                 System.out.println("# Comment is not allowed to change #");
             }
@@ -23,7 +27,7 @@ public class Profile {
             System.out.println("\n1. Edit");
             System.out.println("\n2. Back");
 
-            boolean isValidOption = false; 
+            boolean isValidOption = false;
             while (!isValidOption) {
                 System.out.print("\nWhat action do you want to do?: ");
                 try {
@@ -45,8 +49,8 @@ public class Profile {
                     System.out.print("\nInvalid input! Please try again.");
                 }
             }
-            
+
         }
-        
+
     }
 }

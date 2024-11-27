@@ -1,9 +1,13 @@
-package system;
+package View;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import system.Account;
+import system.Restaurant;
+import system.Server;
 
 public class SearchRestaurant {
 
@@ -14,15 +18,15 @@ public class SearchRestaurant {
         this.account = account;
     }
 
-    private boolean isValidRating(String rateRange){
-        if (rateRange.equals("null")){
+    private boolean isValidRating(String rateRange) {
+        if (rateRange.equals("null")) {
             return true;
         }
-        if( rateRange.length() == 1 && rateRange.charAt(0)>='0' && rateRange.charAt(0)<='5' ){
+        if (rateRange.length() == 1 && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5') {
             return true;
         }
 
-        return rateRange.length() == 4 && rateRange.charAt(1)=='-' && rateRange.charAt(2)=='-' && rateRange.charAt(0)>='0' && rateRange.charAt(0)<='5' && rateRange.charAt(3)>='0' && rateRange.charAt(3)<='5' && rateRange.charAt(0) <=rateRange.charAt(3);
+        return rateRange.length() == 4 && rateRange.charAt(1) == '-' && rateRange.charAt(2) == '-' && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5' && rateRange.charAt(3) >= '0' && rateRange.charAt(3) <= '5' && rateRange.charAt(0) <= rateRange.charAt(3);
     }
 
     public void displaySearchRestaurnt(Scanner in) {
@@ -41,61 +45,60 @@ public class SearchRestaurant {
         do {
             System.out.print("Restaurant Rate(0--5)?: ");
             rateRange = in.nextLine();
-            if (!isValidRating(rateRange)){
+            if (!isValidRating(rateRange)) {
                 System.out.print("Invalid input\n");
             }
         } while (!isValidRating(rateRange));
-        
+
         String ppl;
-        while (true){
+        while (true) {
             System.out.print("How many ppl?: ");
             ppl = in.nextLine();
-            if (ppl.equals("null")){
+            if (ppl.equals("null")) {
                 break;
             }
-            try{
+            try {
                 Integer.valueOf(ppl);
                 break;
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.print("Invalid input\n");
             }
         }
-        
+
         String startTime;
-        while (true){
+        while (true) {
             System.out.print("When you want to eat(HH:mm)?: ");
             startTime = in.nextLine();
-            if (startTime.equals("null")){
+            if (startTime.equals("null")) {
                 break;
             }
-            try{
+            try {
                 LocalTime.parse(startTime);
                 break;
-            } catch (DateTimeParseException e){
+            } catch (DateTimeParseException e) {
                 System.out.print("Invalid input\n");
             }
         }
-        
-        
+
         String session;
-        while (true){
+        while (true) {
             System.out.print("How long you prefer to eat(mins)?: ");
             session = in.nextLine();
-            if (session.equals("null")){
+            if (session.equals("null")) {
                 break;
             }
-            try{
+            try {
                 Integer.valueOf(session);
                 break;
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.print("Invalid input\n");
             }
         }
 
         ArrayList<Restaurant> results = server.searchRestaurantsIn(restaurantName, district, rateRange, type, ppl, startTime, session);
-        
+
         RestaurantList RestaurantList = new RestaurantList(results);
-        RestaurantList.displayRestaurantList(in,account);
+        RestaurantList.displayRestaurantList(in, account);
 
     }
 }

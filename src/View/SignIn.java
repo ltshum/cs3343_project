@@ -1,6 +1,9 @@
-package system;
+package View;
 
 import java.util.Scanner;
+
+import system.Account;
+import system.Server;
 
 public class SignIn {
 

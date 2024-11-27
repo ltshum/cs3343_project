@@ -1,12 +1,17 @@
 package testSystem;
 
-
 import org.junit.After;
 
 import system.Account;
 import system.Booking;
 import org.junit.Before;
 import org.junit.Test;
+
+import View.Home;
+import acm.Permission;
+import acm.Privilege;
+import acm.Resource;
+import acm.Role;
 import system.Comment;
 
 import static org.junit.Assert.*;
@@ -19,19 +24,13 @@ import java.util.Scanner;
 import java.util.Set;
 
 import system.Customer;
-import system.Home;
-import system.Permission;
-import system.Privilege;
-import system.Resource;
 import system.Restaurant;
-import system.Role;
 import system.Server;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class CustomerTest {
 
@@ -68,19 +67,12 @@ public class CustomerTest {
     public void testGetCustomerContact() {
         assertEquals("123456789", customer.getCustomerContact());
     }
-    
-    
-
 
     @Test
     public void testSetCustomerContact() {
         customer.setCustomerContact("987654321");
         assertEquals("987654321", customer.getCustomerContact());
     }
-
-
-
-   
 
     @Test
     public void testSetAndGetAllWrittenComment() {
@@ -95,26 +87,25 @@ public class CustomerTest {
         System.out.println("This is the start of the test add booking");
 
         // Create a restaurant instance
-        Restaurant restaurant = new Restaurant("username", 
-                "password", 
-                "name", 
-                "type", 
-                "district", 
-                "address", 
-                "12345678", 
-                LocalTime.parse("10:00"), 
-                LocalTime.parse("20:00"), 
+        Restaurant restaurant = new Restaurant("username",
+                "password",
+                "name",
+                "type",
+                "district",
+                "address",
+                "12345678",
+                LocalTime.parse("10:00"),
+                LocalTime.parse("20:00"),
                 Duration.ofMinutes(60),
                 3);
 
         // Create a customer instance
-
         // Set up the server and Home page
         Server server = Server.getInstance();
         Home hm = new Home(restaurant);
 
         // Prepare input for the Scanner
-        String[] input = {"3", "1", "1", "5", "1", "2", "2", "2","5"}; // Adjust based on actual expected inputs
+        String[] input = {"3", "1", "1", "5", "1", "2", "2", "2", "5"}; // Adjust based on actual expected inputs
         Scanner scanner = testInput.input(input); // Use the testInput to create a Scanner
         hm.display(scanner); // Pass the scanner directly
         // Create a booking instance
@@ -131,8 +122,6 @@ public class CustomerTest {
 
     }
 
-
-   
     @Test
     public void testEditName() {
         String input = "1\nNew Name\nX\n"; // Edit name to "New Name" and exit
@@ -147,12 +136,13 @@ public class CustomerTest {
         String input = "2\n987654321\nX\n"; // Edit phone to "987654321" and exit
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        
+
         customer.edit(new Scanner(System.in));
 //
         assertEquals("987654321", customer.getCustomerContact());
-   }
+    }
 //
+
     @Test
     public void testEditInvalidOption() {
         String input = "3\nX\n"; // Invalid option and then exit
@@ -165,18 +155,20 @@ public class CustomerTest {
         assertEquals("123456789", customer.getCustomerContact());
     }
 //    
+
     @Test
     public void testEditInvalidFormat() {
         String input = "hi\nX\n"; // Invalid option and then exit
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-        
+
         customer.edit(new Scanner(System.in));
-        
+
         assertEquals("John Doe", customer.getCustomerName());
         assertEquals("123456789", customer.getCustomerContact());
     }
 //
+
     @Test
     public void testEditExit() {
         String input = "X\n"; // Exit immediately

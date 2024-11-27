@@ -1,7 +1,12 @@
-package system;
+package View;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import system.Account;
+import system.Customer;
+import system.Restaurant;
+import system.Server;
 
 public class RestaurantList {
 
@@ -12,7 +17,7 @@ public class RestaurantList {
         this.result = result;
     }
 
-    public void displayRestaurantList(Scanner in,Account ac) {
+    public void displayRestaurantList(Scanner in, Account ac) {
 
         while (true) {
             int count = 1;
@@ -33,10 +38,10 @@ public class RestaurantList {
                     try {
                         int op = Integer.parseInt(input);
                         try {
-                            if (ac instanceof Customer customer){
+                            if (ac instanceof Customer customer) {
                                 BookingProfile bookingProfile = new BookingProfile(result.get(op - 1), customer);
                                 bookingProfile.displayBookingProfile(in);
-                            }else{
+                            } else {
                                 BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));
                                 bookingProfile.displayBookingProfile(in);
                             }
@@ -49,8 +54,7 @@ public class RestaurantList {
                     }
                 }
             }
-            
-            
+
         }
     }
 }

@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import acm.Permission;
+import acm.Resource;
+
 public class Server {
 
     private static final Server instance = new Server();
@@ -22,7 +25,8 @@ public class Server {
     private final Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
     private final Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
-    private Server() { }
+    private Server() {
+    }
 
     public static Server getInstance() {
         return instance;
@@ -39,7 +43,6 @@ public class Server {
     // public void updateSeatNo(Account ac, int tableID, int seatNum) {
     //     ac.updateSeatNo(tableID, seatNum);
     // }
-
     public boolean isUsernameExist(String username) {
         if (AccountList.stream().anyMatch(user -> user.getAccountUserName().equals(username))) {
             System.out.print("\nError: Username already exists! Please input another.");
@@ -81,7 +84,7 @@ public class Server {
 
     public int getPermissionNumber(Account ac) {
         int count = 1;
-        for(Permission permission: ac.getAccountPermissions()) {
+        for (Permission permission : ac.getAccountPermissions()) {
             System.out.println("\n" + count + ". " + permission.getResource());
             count++;
         }
@@ -119,8 +122,8 @@ public class Server {
         return false;
     }
 
-    public boolean tableValidation(Restaurant ac, int tableID){
-        if(ac.tableValidation(tableID)) {
+    public boolean tableValidation(Restaurant ac, int tableID) {
+        if (ac.tableValidation(tableID)) {
             return true;
         } else {
             return false;
@@ -158,12 +161,11 @@ public class Server {
         }
         return true;
     }
-    
 
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String commentString) {
         Customer customer = (Customer) ac;
         try {
-            Restaurant restaurant =  getBookingToBeComment(ac, inputNumber, date).getRestaurant();
+            Restaurant restaurant = getBookingToBeComment(ac, inputNumber, date).getRestaurant();
             ArrayList<Comment> allComments = restaurant.getAllCommentsList();
             Comment comment = new Comment(customer.getCustomerName(), commentString, rate, date);
             allComments.add(comment);
@@ -192,10 +194,10 @@ public class Server {
     }
 
     public String getListInfo(Restaurant restaurant) {
-        return restaurant.getRestaurantName() + 
-                "\n   Rate: " + restaurant.getRate() + 
-                "\n   District: " + restaurant.getDistrict() + 
-                "\n   Type: " + restaurant.getType();
+        return restaurant.getRestaurantName()
+                + "\n   Rate: " + restaurant.getRate()
+                + "\n   District: " + restaurant.getDistrict()
+                + "\n   Type: " + restaurant.getType();
     }
 
     public Restaurant getRestaurantAccountByUserName(String username) {
@@ -206,12 +208,12 @@ public class Server {
         }
         return null;
     }
-    
+
     public String getRestaurantBookingDetail(Restaurant restaurant) {
 
         Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
-           return requiredRestaurant.getProfileDetail();
+            return requiredRestaurant.getProfileDetail();
         }
         return "Restaurant not found.";
     }
@@ -220,7 +222,7 @@ public class Server {
         Restaurant restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
         return restaurant.availableTableID(ppl, timeslotSession, date);
     }
-    
+
     public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
         Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant == null) {
@@ -237,7 +239,7 @@ public class Server {
         Restaurant restaurant = (Restaurant) ac;
         restaurant.getAllTableInfo();
     }
-    
+
     public void updateTableInfo(Account ac, Scanner in, int tableID) {
         Restaurant restaurant = (Restaurant) ac;
         restaurant.updateTableInfo(in, tableID);
@@ -289,13 +291,13 @@ public class Server {
             restaurantLogDataMap.put(restaurant.getAccountUserName(), restaurantLogData);
 
         }
-        
+
         // Sort the map by thisWeekRate
         @SuppressWarnings("unused")
         Map<String, RestaurantLogData> sortedByThisWeekRate = restaurantLogDataMap.entrySet()
-            .stream()
-            .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                .stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
         // Update thisWeekRank based on the index after sorting
         int thisWeekRank = 1;
@@ -313,7 +315,6 @@ public class Server {
             entry.getValue().setThisWeekRank(thisWeekRank);
         }
 
-        
         // Sort the map by lastWeekRate 
         @SuppressWarnings("unused")
         Map<String, RestaurantLogData> sortedByLastWeekRate = restaurantLogDataMap.entrySet()
@@ -389,5 +390,3 @@ public class Server {
         System.out.println(report.toString());
     }
 }
-
-

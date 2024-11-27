@@ -1,10 +1,16 @@
-package system;
+package View;
+
 import java.util.Scanner;
 
+import system.Account;
+import system.Restaurant;
+import system.Server;
+
 public class WeeklyReport {
+
     Server server = Server.getInstance();
     private final Restaurant restaurant;
-    
+
     public WeeklyReport(Account account) {
         this.restaurant = (Restaurant) account;
     }
@@ -14,7 +20,7 @@ public class WeeklyReport {
         server.generateRestaurantLog();
         server.generateWeeklyReport(restaurant);
         System.out.println("1. Exit\n");
-       
+
         boolean isValidOption = false;
         while (!isValidOption) {
             System.out.print("What action do you want to do?: ");
@@ -28,6 +34,6 @@ public class WeeklyReport {
             } catch (NumberFormatException e) {
                 System.out.println("\nInvalid option. Please try again.");
             }
-        }        
+        }
     }
 }

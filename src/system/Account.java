@@ -1,7 +1,13 @@
 package system;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+
+import acm.Permission;
+import acm.Privilege;
+import acm.Resource;
+import acm.Role;
 
 public abstract class Account {
 
@@ -85,6 +91,5 @@ public abstract class Account {
 
     public abstract int getBookingRecord(LocalDate date);
 
-    protected abstract void updateSeatNo(int tableID, int seatNum);
-
+    //protected abstract void updateSeatNo(int tableID, int seatNum);
 }

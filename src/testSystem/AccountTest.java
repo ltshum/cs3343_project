@@ -1,24 +1,15 @@
 package testSystem;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-
-import system.Account;
-
+import acm.Permission;
+import acm.Privilege;
+import acm.Resource;
+import acm.Role;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import system.Role;
-import system.Permission;
-import system.Customer;
-import system.Resource;
-import system.Privilege;
-
 import java.util.Scanner;
-
+import system.Account;
+import system.Customer;
 
 public class AccountTest {
 
@@ -30,7 +21,7 @@ public class AccountTest {
         // Set up roles and permissions
         Role role = Role.CUSTOMER;
         permission = new Permission(role, Resource.PROFILE, Collections.singleton(Privilege.READ));
-        
+
         // Create an instance of Account (using a concrete subclass, e.g., Customer)
         account = new Customer("user", "password", "John Doe", "123456789");
         account.setPermissions(Arrays.asList(permission)); // Ensure permissions are set
@@ -72,7 +63,7 @@ public class AccountTest {
 
     @Test
     public void testGetId() {
-    	System.out.println("This is the new id: " + account.getId());
+        System.out.println("This is the new id: " + account.getId());
         assertEquals(7, account.getId());
     }
 
@@ -103,8 +94,6 @@ public class AccountTest {
         assertEquals(newPermission, account.getAccountPermissions().get(0));
     }
 
-    
-    
     @Test
     public void testSetId() {
         account.setId(3);
@@ -122,14 +111,13 @@ public class AccountTest {
         assertEquals(10, Account.getIdCounter());
     }
 
-
     @Test
     public void testHasNoPermissions() {
         // Test with an account that has no permissions
         Account emptyAccount = new Customer("user", "password", "John Doe", "123456789");
         assertTrue(emptyAccount.hasPermission(Resource.PROFILE, Privilege.READ));
     }
-    
+
     @Test
     public void testHasPermissions() {
         // Test with an account that has no permissions
@@ -154,7 +142,5 @@ public class AccountTest {
         account.edit(scanner);
         assertNotEquals("", account.getAccountUserName()); // Ensure the name isn't set to empty
     }
-    
-    
-    
+
 }

@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import acm.Permission;
+import acm.Privilege;
+import acm.Resource;
+import acm.Role;
+
 public class Customer extends Account {
 
     private String customerName;
@@ -43,8 +48,6 @@ public class Customer extends Account {
         return customerContact;
     }
 
-    
-
     public ArrayList<String> getAllWrittenComment() {
         return allWrittenComment;
     }
@@ -57,16 +60,14 @@ public class Customer extends Account {
         this.customerContact = customerContact;
     }
 
-    
-
     public void setAllWrittenComment(ArrayList<String> allWrittenComment) {
         this.allWrittenComment = allWrittenComment;
     }
 
     @Override
-    public String getProfileDetail(){
+    public String getProfileDetail() {
         return "Name: " + this.getCustomerName()
-                        + "\nPhone: " + this.getCustomerContact();
+                + "\nPhone: " + this.getCustomerContact();
     }
 
     @Override
@@ -109,17 +110,17 @@ public class Customer extends Account {
     }
 
     @Override
-    public int getBookingRecord(LocalDate date){
+    public int getBookingRecord(LocalDate date) {
         String bookingString = "";
-                int index = 0;
-                for (Booking booking : allBookings) {
-                    if (booking.getDate().equals(date)) {
-                        index++;
-                        bookingString += index + ". " + booking.getCustomerBookingData();
-                    }
-                }
-                System.out.println(bookingString);
-                return index;
+        int index = 0;
+        for (Booking booking : allBookings) {
+            if (booking.getDate().equals(date)) {
+                index++;
+                bookingString += index + ". " + booking.getCustomerBookingData();
+            }
+        }
+        System.out.println(bookingString);
+        return index;
     }
 
     public void addBooking(Booking bk) {

@@ -1,4 +1,4 @@
-package system;
+package acm;
 
 public enum Privilege {
     READ,

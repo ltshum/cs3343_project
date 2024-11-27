@@ -1,9 +1,11 @@
-package system;
+package View;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+
+import system.Server;
 
 public class SignUp {
 
@@ -16,7 +18,6 @@ public class SignUp {
         System.out.print("\n1. Sign-up as Customer\n");
         System.out.print("\n2. Sign-up as Restaurant\n");
         System.out.print("\n3. Back\n");
-       
 
         boolean isValidRole = false;
         while (!isValidRole) {
@@ -127,7 +128,6 @@ public class SignUp {
                             }
                         }
 
-
                         server.signUpRestaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
                         isValidRole = true;
                     }
@@ -140,10 +140,9 @@ public class SignUp {
             } catch (NumberFormatException e) {
                 System.out.print("\nInvalid input! Please input again.");
             }
-            
+
         }
 
     }
-
 
 }
