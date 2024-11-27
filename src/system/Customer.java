@@ -12,7 +12,7 @@ public class Customer extends Account {
 
     private String customerName;
     private String customerContact;
-    private ArrayList<Integer> allRestaurant = new ArrayList<>();
+//    private ArrayList<Integer> allRestaurant = new ArrayList<>();
     private ArrayList<String> allWrittenComment = new ArrayList<>();
     private final ArrayList<Booking> allBookings = new ArrayList<>();
 
@@ -114,9 +114,10 @@ public class Customer extends Account {
         this.allBookings.add(bk);
     }
 
-    @Override
-    protected void updateSeatNo(int tableID, int seatNum) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateSeatNo'");
-    }
+
+//    @Override
+//    protected void updateSeatNo(int tableID, int seatNum) {
+//        // TODO Auto-generated method stub
+//        throw new UnsupportedOperationException("Unimplemented method 'updateSeatNo'");
+//    }
 }

@@ -4,10 +4,18 @@ import acm.Permission;
 import acm.Privilege;
 import acm.Resource;
 import acm.Role;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import system.Account;
 import system.Customer;
 
