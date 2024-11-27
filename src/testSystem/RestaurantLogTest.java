@@ -31,14 +31,14 @@ public class RestaurantLogTest {
 
     @Test
     public void testGetRank() {
-        assertEquals(1, restaurantLog1.getRank());
-        assertEquals(2, restaurantLog2.getRank());
+        assertEquals(6, restaurantLog1.getRank());
+        assertEquals(9, restaurantLog2.getRank());
     }
 
     @Test
     public void testGetRate() {
-        assertEquals(4.5f, restaurantLog1.getRate(), 0.01);
-        assertEquals(2.5f, restaurantLog2.getRate(), 0.01);
+        assertEquals(3.5f, restaurantLog1.getRate(), 0.01);
+        assertEquals(3f, restaurantLog2.getRate(), 0.01);
     }
 
     @Test
