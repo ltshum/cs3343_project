@@ -13,7 +13,7 @@ public final class SearchCriteria {
     private String type;
     private int ppl;
     private LocalTime startTime;
-    private Duration duration;
+    private Duration duration = null;
 
     public boolean isNonNull(String input) {
         return !input.equals("null");
@@ -145,7 +145,7 @@ public final class SearchCriteria {
             for (Table t : tables){
                 boolean status;
                 if (startTime != null){
-                    status = t.canbook(ppl, duration, startTime);
+                    status = t.canbookWithStartTime(ppl, duration, startTime);
                 } else {
                     status = t.canbook(ppl, duration);
                 }
@@ -157,12 +157,7 @@ public final class SearchCriteria {
         }
             // if (ppl >0 && ppl < r.get)
 
-        Comparator<Restaurant> sorter = new Comparator<Restaurant>() {
-            @Override
-            public int compare(final Restaurant r1, final Restaurant r2) {
-                return getSearchScore(r1) - getSearchScore(r2);
-            }
-        };
+        Comparator<Restaurant> sorter = (final Restaurant r1, final Restaurant r2) -> getSearchScore(r1) - getSearchScore(r2);
         result.sort(sorter.reversed());
         return result;
     }

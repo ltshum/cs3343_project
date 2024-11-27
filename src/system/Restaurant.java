@@ -1,6 +1,7 @@
 package system;
 
 // Other imports as needed
+import acm.Role;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,8 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-
-import acm.Role;
 
 public class Restaurant extends Account {
 
@@ -107,16 +106,13 @@ public class Restaurant extends Account {
         StringBuilder result= new StringBuilder();
         StringBuilder tableID = new StringBuilder("                ");
         StringBuilder seat = new StringBuilder("                ");
-        StringBuilder status = new StringBuilder("                ");
         for (Table table : allTables) {
             tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
             seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
-            status.append(String.format("| Status: %-15s ", table.getStatus()));
         }
 
         result.append(tableID.toString()).append("\n");
         result.append(seat.toString()).append("\n");
-        result.append(status.toString()).append("\n");
         System.out.println(result.toString());
         return result;
     }
@@ -422,7 +418,7 @@ public class Restaurant extends Account {
         int totalBookings = 0;
         ArrayList<Booking> requiredBookings = new ArrayList<>();
         for (Booking booking : allBookings) {
-            if (booking.getDate().equals(date)) {
+            if (booking.getBookingDate().equals(date)) {
                 totalBookings++;
                 requiredBookings.add(booking);
             }

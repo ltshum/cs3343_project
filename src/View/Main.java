@@ -3,7 +3,6 @@ package View;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Scanner;
-
 import system.Restaurant;
 import system.Server;
 
@@ -15,7 +14,7 @@ public class Main {
 
         //For Test
         server.signUp("CUSTOMER", "1", "1", "1", "1", null, null, null, null, null, null, 0);
-        Restaurant testres = (Restaurant) (server.signUp("RESTAURANT", "2", "2", "1", "1", "d", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3));
+        server.signUp("RESTAURANT", "2", "2", "1", "1", "d", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
         //server.updateSeatNo(testres,1,6);
         //Test
         Restaurant r1 = new Restaurant("AC1", "2", "AC1", "Japan", "Kowloon Tong", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);

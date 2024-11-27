@@ -12,7 +12,6 @@ public class Customer extends Account {
 
     private String customerName;
     private String customerContact;
-    private ArrayList<Integer> allRestaurant = new ArrayList<>();
     private ArrayList<String> allWrittenComment = new ArrayList<>();
     private final ArrayList<Booking> allBookings = new ArrayList<>();
 
@@ -101,7 +100,7 @@ public class Customer extends Account {
         String bookingString = "";
         int index = 0;
         for (Booking booking : allBookings) {
-            if (booking.getDate().equals(date)) {
+            if (booking.getBookingDate().equals(date)) {
                 index++;
                 bookingString += index + ". " + booking.getCustomerBookingData();
             }
@@ -112,11 +111,5 @@ public class Customer extends Account {
 
     public void addBooking(Booking bk) {
         this.allBookings.add(bk);
-    }
-
-    @Override
-    protected void updateSeatNo(int tableID, int seatNum) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateSeatNo'");
     }
 }

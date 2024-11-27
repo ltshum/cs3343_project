@@ -8,15 +8,13 @@ import java.util.List;
 
 public class Table {
 
-    private int tableID;
+    private final int tableID;
     private int seatNum;
-    private boolean status;
     private List<Timeslot> allTimeslots;
     private List<Timeslot> bookedTimeSlot;
 
     public Table(int tableID) {
         this.tableID = tableID;
-        this.status = true; // Initially available
         this.allTimeslots = new ArrayList<>();
         this.bookedTimeSlot = new ArrayList<>();
     }
@@ -24,12 +22,14 @@ public class Table {
     public void addTimeslot(String session) {
         Timeslot timeslot = new Timeslot(session);
         allTimeslots.add(timeslot);
+        allTimeslots.sort((t1, t2) -> {
+            LocalTime time1 = LocalTime.parse(t1.getTimeslotSession().split(" - ")[0]);
+            LocalTime time2 = LocalTime.parse(t2.getTimeslotSession().split(" - ")[0]);
+            return time1.compareTo(time2);
+        });
+        
     }
 
-    public void addBookingTimeslot(Timeslot bookingTime) {
-        this.bookedTimeSlot.add(bookingTime);
-        this.bookedTimeSlot.sort(null);
-    }
 
     public int getTableID() {
         return tableID;
@@ -37,14 +37,6 @@ public class Table {
 
     public int getSeatNum() {
         return seatNum;
-    }
-
-    public String getStatus() {
-        if (status) {
-            return "Available";
-        } else {
-            return "Not Available";
-        }
     }
 
     public List<Timeslot> getAllTimeslots() {
@@ -66,61 +58,50 @@ public class Table {
         bookedTimeSlot.add(t);
     }
 
-    public List<Timeslot> getBookingTimeslots() {
-        return bookedTimeSlot;
-    }
-
-    public void setTableID(int tableID) {
-        this.tableID = tableID;
-    }
-
     public void setSeatNum(int seatNum) {
         this.seatNum = seatNum;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public void setAllTimeslots(List<Timeslot> allTimeslots) {
-        this.allTimeslots = allTimeslots;
-    }
-
-    public void setBookingTimeslots(List<Timeslot> bookingTimeslot) {
-        this.bookedTimeSlot = bookingTimeslot;
-    }
-
     public boolean canbook(int customernumber, Duration timeMins) {
-        if (customernumber > 0 && customernumber > this.getSeatNum()) {
+        if (customernumber > this.getSeatNum()) {
             return false;
-        }
+        } 
 
-        long timeMinsInt = timeMins == null ? 0 : timeMins.toMinutes();
+        long durationMinutes = (timeMins == null) ? 0 : timeMins.toMinutes();
 
         //boolean available = false;
-        for (int i = 0; i < allTimeslots.size(); i++) {
-            Timeslot ts = allTimeslots.get(i);
-            if (bookedTimeSlot.contains(ts)) {
+        for (Timeslot timeSlot : allTimeslots) {
+            // Skip booked time slots
+            if (bookedTimeSlot.contains(timeSlot)) {
                 continue;
             }
-            //current timeslot is available
-
-            LocalTime originalStartT = LocalTime.parse(ts.getTimeslotSession().split(" - ")[0]);
-            LocalTime currentEndT = LocalTime.parse(ts.getTimeslotSession().split(" - ")[1]);
-            LocalTime diff = currentEndT.minusNanos(originalStartT.toNanoOfDay());
-            if (diff.toSecondOfDay() >= timeMinsInt) {
+    
+            // Parse start and end times
+            LocalTime startTime = LocalTime.parse(timeSlot.getTimeslotSession().split(" - ")[0]);
+            LocalTime endTime = LocalTime.parse(timeSlot.getTimeslotSession().split(" - ")[1]);
+    
+            // Calculate available time in minutes
+            long availableMinutes = Duration.between(startTime, endTime).toMinutes();
+    
+            // If the available time is enough, return true
+            if (availableMinutes >= durationMinutes) {
                 return true;
             }
-
-            while (diff.toSecondOfDay() < timeMinsInt) { //if not enough time
-                i++;
-                Timeslot ts_2 = allTimeslots.get(i);
-                if (i >= allTimeslots.size() || bookedTimeSlot.contains(ts_2)) {
-                    break;
+    
+            // Check consecutive time slots if not enough time
+            for (int i = allTimeslots.indexOf(timeSlot) + 1; i < allTimeslots.size(); i++) {
+                Timeslot nextTimeSlot = allTimeslots.get(i);
+    
+                // Skip booked time slots
+                if (bookedTimeSlot.contains(nextTimeSlot)) {
+                    continue;
                 }
-                currentEndT = LocalTime.parse(ts_2.getTimeslotSession().split(" - ")[1]);
-                diff = currentEndT.minusNanos(originalStartT.toNanoOfDay());
-                if (diff.toSecondOfDay() >= timeMinsInt) {
+    
+                endTime = LocalTime.parse(nextTimeSlot.getTimeslotSession().split(" - ")[1]);
+                availableMinutes = Duration.between(startTime, endTime).toMinutes();
+    
+                // If the available time is enough, return true
+                if (availableMinutes >= durationMinutes) {
                     return true;
                 }
             }
@@ -129,8 +110,8 @@ public class Table {
         return false;
     }
 
-    public boolean canbook(int customernumber, Duration timeMins, LocalTime startTime) {
-        if (customernumber > 0 && customernumber > this.getSeatNum()) {
+    public boolean canbookWithStartTime(int customernumber, Duration timeMins, LocalTime startTime) {
+        if (customernumber > this.getSeatNum()) {
             return false;
         }
 
@@ -156,5 +137,13 @@ public class Table {
 
         }
         return false;
+    }
+
+    public void setAllTimeslots(List<Timeslot> allTimeslots) {
+        this.allTimeslots = allTimeslots;
+    }
+
+    public void setBookedTimeslot(List<Timeslot> bookedTimeSlot) {
+        this.bookedTimeSlot = bookedTimeSlot;
     }
 }

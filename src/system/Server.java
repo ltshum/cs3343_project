@@ -1,5 +1,7 @@
 package system;
 
+import acm.Permission;
+import acm.Resource;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -13,9 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
-import acm.Permission;
-import acm.Resource;
 
 public class Server {
 
@@ -55,21 +54,25 @@ public class Server {
             String type, String district, String address,
             LocalTime openTime, LocalTime closeTime,
             Duration sessionDuration, int tableNum) {
-        if (role.equals("CUSTOMER")) {
-            // Create a Customer account
-            Customer customer = new Customer(userName, password, name, contact);
-            System.out.println("\n# Customer signed up successfully! #");
-            AccountList.add(customer);
-            return customer;
-        } else if (role.equals("RESTAURANT")) {
-            // Create a Restaurant account
-            Restaurant restaurant = new Restaurant(userName, password, name, type, district, address, contact,
-                    openTime, closeTime, sessionDuration, tableNum);
-            System.out.println("\n# Restaurant signed up successfully! #");
-            AccountList.add(restaurant);
-            return restaurant;
-        } else {
-            return null;
+        switch (role) {
+            case "CUSTOMER" -> {
+                // Create a Customer account
+                Customer customer = new Customer(userName, password, name, contact);
+                System.out.println("\n# Customer signed up successfully! #");
+                AccountList.add(customer);
+                return customer;
+            }
+            case "RESTAURANT" -> {
+                // Create a Restaurant account
+                Restaurant restaurant = new Restaurant(userName, password, name, type, district, address, contact,
+                        openTime, closeTime, sessionDuration, tableNum);
+                System.out.println("\n# Restaurant signed up successfully! #");
+                AccountList.add(restaurant);
+                return restaurant;
+            }
+            default -> {
+                return null;
+            }
         }
     }
 
@@ -127,11 +130,7 @@ public class Server {
     }
 
     public boolean tableValidation(Restaurant ac, int tableID) {
-        if (ac.tableValidation(tableID)) {
-            return true;
-        } else {
-            return false;
-        }
+        return ac.tableValidation(tableID);
     }
 
     public boolean takeAttendance(Account ac, LocalDate date, String inputSession, int tableID) {
@@ -169,7 +168,7 @@ public class Server {
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String commentString) {
         Customer customer = (Customer) ac;
         try {
-            Restaurant restaurant = getBookingToBeComment(ac, inputNumber, date).getRestaurant();
+            Restaurant restaurant = getBookingToBeComment(ac, inputNumber, date).getBookingRestaurant();
             ArrayList<Comment> allComments = restaurant.getAllCommentsList();
             Comment comment = new Comment(customer.getCustomerName(), commentString, rate, date);
             allComments.add(comment);

@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class Booking {
 
-    private LocalDate date;
-    private int tableID;
-    private String timeslot;
-    private Restaurant restaurant;
-    private Customer customer;
-    private String customerContact;
-    private int ppl;
+    private final LocalDate date;
+    private final int tableID;
+    private final String timeslot;
+    private final Restaurant restaurant;
+    private final Customer customer;
+    private final String customerContact;
+    private final int ppl;
     private boolean arrive = false;
 
     public Booking(LocalDate date, int tableID, String timeslot, Restaurant restaurant, Customer customer, String customerContact, int ppl) {
@@ -25,14 +25,6 @@ public class Booking {
 
     public String getCustomerBookingData() {
         return restaurant.getRestaurantName() + ": " + timeslot + " " + ppl + "ppl" + "\n";
-    }
-
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     // Getter methods
@@ -70,5 +62,9 @@ public class Booking {
 
     public void takeAttendance() {
         arrive = true;
+    }
+
+    public void setArrive(boolean arrive) {
+        this.arrive = arrive;
     }
 }

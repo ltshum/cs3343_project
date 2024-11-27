@@ -109,4 +109,15 @@ public class BookingTest {
         assertEquals(true, booking2.hasArrived());
     }
 
+    @Test
+    public void testGetCustomerBookingData() {
+        assertEquals("name: 12:00 - 13:00 1ppl\n", booking1.getCustomerBookingData());
+        assertEquals("name: 13:00 - 14:00 2ppl\n", booking2.getCustomerBookingData());
+    }
+
+    @Test
+    public void testSetArrive() {
+        booking1.setArrive(true);
+        assertEquals(true, booking1.hasArrived());
+    }
 }
