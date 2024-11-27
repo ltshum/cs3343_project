@@ -44,14 +44,6 @@ public class Booking {
         return customer;
     }
 
-    public String getRestaurantName() {
-        return restaurant.getRestaurantName();
-    }
-
-    public String getCustomerName() {
-        return customer.getCustomerName();
-    }
-
     public String getCustomerContact() {
         return customerContact;
     }

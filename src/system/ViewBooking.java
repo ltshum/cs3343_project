@@ -19,10 +19,10 @@ public class ViewBooking {
         while (!exitLoop) {
             System.out.println("\n# Here is your booking record on " + date + " #");
             System.out.println("# you could leave by input X #");
-            if (server.isRestaurantRole(account)) {
+            if (account instanceof Restaurant) {
                 System.out.println("# Take attendence input T #");
                 isRestaurant = true;
-            } else if (server.isCustomerRole(account)) {
+            } else if (account instanceof Customer) {
                 System.out.println("# If you want to make comment please input restaurant number #");
                 isCustomer = true;
 

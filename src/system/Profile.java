@@ -16,7 +16,7 @@ public class Profile {
             System.out.println("\n# Here is your information #");
             System.out.println("\n# Username is not allowed to change #");
             
-            if (server.isRestaurantRole(account)) {
+            if (account instanceof Restaurant) {
                 System.out.println("# Comment is not allowed to change #");
             }
             System.out.println(server.getUserDetail(account));

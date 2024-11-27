@@ -17,11 +17,7 @@ import system.Customer;
 import system.Resource;
 import system.Privilege;
 
-
 import java.util.Scanner;
-
-
-
 
 
 public class AccountTest {
@@ -59,17 +55,17 @@ public class AccountTest {
 
     @Test
     public void testGetUserName() {
-        assertEquals("user", account.getUserName());
+        assertEquals("user", account.getAccountUserName());
     }
 
     @Test
     public void testGetPassword() {
-        assertEquals("password", account.getPassword());
+        assertEquals("password", account.getAccountPassword());
     }
 
     @Test
     public void testGetPermissions() {
-        List<Permission> permissions = account.getPermissions();
+        List<Permission> permissions = account.getAccountPermissions();
         assertEquals(1, permissions.size());
         assertEquals(permission, permissions.get(0));
     }
@@ -83,13 +79,13 @@ public class AccountTest {
     @Test
     public void testSetUserName() {
         account.setUserName("newUser");
-        assertEquals("newUser", account.getUserName());
+        assertEquals("newUser", account.getAccountUserName());
     }
 
     @Test
     public void testSetPassword() {
         account.setPassword("newPassword");
-        assertEquals("newPassword", account.getPassword());
+        assertEquals("newPassword", account.getAccountPassword());
     }
 
     @Test
@@ -103,8 +99,8 @@ public class AccountTest {
     public void testSetPermissions() {
         Permission newPermission = new Permission(Role.CUSTOMER, Resource.PROFILE, Collections.singleton(Privilege.CREATE));
         account.setPermissions(Arrays.asList(newPermission));
-        assertEquals(1, account.getPermissions().size());
-        assertEquals(newPermission, account.getPermissions().get(0));
+        assertEquals(1, account.getAccountPermissions().size());
+        assertEquals(newPermission, account.getAccountPermissions().get(0));
     }
 
     
@@ -156,7 +152,7 @@ public class AccountTest {
         // Test editing with invalid input (assuming edit can handle invalid input)
         Scanner scanner = new Scanner("1\n\nX"); // Provide empty name
         account.edit(scanner);
-        assertNotEquals("", account.getUserName()); // Ensure the name isn't set to empty
+        assertNotEquals("", account.getAccountUserName()); // Ensure the name isn't set to empty
     }
     
     

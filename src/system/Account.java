@@ -42,15 +42,15 @@ public abstract class Account {
         return roles;
     }
 
-    public String getUserName() {
+    public String getAccountUserName() {
         return userName;
     }
 
-    public String getPassword() {
+    public String getAccountPassword() {
         return password;
     }
 
-    public List<Permission> getPermissions() {
+    public List<Permission> getAccountPermissions() {
         return permissions;
     }
 
@@ -79,5 +79,7 @@ public abstract class Account {
     }
 
     public abstract void edit(Scanner in);
+
+    protected abstract void updateSeatNo(int tableID, int seatNum);
 
 }

@@ -18,7 +18,6 @@ public class Home {
 
             int count = server.getPermissionNumber(account);
             
-            
             System.out.println("\n" + count + ". " + "LOGOUT\n");
             boolean isValidOption = false;
             while (!isValidOption) {

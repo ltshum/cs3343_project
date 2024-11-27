@@ -70,7 +70,7 @@ public class Restaurant extends Account {
                 || currentTime.plus(sessionDuration).equals(closeTime)) {
             String session = currentTime.toString() + " - " + currentTime.plus(sessionDuration).toString();
             for (Table table : allTables) {
-                table.addTimeslot(new Timeslot(session));
+                table.addTimeslot(session);
             }
             currentTime = currentTime.plus(sessionDuration);
         }
@@ -86,14 +86,63 @@ public class Restaurant extends Account {
         );
     }
 
-    public String getCommentString() {
-        String result = "";
-        for (Comment cm : allComments) {
-            result = result + cm.getCustomer_name() + ": " + cm.getContent() + " " + cm.getRate() + "\n";
-        }
-        return result;
+    public void updateSeatNo(int tableID, int seatNum) {
+        Table table = allTables.get(tableID - 1);
+        table.setSeatNum(seatNum);
     }
 
+    public boolean tableValidation(int tableID) {
+        for (Table table: allTables) {
+            if (table.getTableID() == tableID){
+                return true;
+            }
+        }   
+        return false;
+    }
+
+    public int availableTableID(int ppl, String timeslotSession, LocalDate date) {
+        for (Table table : allTables) {
+            if (table.isTimeslotAvailable(timeslotSession, date)) {
+                if (table.getSeatNum() >= ppl) {
+                    table.setTimeslotUnavailable(timeslotSession, date);
+                    return table.getTableID();
+                }
+            }
+        }
+        return 0;
+    }
+
+    public void getAllTableInfo() {
+        StringBuilder tableID = new StringBuilder("                ");
+        StringBuilder seat = new StringBuilder("                ");
+        StringBuilder status = new StringBuilder("                ");
+        for (Table table : allTables) {
+            tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
+            seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
+            status.append(String.format("| Status: %-15s ", table.getStatus()));
+        }
+        System.out.println(tableID.toString());
+        System.out.println(seat.toString());
+        System.out.println(status.toString());
+    }
+
+    public void updateTableInfo( Scanner in, int tableID) {
+        Table table = allTables.get(tableID - 1);
+
+        boolean isValidSeatNo = false;
+        while (!isValidSeatNo) {
+            System.out.print("\nNew Seat: ");
+            try {
+                int newSeat = Integer.parseInt(in.nextLine());
+                table.setSeatNum(newSeat);
+                isValidSeatNo = true;
+                System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");
+            } catch (NumberFormatException e) {
+                System.out.print("\nInvalid input! Please input again.");
+            }
+        }
+    }
+    
     public String getRestaurantName() {
         return restaurantName;
     }
@@ -320,36 +369,5 @@ public class Restaurant extends Account {
 
     public void addBooking(Booking bk) {
         this.allBookings.add(bk);
-    }
-
-    public void addComment(String customerName, String content, int rate, LocalDate date) {
-        Comment comment = new Comment(customerName, content, rate, date);
-        allComments.add(comment);
-        float recal_rate = 0;
-        for (Comment cm : allComments) {
-            recal_rate += cm.getRate();
-        }
-        this.rate = recal_rate / allComments.size();
-        System.out.println("\nComment added!");
-    }
-
-    public ArrayList<Booking> getPeriodBooking(LocalDate startDate, LocalDate endDate) {
-        ArrayList<Booking> result = new ArrayList<>();
-        for (Booking bk : allBookings) {
-            if ((bk.getDate().isEqual(startDate) || bk.getDate().isAfter(startDate)) && (bk.getDate().isEqual(endDate) || bk.getDate().isBefore(endDate))) {
-                result.add(bk);
-            }
-        }
-        return result;
-    }
-
-    public ArrayList<Comment> getPeriodComment(LocalDate startDate, LocalDate endDate) {
-        ArrayList<Comment> result = new ArrayList<>();
-        for (Comment cm : allComments) {
-            if ((cm.getDate().isEqual(startDate) || cm.getDate().isAfter(startDate)) && (cm.getDate().isEqual(endDate) || cm.getDate().isBefore(endDate))) {
-                result.add(cm);
-            }
-        }
-        return result;
     }
 }

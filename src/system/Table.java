@@ -20,7 +20,8 @@ public class Table {
         this.bookedTimeSlot = new ArrayList<>();
     }
 
-    public void addTimeslot(Timeslot timeslot) {
+    public void addTimeslot(String session) {
+        Timeslot timeslot = new Timeslot(session);
         allTimeslots.add(timeslot);
         allTimeslots.sort(null);
     }
@@ -87,10 +88,6 @@ public class Table {
 
     public void setBookingTimeslots(List<Timeslot> bookingTimeslot) {
         this.bookedTimeSlot = bookingTimeslot;
-    }
-
-    public boolean canbook(int customernumber, Timeslot time) {
-        return !(customernumber > this.getSeatNum() && !this.bookedTimeSlot.contains(time));
     }
 
     public boolean canbook(int customernumber, Duration timeMins) {
