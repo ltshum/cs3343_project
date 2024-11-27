@@ -132,8 +132,7 @@ public class CustomerTest {
     }
 
 
-    
-
+   
     @Test
     public void testEditName() {
         String input = "1\nNew Name\nX\n"; // Edit name to "New Name" and exit
