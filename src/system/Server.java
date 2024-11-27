@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class Server {
         return false;
     }
 
-    public Customer signUpCustomer(String role, String username, String password, String name, String contact) {
+    public Customer signUpCustomer(String username, String password, String name, String contact) {
         Customer customer = new Customer(username, password, name, contact);
         AccountList.add(customer);
         System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
@@ -58,7 +57,7 @@ public class Server {
         return customer;
     }
 
-    public Restaurant signUpRestaurant(String role, String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
+    public Restaurant signUpRestaurant(String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
         Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
         AccountList.add(restaurant);
         //add to list
@@ -108,31 +107,7 @@ public class Server {
 
     public String getUserDetail(Account ac) {
         System.out.println("\nUsername: " + ac.getAccountUserName() + "\nPassword: " + ac.getAccountPassword());
-        List<Role> roles = ac.getRoles();
-        for (Role role : roles) {
-            if (role == Role.CUSTOMER) {
-                Customer customer = (Customer) ac;
-                return "Name: " + customer.getCustomerName()
-                        + "\nPhone: " + customer.getCustomerContact();
-
-            }
-            if (role == Role.RESTAURANT) {
-                Restaurant restaurant = (Restaurant) ac;
-                return "Rate: " + restaurant.getRate()
-                        + "\nRestaurant Name: " + restaurant.getRestaurantName()
-                        + "\nType: " + restaurant.getType()
-                        + "\nDistrict: " + restaurant.getDistrict()
-                        + "\nAddress: " + restaurant.getAddress()
-                        + "\nPhone: " + restaurant.getRestaurantContact()
-                        + "\nOpen Time: " + restaurant.getOpenTime()
-                        + "\nClose Time: " + restaurant.getCloseTime()
-                        + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
-                        + "\nTable Amount: " + restaurant.getAllTables().size()
-                        + "\n\nTimeslot: \n" + restaurant.getTimeslots()
-                        + "\nComment: \n" + getRestaurantCommentString(restaurant);
-            }
-        }
-        return null;
+        return ac.getProfileDetail();
     }
 
     public void updateUserDetail(Account ac, Scanner in) {
@@ -313,17 +288,7 @@ public class Server {
 
         Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
-            return "Rate: " + requiredRestaurant.getRate()
-                        + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
-                        + "\nType: " + requiredRestaurant.getType()
-                        + "\nDistrict: " + requiredRestaurant.getDistrict()
-                        + "\nAddress: " + requiredRestaurant.getAddress()
-                        + "\nPhone: " + requiredRestaurant.getRestaurantContact()
-                        + "\nOpen Time: " + requiredRestaurant.getOpenTime()
-                        + "\nClose Time: " + requiredRestaurant.getCloseTime()
-                        + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
-                        + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
-                        + "\nComment: \n" + getRestaurantCommentString(requiredRestaurant);
+           return requiredRestaurant.getProfileDetail();
         }
         return "Restaurant not found.";
     }
@@ -367,7 +332,7 @@ public class Server {
     }
 
     public ArrayList<Comment> getPeriodComments(Restaurant restaurant, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Comment> allComments = restaurant.getAllComments();
+        ArrayList<Comment> allComments = restaurant.getAllCommentsList();
         ArrayList<Comment> periodComments = new ArrayList<>();
         for (Comment cm : allComments) {
             if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
