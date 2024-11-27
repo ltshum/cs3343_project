@@ -99,6 +99,14 @@ public class Server {
         return ac.getAccountPermissions().get(inputNumber - 1).getResource();
     }
 
+    public String getRestaurantCommentString(Restaurant ac) {
+        String result = "";
+        for (Comment cm : ac.getAllComments()) {
+            result = result + cm.getCommentCustomerName() + ": " + cm.getCommentContent() + " " + cm.getCommentRate() + "\n";
+        }
+        return result;
+    }
+
     public String getUserDetail(Account ac) {
         System.out.println("\nUsername: " + ac.getAccountUserName() + "\nPassword: " + ac.getAccountPassword());
         return ac.getProfileDetail();
@@ -109,7 +117,75 @@ public class Server {
     }
 
     public int getViewBookingRecord(Account ac, LocalDate date) {
-        return ac.getBookingRecord(date);
+        List<Role> roles = ac.getRoles();
+        for (Role role : roles) {
+            if (role == Role.CUSTOMER) {
+                Customer customer = (Customer) ac;
+                ArrayList<Booking> allbookings = customer.getAllBookings();
+                String bookingString = "";
+                int index = 0;
+                for (Booking booking : allbookings) {
+                    if (booking.getBookingDate().equals(date)) {
+                        index++;
+                        bookingString += index + ". " + booking.getBookingRestaurant().getRestaurantName() + ": " + booking.getBookingTimeslot() + " " + booking.getBookingPpl() + "ppl" + "\n";
+                    }
+                }
+                System.out.println(bookingString);
+                return index;
+            }
+            if (role == Role.RESTAURANT) {
+                Restaurant restaurant = (Restaurant) ac;
+                ArrayList<Booking> allbookings = restaurant.getAllBookings();
+                Collections.sort(allbookings, Comparator.comparing(Booking::getBookingTimeslot));
+                int totalBookings = 0;
+                ArrayList<Booking> requiredBookings = new ArrayList<>();
+                for (Booking booking : allbookings) {
+                    if (booking.getBookingDate().equals(date)) {
+                        totalBookings++;
+                        requiredBookings.add(booking);
+                    }
+                }
+                List<List<Booking>> groupedBookings = new ArrayList<>();
+
+                for (Booking booking : requiredBookings) {
+                    boolean added = false;
+                    for (List<Booking> group : groupedBookings) {
+                        if (!group.isEmpty() && group.get(0).getBookingTimeslot().equals(booking.getBookingTimeslot())) {
+                            group.add(booking);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added) {
+                        List<Booking> newGroup = new ArrayList<>();
+                        newGroup.add(booking);
+                        groupedBookings.add(newGroup);
+                    }
+                }
+                for (List<Booking> group : groupedBookings) {
+                    System.out.println(group.get(0).getBookingTimeslot());
+                    StringBuilder tableID = new StringBuilder("            ");
+                    StringBuilder booker = new StringBuilder("            ");
+                    StringBuilder ppl = new StringBuilder("            ");
+                    StringBuilder contact = new StringBuilder("            ");
+                    StringBuilder arrived = new StringBuilder("            ");
+                    for (Booking booking : group) {
+                        tableID.append(String.format("| Table ID: %-13d ", booking.getBookingTableID()));
+                        booker.append(String.format("| Booker: %-13s ", booking.getBookingCustomer().getCustomerName()));
+                        ppl.append(String.format("| Ppl No: %-13s ", booking.getBookingPpl()));
+                        contact.append(String.format("| Contact: %-13s ", booking.getBookingCustomerContact()));
+                        arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
+                    }
+                    System.out.println(tableID.toString());
+                    System.out.println(booker.toString());
+                    System.out.println(ppl.toString());
+                    System.out.println(contact.toString());
+                    System.out.println(arrived.toString());
+                }
+                return totalBookings;
+            }
+        }
+        return 0;
     }
 
     public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
@@ -134,7 +210,7 @@ public class Server {
         Restaurant restaurant = (Restaurant) ac;
         ArrayList<Booking> allbookings = restaurant.getAllBookings();
         for (Booking booking : allbookings) {
-            if (booking.getDate().equals(date) && booking.getTableID() == tableID && booking.getTimeslot().equals(inputSession)) {
+            if (booking.getBookingDate().equals(date) && booking.getBookingTableID() == tableID && booking.getBookingTimeslot().equals(inputSession)) {
                 booking.takeAttendance();
                 return true;
             }
@@ -147,7 +223,7 @@ public class Server {
         ArrayList<Booking> allbookings = customer.getAllBookings();
         ArrayList<Booking> bookings = new ArrayList<>();
         for (Booking booking : allbookings) {
-            if (booking.getDate().equals(date)) {
+            if (booking.getBookingDate().equals(date)) {
                 bookings.add(booking);
             }
         }
@@ -171,7 +247,7 @@ public class Server {
             allComments.add(comment);
             float recal_rate = 0;
             for (Comment cm : allComments) {
-                recal_rate += cm.getRate();
+                recal_rate += cm.getCommentRate();
             }
             restaurant.setRate(recal_rate / allComments.size());
             System.out.println("\nComment added!");
@@ -249,7 +325,7 @@ public class Server {
         ArrayList<Booking> allBookings = restaurant.getAllBookings();
         ArrayList<Booking> periodBookings = new ArrayList<>();
         for (Booking bk : allBookings) {
-            if ((bk.getDate().isEqual(startDate) || bk.getDate().isAfter(startDate)) && (bk.getDate().isEqual(endDate) || bk.getDate().isBefore(endDate))) {
+            if ((bk.getBookingDate().isEqual(startDate) || bk.getBookingDate().isAfter(startDate)) && (bk.getBookingDate().isEqual(endDate) || bk.getBookingDate().isBefore(endDate))) {
                 periodBookings.add(bk);
             }
         }
@@ -260,7 +336,7 @@ public class Server {
         ArrayList<Comment> allComments = restaurant.getAllCommentsList();
         ArrayList<Comment> periodComments = new ArrayList<>();
         for (Comment cm : allComments) {
-            if ((cm.getDate().isEqual(startDate) || cm.getDate().isAfter(startDate)) && (cm.getDate().isEqual(endDate) || cm.getDate().isBefore(endDate))) {
+            if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
                 periodComments.add(cm);
             }
         }
@@ -278,14 +354,14 @@ public class Server {
             //last week data
             ArrayList<Booking> lastWeekBookings = getPeriodBookings(restaurant, lastWeekStartDate, lastWeekEndDate);
             ArrayList<Comment> lastWeekComments = getPeriodComments(restaurant, lastWeekStartDate, lastWeekEndDate);
-            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getPpl).sum();
-            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getRate).average().getAsDouble();
+            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
 
             //this week data
             ArrayList<Booking> thisWeekBookings = getPeriodBookings(restaurant, thisWeekStartDate, thisWeekEndDate);
             ArrayList<Comment> thisWeekComments = getPeriodComments(restaurant, thisWeekStartDate, thisWeekEndDate);
-            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getPpl).sum();
-            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getRate).average().getAsDouble();
+            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
 
             RestaurantLogData restaurantLogData = new RestaurantLogData(lastWeekComments, lastWeekTotalPpl, lastWeekRate, 0, thisWeekComments, thisWeekTotalPpl, thisWeekRate, 0);
             restaurantLogDataMap.put(restaurant.getAccountUserName(), restaurantLogData);
@@ -371,7 +447,7 @@ public class Server {
         report.append("Total ppl: ").append(lastWeekLog.getTotalPpl()).append("\n");
         report.append("Comment:\n");
         for (Comment comment : lastWeekLog.getComments()) {
-            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
+            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
         }
 
         report.append("\nThis week:\n");
@@ -380,7 +456,7 @@ public class Server {
         report.append("Total ppl: ").append(thisWeekLog.getTotalPpl()).append("\n");
         report.append("Comment:\n");
         for (Comment comment : thisWeekLog.getComments()) {
-            report.append(comment.getCustomer_name()).append(": ").append(comment.getContent()).append(" ").append(comment.getRate()).append("\n");
+            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
         }
 
         report.append("\nRank decrease/increase ").append(thisWeekLog.getRank() - lastWeekLog.getRank()).append("\n");
