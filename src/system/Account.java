@@ -1,4 +1,5 @@
 package system;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -79,6 +80,10 @@ public abstract class Account {
     }
 
     public abstract void edit(Scanner in);
+
+    public abstract String getProfileDetail();
+
+    public abstract int getBookingRecord(LocalDate date);
 
     protected abstract void updateSeatNo(int tableID, int seatNum);
 

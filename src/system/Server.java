@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -49,7 +48,7 @@ public class Server {
         return false;
     }
 
-    public Customer signUpCustomer(String role, String username, String password, String name, String contact) {
+    public Customer signUpCustomer(String username, String password, String name, String contact) {
         Customer customer = new Customer(username, password, name, contact);
         AccountList.add(customer);
         System.out.println("\nHere is your user info\n\nUsername: " + username + "\nPassword: " + password + "\nName: " + name + "\nPhone: " + contact);
@@ -57,7 +56,7 @@ public class Server {
         return customer;
     }
 
-    public Restaurant signUpRestaurant(String role, String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
+    public Restaurant signUpRestaurant(String username, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessiDuration, int tableNum) {
         Restaurant restaurant = new Restaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessiDuration, tableNum);
         AccountList.add(restaurant);
         //add to list
@@ -97,41 +96,9 @@ public class Server {
         return ac.getAccountPermissions().get(inputNumber - 1).getResource();
     }
 
-    public String getRestaurantCommentString(Restaurant ac) {
-        String result = "";
-        for (Comment cm : ac.getAllComments()) {
-            result = result + cm.getCustomer_name() + ": " + cm.getContent() + " " + cm.getRate() + "\n";
-        }
-        return result;
-    }
-
     public String getUserDetail(Account ac) {
         System.out.println("\nUsername: " + ac.getAccountUserName() + "\nPassword: " + ac.getAccountPassword());
-        List<Role> roles = ac.getRoles();
-        for (Role role : roles) {
-            if (role == Role.CUSTOMER) {
-                Customer customer = (Customer) ac;
-                return "Name: " + customer.getCustomerName()
-                        + "\nPhone: " + customer.getCustomerContact();
-
-            }
-            if (role == Role.RESTAURANT) {
-                Restaurant restaurant = (Restaurant) ac;
-                return "Rate: " + restaurant.getRate()
-                        + "\nRestaurant Name: " + restaurant.getRestaurantName()
-                        + "\nType: " + restaurant.getType()
-                        + "\nDistrict: " + restaurant.getDistrict()
-                        + "\nAddress: " + restaurant.getAddress()
-                        + "\nPhone: " + restaurant.getRestaurantContact()
-                        + "\nOpen Time: " + restaurant.getOpenTime()
-                        + "\nClose Time: " + restaurant.getCloseTime()
-                        + "\nSession Duration: " + restaurant.getSessionDuration() + "mins"
-                        + "\nTable Amount: " + restaurant.getAllTables().size()
-                        + "\n\nTimeslot: \n" + restaurant.getTimeslots()
-                        + "\nComment: \n" + getRestaurantCommentString(restaurant);
-            }
-        }
-        return null;
+        return ac.getProfileDetail();
     }
 
     public void updateUserDetail(Account ac, Scanner in) {
@@ -139,75 +106,7 @@ public class Server {
     }
 
     public int getViewBookingRecord(Account ac, LocalDate date) {
-        List<Role> roles = ac.getRoles();
-        for (Role role : roles) {
-            if (role == Role.CUSTOMER) {
-                Customer customer = (Customer) ac;
-                ArrayList<Booking> allbookings = customer.getAllBookings();
-                String bookingString = "";
-                int index = 0;
-                for (Booking booking : allbookings) {
-                    if (booking.getDate().equals(date)) {
-                        index++;
-                        bookingString += index + ". " + booking.getRestaurant().getRestaurantName() + ": " + booking.getTimeslot() + " " + booking.getPpl() + "ppl" + "\n";
-                    }
-                }
-                System.out.println(bookingString);
-                return index;
-            }
-            if (role == Role.RESTAURANT) {
-                Restaurant restaurant = (Restaurant) ac;
-                ArrayList<Booking> allbookings = restaurant.getAllBookings();
-                Collections.sort(allbookings, Comparator.comparing(Booking::getTimeslot));
-                int totalBookings = 0;
-                ArrayList<Booking> requiredBookings = new ArrayList<>();
-                for (Booking booking : allbookings) {
-                    if (booking.getDate().equals(date)) {
-                        totalBookings++;
-                        requiredBookings.add(booking);
-                    }
-                }
-                List<List<Booking>> groupedBookings = new ArrayList<>();
-
-                for (Booking booking : requiredBookings) {
-                    boolean added = false;
-                    for (List<Booking> group : groupedBookings) {
-                        if (!group.isEmpty() && group.get(0).getTimeslot().equals(booking.getTimeslot())) {
-                            group.add(booking);
-                            added = true;
-                            break;
-                        }
-                    }
-                    if (!added) {
-                        List<Booking> newGroup = new ArrayList<>();
-                        newGroup.add(booking);
-                        groupedBookings.add(newGroup);
-                    }
-                }
-                for (List<Booking> group : groupedBookings) {
-                    System.out.println(group.get(0).getTimeslot());
-                    StringBuilder tableID = new StringBuilder("            ");
-                    StringBuilder booker = new StringBuilder("            ");
-                    StringBuilder ppl = new StringBuilder("            ");
-                    StringBuilder contact = new StringBuilder("            ");
-                    StringBuilder arrived = new StringBuilder("            ");
-                    for (Booking booking : group) {
-                        tableID.append(String.format("| Table ID: %-13d ", booking.getTableID()));
-                        booker.append(String.format("| Booker: %-13s ", booking.getCustomer().getCustomerName()));
-                        ppl.append(String.format("| Ppl No: %-13s ", booking.getPpl()));
-                        contact.append(String.format("| Contact: %-13s ", booking.getCustomerContact()));
-                        arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
-                    }
-                    System.out.println(tableID.toString());
-                    System.out.println(booker.toString());
-                    System.out.println(ppl.toString());
-                    System.out.println(contact.toString());
-                    System.out.println(arrived.toString());
-                }
-                return totalBookings;
-            }
-        }
-        return 0;
+        return ac.getBookingRecord(date);
     }
 
     public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
@@ -265,7 +164,7 @@ public class Server {
         Customer customer = (Customer) ac;
         try {
             Restaurant restaurant =  getBookingToBeComment(ac, inputNumber, date).getRestaurant();
-            ArrayList<Comment> allComments = restaurant.getAllComments();
+            ArrayList<Comment> allComments = restaurant.getAllCommentsList();
             Comment comment = new Comment(customer.getCustomerName(), commentString, rate, date);
             allComments.add(comment);
             float recal_rate = 0;
@@ -312,17 +211,7 @@ public class Server {
 
         Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
-            return "Rate: " + requiredRestaurant.getRate()
-                        + "\nRestaurant Name: " + requiredRestaurant.getRestaurantName()
-                        + "\nType: " + requiredRestaurant.getType()
-                        + "\nDistrict: " + requiredRestaurant.getDistrict()
-                        + "\nAddress: " + requiredRestaurant.getAddress()
-                        + "\nPhone: " + requiredRestaurant.getRestaurantContact()
-                        + "\nOpen Time: " + requiredRestaurant.getOpenTime()
-                        + "\nClose Time: " + requiredRestaurant.getCloseTime()
-                        + "\nTable Amount: " + requiredRestaurant.getAllTables().size()
-                        + "\n\nTimeslot: \n" + requiredRestaurant.getTimeslots()
-                        + "\nComment: \n" + getRestaurantCommentString(requiredRestaurant);
+           return requiredRestaurant.getProfileDetail();
         }
         return "Restaurant not found.";
     }
@@ -366,7 +255,7 @@ public class Server {
     }
 
     public ArrayList<Comment> getPeriodComments(Restaurant restaurant, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Comment> allComments = restaurant.getAllComments();
+        ArrayList<Comment> allComments = restaurant.getAllCommentsList();
         ArrayList<Comment> periodComments = new ArrayList<>();
         for (Comment cm : allComments) {
             if ((cm.getDate().isEqual(startDate) || cm.getDate().isAfter(startDate)) && (cm.getDate().isEqual(endDate) || cm.getDate().isBefore(endDate))) {

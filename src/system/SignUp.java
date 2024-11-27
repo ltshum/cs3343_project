@@ -30,23 +30,21 @@ public class SignUp {
                         String username = "";
                         while (isExistUserName) {
                             System.out.print("\nPlease input your username: ");
-                            username = in.next();
-                            in.nextLine();
+                            username = in.nextLine();
                             if (!server.isUsernameExist(username)) {
                                 isExistUserName = false;
                             }
                         }
                         //Input password
                         System.out.print("\nPlease input your password: ");
-                        String password = in.next();
-                        in.nextLine();
+                        String password = in.nextLine();
                         //Input customerName
                         System.out.print("\nPlease input your name: ");
                         String name = in.nextLine();
                         //Input customerContact
                         System.out.print("\nPlease input your phone number: ");
                         String contact = in.nextLine();
-                        server.signUpCustomer("Customer", username, password, name, contact);
+                        server.signUpCustomer(username, password, name, contact);
                         isValidRole = true;
                     }
                     case 2 -> {
@@ -55,8 +53,7 @@ public class SignUp {
                         String username = "";
                         while (isExistUserName) {
                             System.out.print("\nPlease input your username: ");
-                            username = in.next();
-                            in.nextLine();
+                            username = in.nextLine();
                             if (!server.isUsernameExist(username)) {
                                 isExistUserName = false;
                             }
@@ -64,8 +61,7 @@ public class SignUp {
 
                         //Input password
                         System.out.print("\nPlease input your password: ");
-                        String password = in.next();
-                        in.nextLine();
+                        String password = in.nextLine();
                         //Input restaurantName
                         System.out.print("\nPlease input your name: ");
                         String name = in.nextLine();
@@ -132,7 +128,7 @@ public class SignUp {
                         }
 
 
-                        server.signUpRestaurant("Restaurant", username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
+                        server.signUpRestaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
                         isValidRole = true;
                     }
                     case 3 -> {

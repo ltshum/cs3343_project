@@ -1,5 +1,6 @@
 package system;
 
+import java.time.LocalDate;
 // Other imports as needed
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +64,12 @@ public class Customer extends Account {
     }
 
     @Override
+    public String getProfileDetail(){
+        return "Name: " + this.getCustomerName()
+                        + "\nPhone: " + this.getCustomerContact();
+    }
+
+    @Override
     public void edit(Scanner in) {
         while (true) {
             System.out.println("# If you want to back to last page please input X #");
@@ -99,6 +106,20 @@ public class Customer extends Account {
                 }
             }
         }
+    }
+
+    @Override
+    public int getBookingRecord(LocalDate date){
+        String bookingString = "";
+                int index = 0;
+                for (Booking booking : allBookings) {
+                    if (booking.getDate().equals(date)) {
+                        index++;
+                        bookingString += index + ". " + booking.getCustomerBookingData();
+                    }
+                }
+                System.out.println(bookingString);
+                return index;
     }
 
     public void addBooking(Booking bk) {

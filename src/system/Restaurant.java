@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -187,8 +189,16 @@ public class Restaurant extends Account {
         return allBookings;
     }
 
-    public ArrayList<Comment> getAllComments() {
+    public ArrayList<Comment> getAllCommentsList() {
         return allComments;
+    }
+
+    public String getAllComments() {
+        String result = "";
+        for (Comment cm : allComments) {
+            result = result + cm.getCustomer_name() + ": " + cm.getContent() + " " + cm.getRate() + "\n";
+        }
+        return result;
     }
 
     public void setRestaurantName(String restaurantName) {
@@ -236,7 +246,25 @@ public class Restaurant extends Account {
             allTables.add(new Table(i));
         }
     }
-    
+
+   
+
+    @Override
+    public String getProfileDetail(){
+        return "Rate: " + this.getRate()
+                        + "\nRestaurant Name: " + restaurantName
+                        + "\nType: " + type
+                        + "\nDistrict: " + district
+                        + "\nAddress: " + address
+                        + "\nPhone: " + restaurantContact
+                        + "\nOpen Time: " + openTime
+                        + "\nClose Time: " + closeTime
+                        + "\nSession Duration: " + sessionDuration.toMinutes() + "mins"
+                        + "\nTable Amount: " + allTables.size()
+                        + "\n\nTimeslot: \n" + this.getTimeslots()
+                        + "\nComment: \n" + this.getAllComments();
+    }
+
     @Override
     public void edit(Scanner in) {
         outerloop : while (true) {
@@ -386,6 +414,57 @@ public class Restaurant extends Account {
             }
             
         }
+    }
+
+    @Override
+    public int getBookingRecord(LocalDate date){
+        Collections.sort(allBookings, Comparator.comparing(Booking::getTimeslot));
+        int totalBookings = 0;
+        ArrayList<Booking> requiredBookings = new ArrayList<>();
+        for (Booking booking : allBookings) {
+            if (booking.getDate().equals(date)) {
+                totalBookings++;
+                requiredBookings.add(booking);
+            }
+        }
+        List<List<Booking>> groupedBookings = new ArrayList<>();
+
+        for (Booking booking : requiredBookings) {
+            boolean added = false;
+            for (List<Booking> group : groupedBookings) {
+                if (!group.isEmpty() && group.get(0).getTimeslot().equals(booking.getTimeslot())) {
+                    group.add(booking);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                List<Booking> newGroup = new ArrayList<>();
+                newGroup.add(booking);
+                groupedBookings.add(newGroup);
+            }
+        }
+        for (List<Booking> group : groupedBookings) {
+            System.out.println(group.get(0).getTimeslot());
+            StringBuilder tableID = new StringBuilder("            ");
+            StringBuilder booker = new StringBuilder("            ");
+            StringBuilder ppl = new StringBuilder("            ");
+            StringBuilder contact = new StringBuilder("            ");
+            StringBuilder arrived = new StringBuilder("            ");
+            for (Booking booking : group) {
+                tableID.append(String.format("| Table ID: %-13d ", booking.getTableID()));
+                booker.append(String.format("| Booker: %-13s ", booking.getCustomer().getCustomerName()));
+                ppl.append(String.format("| Ppl No: %-13s ", booking.getPpl()));
+                contact.append(String.format("| Contact: %-13s ", booking.getCustomerContact()));
+                arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
+            }
+            System.out.println(tableID.toString());
+            System.out.println(booker.toString());
+            System.out.println(ppl.toString());
+            System.out.println(contact.toString());
+            System.out.println(arrived.toString());
+        }
+        return totalBookings;
     }
 
     public void addBooking(Booking bk) {
