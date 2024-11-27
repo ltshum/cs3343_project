@@ -1,12 +1,12 @@
 package system;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import acm.Permission;
-import acm.Privilege;
-import acm.Resource;
+import acm.PermissionRegistry;
 import acm.Role;
 
 public abstract class Account {
@@ -16,27 +16,24 @@ public abstract class Account {
     private List<Role> roles;
     private String userName;
     private String password;
-    private List<Permission> permissions;
 
-    public Account(List<Role> r, String n, String p, List<Permission> permissions) {
+    public Account(List<Role> r, String n, String p) {
         this.id = idCounter++;
         this.roles = r;
         this.userName = n;
         this.password = p;
-        this.permissions = permissions;
     }
 
-    public boolean hasPermission(Resource resource, Privilege privilege) {
-        for (Permission permission : permissions) {
-            if (roles.contains(permission.getRole())
-                    && permission.getResource() == resource
-                    && permission.canPerform(privilege)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    // public boolean hasPermission(Resource resource, Privilege privilege) {
+    //     for (Permission permission : permissions) {
+    //         if (roles.contains(permission.getRole())
+    //                 && permission.getResource() == resource
+    //                 && permission.canPerform(privilege)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
     public static int getIdCounter() {
         return idCounter;
     }
@@ -57,8 +54,13 @@ public abstract class Account {
         return password;
     }
 
+    //fetch permissions dynamically
     public List<Permission> getAccountPermissions() {
-        return permissions;
+        List<Permission> allPermissions = new ArrayList<>();
+        for (Role role : roles) {
+            allPermissions.addAll(PermissionRegistry.getPermissionsForRole(role));
+        }
+        return allPermissions;
     }
 
     public static void setIdCounter(int idCounter) {
@@ -79,10 +81,6 @@ public abstract class Account {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setPermissions(List<Permission> permissions) {
-        this.permissions = permissions;
     }
 
     public abstract void edit(Scanner in);
