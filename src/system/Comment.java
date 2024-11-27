@@ -15,35 +15,19 @@ public class Comment {
         this.date = date;
     }
 
-    public String getCustomer_name() {
+    public String getCommentCustomerName() {
         return customer_name;
     }
 
-    public void setCustomer_name(String customer_name) {
-        this.customer_name = customer_name;
-    }
-
-    public String getContent() {
+    public String getCommentContent() {
         return content;
     }
 
-    public LocalDate getDate() {
+    public LocalDate getCommentDate() {
         return date;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public float getRate() {
+    public float getCommentRate() {
         return rate;
-    }
-
-    public void setRate(int rate) {
-        this.rate = rate;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 }

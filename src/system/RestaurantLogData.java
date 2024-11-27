@@ -54,32 +54,8 @@ public class RestaurantLogData{
         return thisWeekRank;
     }
 
-    public void setLastWeekComments(ArrayList<Comment> lastWeekComments) {
-        this.lastWeekComments = lastWeekComments;
-    }
-
-    public void setLastWeekTotalPpl(int lastWeekTotalPpl) {
-        this.lastWeekTotalPpl = lastWeekTotalPpl;
-    }
-
-    public void setLastWeekRate(float lastWeekRate) {
-        this.lastWeekRate = lastWeekRate;
-    }
-
     public void setLastWeekRank(int lastWeekRank) {
         this.lastWeekRank = lastWeekRank;
-    }
-
-    public void setThisWeekComments(ArrayList<Comment> thisWeekComments) {
-        this.thisWeekComments = thisWeekComments;
-    }
-
-    public void setThisWeekTotalPpl(int thisWeekTotalPpl) {
-        this.thisWeekTotalPpl = thisWeekTotalPpl;
-    }
-
-    public void setThisWeekRate(float thisWeekRate) {
-        this.thisWeekRate = thisWeekRate;
     }
 
     public void setThisWeekRank(int thisWeekRank) {

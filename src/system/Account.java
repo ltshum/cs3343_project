@@ -80,6 +80,4 @@ public abstract class Account {
 
     public abstract void edit(Scanner in);
 
-    protected abstract void updateSeatNo(int tableID, int seatNum);
-
 }

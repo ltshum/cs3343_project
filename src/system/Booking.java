@@ -24,68 +24,36 @@ public class Booking {
     }
 
     // Getter methods
-    public LocalDate getDate() {
+    public LocalDate getBookingDate() {
         return date;
     }
 
-    public int getTableID() {
+    public int getBookingTableID() {
         return tableID;
     }
 
-    public String getTimeslot() {
+    public String getBookingTimeslot() {
         return timeslot;
     }
 
-    public Restaurant getRestaurant() {
+    public Restaurant getBookingRestaurant() {
         return restaurant;
     }
 
-    public Customer getCustomer() {
+    public Customer getBookingCustomer() {
         return customer;
     }
 
-    public String getCustomerContact() {
+    public String getBookingCustomerContact() {
         return customerContact;
     }
 
-    public int getPpl() {
+    public int getBookingPpl() {
         return ppl;
     }
 
     public boolean hasArrived() {
         return arrive;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setTableID(int tableID) {
-        this.tableID = tableID;
-    }
-
-    public void setTimeslot(String timeslot) {
-        this.timeslot = timeslot;
-    }
-
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public void setCustomerContact(String customerContact) {
-        this.customerContact = customerContact;
-    }
-
-    public void setPpl(int ppl) {
-        this.ppl = ppl;
-    }
-
-    public void setArrive(boolean arrive) {
-        this.arrive = arrive;
     }
 
     public void takeAttendance() {
