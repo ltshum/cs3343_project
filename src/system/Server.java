@@ -240,9 +240,9 @@ public class Server {
         }
     }
 
-    public void getAllTableInfo(Account ac) {
+    public StringBuilder getAllTableInfo(Account ac) {
         Restaurant restaurant = (Restaurant) ac;
-        restaurant.getAllTableInfo();
+        return restaurant.getAllTableInfo();
     }
 
     public void updateTableInfo(Account ac, Scanner in, int tableID) {
