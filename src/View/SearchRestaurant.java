@@ -29,7 +29,7 @@ public class SearchRestaurant {
         return rateRange.length() == 4 && rateRange.charAt(1) == '-' && rateRange.charAt(2) == '-' && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5' && rateRange.charAt(3) >= '0' && rateRange.charAt(3) <= '5' && rateRange.charAt(0) <= rateRange.charAt(3);
     }
 
-    public void displaySearchRestaurnt(Scanner in) {
+    public ArrayList<Restaurant> displaySearchRestaurnt(Scanner in) {
         System.out.println("\n# If you  want to leave it empty just enter null #");
         System.out.println("# Rate could input a range #\n");
 
@@ -99,6 +99,7 @@ public class SearchRestaurant {
 
         RestaurantList RestaurantList = new RestaurantList(results);
         RestaurantList.displayRestaurantList(in, account);
+        return results;
 
     }
 }
