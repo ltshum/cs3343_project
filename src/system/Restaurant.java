@@ -86,10 +86,10 @@ public class Restaurant extends Account {
         );
     }
 
-    public void updateSeatNo(int tableID, int seatNum) {
-        Table table = allTables.get(tableID - 1);
-        table.setSeatNum(seatNum);
-    }
+    // public void updateSeatNo(int tableID, int seatNum) {
+    //     Table table = allTables.get(tableID - 1);
+    //     table.setSeatNum(seatNum);
+    // }
 
     public boolean tableValidation(int tableID) {
         for (Table table: allTables) {
@@ -134,9 +134,13 @@ public class Restaurant extends Account {
             System.out.print("\nNew Seat: ");
             try {
                 int newSeat = Integer.parseInt(in.nextLine());
+                if(newSeat<=0) {
+                    System.out.print("\nSeat Num cannot be less than or equal to 0! Please input again.");
+                }else {
                 table.setSeatNum(newSeat);
                 isValidSeatNo = true;
                 System.out.println("Table with table ID " + tableID + " has been updated to " + newSeat + " seats.");
+                }
             } catch (NumberFormatException e) {
                 System.out.print("\nInvalid input! Please input again.");
             }
@@ -224,7 +228,11 @@ public class Restaurant extends Account {
     }
 
     public void setSessionDuration(Duration sessionDuration) {
+    	if(!sessionDuration.isZero()&&!sessionDuration.isNegative()) {
         this.sessionDuration = sessionDuration;
+    }else {
+    	System.out.println("Session Duration cannot be less than or equal to zero ");
+    }
     }
 
     public void setAllTables(ArrayList<Table> allTables) {

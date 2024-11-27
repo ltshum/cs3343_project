@@ -37,9 +37,9 @@ public class Server {
         AccountList.add(ac);
     }
 
-    public void updateSeatNo(Account ac, int tableID, int seatNum) {
-        ac.updateSeatNo(tableID, seatNum);
-    }
+    // public void updateSeatNo(Account ac, int tableID, int seatNum) {
+    //     ac.updateSeatNo(tableID, seatNum);
+    // }
 
     public boolean isUsernameExist(String username) {
         if (AccountList.stream().anyMatch(user -> user.getAccountUserName().equals(username))) {
