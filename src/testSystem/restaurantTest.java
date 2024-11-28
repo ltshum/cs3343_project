@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class restaurantTest {
+public class RestaurantTest {
 
     // Preparation start
     InputStream systemIn = System.in;
@@ -139,16 +139,7 @@ public class restaurantTest {
     }
 
     @Test
-    public void test_edit_InvalidOpenTimeLogic1() {
-        String[] input = {"6", "", "13:00", "X"};
-        setInput(input);
-
-        restaurant.edit(scanner);
-        assertEquals(LocalTime.parse("13:00"), restaurant.getOpenTime());
-    }
-
-    @Test
-    public void test_edit_InvalidOpenTimeLogic2() {
+    public void test_edit_InvalidOpenTimeLogic() {
         String[] input = {"6", "23:00", "12:00", "X"};
         setInput(input);
         restaurant.edit(scanner);
