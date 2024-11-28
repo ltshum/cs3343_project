@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class RestaurantTest {
+public class ResstaurantTest {
 
     // Preparation start
     InputStream systemIn = System.in;
