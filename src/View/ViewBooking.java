@@ -3,9 +3,6 @@ package View;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import system.Account;
-import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 public class ViewBooking {

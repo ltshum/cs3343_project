@@ -3,8 +3,6 @@ package View;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import system.Account;
-import system.Customer;
 import system.Server;
 
 public class RestaurantList {

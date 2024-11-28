@@ -4,8 +4,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import system.Account;
 import system.Server;
 
 public class SearchRestaurant {
@@ -26,11 +24,7 @@ public class SearchRestaurant {
             return true;
         }
     
-        if (rateRange.length() == 3 && rateRange.charAt(1) == '-' && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5' && rateRange.charAt(2) >= '0' && rateRange.charAt(2) <= '5' && rateRange.charAt(0) <= rateRange.charAt(2)) {
-            return true;
-        }else{
-            return false;
-        }     
+        return rateRange.length() == 3 && rateRange.charAt(1) == '-' && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5' && rateRange.charAt(2) >= '0' && rateRange.charAt(2) <= '5' && rateRange.charAt(0) <= rateRange.charAt(2);     
     }
 
     public void displaySearchRestaurnt(Scanner in) {

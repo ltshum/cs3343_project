@@ -2,8 +2,6 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-import system.Account;
-import system.Customer;
 import system.Server;
 
 public class BookingProfile {
