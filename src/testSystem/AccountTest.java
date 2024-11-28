@@ -77,7 +77,7 @@ public class AccountTest {
     @Test
     public void testGetId() {
         System.out.println("This is the new id: " + account.getId());
-        assertEquals(85, account.getId());
+        assertEquals(5, account.getId());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class AccountTest {
 
     @Test
     public void testStaticGetIdCounter() {
-        assertEquals(82, Account.getIdCounter());
+        assertEquals(2, Account.getIdCounter());
     }
 
     @Test

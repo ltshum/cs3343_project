@@ -38,6 +38,10 @@ public class Server {
     public void addRestaurant(Restaurant ac) {
         AccountList.add(ac);
     }
+    
+    public ArrayList<Account> getAccountList() {
+    	return AccountList;
+    }
 
     // public void updateSeatNo(Account ac, int tableID, int seatNum) {
     //     ac.updateSeatNo(tableID, seatNum);
