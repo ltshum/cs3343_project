@@ -30,7 +30,7 @@ public class Server {
         RestaurantAccounts.put(restaurant.getAccountUserName(), restaurant);
     }
 
-    public void addRestaurant(Restaurant ac) {
+    public void addAccount(Account ac) {
         AccountList.add(ac);
     }
     
@@ -90,7 +90,7 @@ public class Server {
     }
 
     public int getPermissionNumber(Account ac) {
-        int count = 1;
+        int count = 0;
         for (Permission permission : ac.getAccountPermissions()) {
             System.out.println("\n" + count + ". " + permission.getResource());
             count++;
@@ -391,7 +391,6 @@ public class Server {
     public void reset() {
         AccountList.clear();
         RestaurantAccounts.clear();
-        AllRestaurantLogs.clear();
-        restaurantLogDataMap.clear();
+       
     }
 }
