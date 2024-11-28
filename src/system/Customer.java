@@ -112,4 +112,44 @@ public class Customer extends Account {
     public void addBooking(Booking bk) {
         this.allBookings.add(bk);
     }
+
+    public Booking getBookingToBeCommentInCustomer(int inputNumber, LocalDate date) {
+        
+        ArrayList<Booking> requiredbookings = new ArrayList<>();
+        for (Booking booking : allBookings) {
+            if (booking.getBookingDate().equals(date)) {
+                requiredbookings.add(booking);
+            }
+        }
+        return requiredbookings.get(inputNumber - 1);
+    }
+
+    public boolean checkHasAttendInCustomer(int inputNumber, LocalDate date) {
+        if (!getBookingToBeCommentInCustomer(inputNumber, date).hasArrived()) {
+            System.out.println("\nYou can only make comment after you have attended the appointment.");
+            return false;
+        }
+        return true;
+    }
+
+    public void makeCommentInCustomer(int inputNumber, LocalDate date, int rate, String commentString) {
+        try {
+            Restaurant restaurant = getBookingToBeCommentInCustomer(inputNumber, date).getBookingRestaurant();
+            ArrayList<Comment> allComments = restaurant.getAllCommentsList();
+            Comment comment = new Comment(getCustomerName(), commentString, rate, date);
+            allComments.add(comment);
+            float recal_rate = 0;
+            for (Comment cm : allComments) {
+                recal_rate += cm.getCommentRate();
+            }
+            restaurant.setRate(recal_rate / allComments.size());
+            System.out.println("\nComment added!");
+        } catch (Exception e) {
+            System.out.println("Restaurant not found.");
+        }
+    }
+
+    public Restaurant getRestaurantToBeComment(int inputNumber, LocalDate date) {
+        return getBookingToBeCommentInCustomer(inputNumber, date).getBookingRestaurant();
+    }
 }

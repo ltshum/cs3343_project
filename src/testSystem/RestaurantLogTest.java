@@ -31,26 +31,26 @@ public class RestaurantLogTest {
 
     @Test
     public void testGetRank() {
-        assertEquals(6, restaurantLog1.getRank());
-        assertEquals(9, restaurantLog2.getRank());
+        assertEquals(6, restaurantLog1.getLogRank());
+        assertEquals(9, restaurantLog2.getLogRank());
     }
 
     @Test
     public void testGetRate() {
-        assertEquals(3.5f, restaurantLog1.getRate(), 0.01);
-        assertEquals(3f, restaurantLog2.getRate(), 0.01);
+        assertEquals(3.5f, restaurantLog1.getLogRate(), 0.01);
+        assertEquals(3f, restaurantLog2.getLogRate(), 0.01);
     }
 
     @Test
     public void testGetTotalPpl() {
-        assertEquals(6, restaurantLog1.getTotalPpl());
-        assertEquals(3, restaurantLog2.getTotalPpl());
+        assertEquals(6, restaurantLog1.getLogTotalPpl());
+        assertEquals(3, restaurantLog2.getLogTotalPpl());
     }
 
     @Test
     public void testGetComments() {
-        assertEquals(new ArrayList<Comment>(List.of(comment1, comment2)), restaurantLog1.getComments());
-        assertEquals(new ArrayList<Comment>(List.of(comment2, comment3)), restaurantLog2.getComments());
+        assertEquals(new ArrayList<Comment>(List.of(comment1, comment2)), restaurantLog1.getLogComments());
+        assertEquals(new ArrayList<Comment>(List.of(comment2, comment3)), restaurantLog2.getLogComments());
     }
     
 }

@@ -85,7 +85,7 @@ public class Restaurant extends Account {
     //     Table table = allTables.get(tableID - 1);
     //     table.setSeatNum(seatNum);
     // }
-    public boolean tableValidation(int tableID) {
+    public boolean tableValidationInRestaurant(int tableID) {
         for (Table table : allTables) {
             if (table.getTableID() == tableID) {
                 return true;
@@ -94,7 +94,7 @@ public class Restaurant extends Account {
         return false;
     }
 
-    public int availableTableID(int ppl, String timeslotSession, LocalDate date) {
+    public int availableTableIDInRestaurant(int ppl, String timeslotSession, LocalDate date) {
         for (Table table : allTables) {
             if (table.isTimeslotAvailable(timeslotSession, date)) {
                 if (table.getSeatNum() >= ppl) {
@@ -568,6 +568,32 @@ public class Restaurant extends Account {
         report.append("Total ppl decrease/increase ").append(thisWeekLog.getLogTotalPpl() - lastWeekLog.getLogTotalPpl()).append("\n");
 
         System.out.println(report.toString());
+    }
+
+    public boolean takeAttendanceInRestaurant(LocalDate date, String inputSession, int tableID) {
+        for (Booking booking : allBookings) {
+            if (booking.getBookingDate().equals(date) && booking.getBookingTableID() == tableID && booking.getBookingTimeslot().equals(inputSession)) {
+                booking.takeAttendance();
+                return true;
+            }
+        }
+        return false;    
+    }
+
+    public void makeCommentInRestaurant(String customerName, LocalDate date, int rate, String commentString) {
+        Comment comment = new Comment(customerName, commentString, rate, date);
+        allComments.add(comment);
+        float recal_rate = 0;
+        for (Comment cm : allComments) {
+            recal_rate += cm.getCommentRate();
+        }
+        setRate(recal_rate / allComments.size());
+    }
+
+    public Booking makeBookingInRestaurant(LocalDate date, int tableID, String bookSession, Customer ac, String contact, int ppl) {
+        Booking bk = new Booking(date, tableID, bookSession, this, ac, contact, ppl);
+        this.addBooking(bk);
+        return bk;
     }
 
     

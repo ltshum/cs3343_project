@@ -127,4 +127,32 @@ public abstract class Account {
     public void generateRestaurantWeeklyReport() {
         ((Restaurant)this).generateWeeklyReport();
     }
+
+    public boolean takeAttenanceInAccount(LocalDate date, String inputSession, int tableID) {
+        return ((Restaurant)this).takeAttendanceInRestaurant(date, inputSession, tableID);
+    }
+
+    public boolean checkHasAttendInAccount(int inputNumber, LocalDate date) {
+        return ((Customer)this).checkHasAttendInCustomer(inputNumber, date);
+    }
+
+    public void makeCommentInAccount(int inputNumber, LocalDate date, int rate, String commentString) {
+        try {
+            Restaurant restaurant = ((Customer) this).getRestaurantToBeComment(inputNumber, date);
+            restaurant.makeCommentInRestaurant(((Customer) this).getCustomerName(), date, rate, commentString);
+            System.out.println("\nComment added!");
+        } catch (Exception e) {
+            System.out.println("Restaurant not found.");
+        }
+
+    }
+
+    public int availableTableIDInAccount(int ppl, String timeslotSession, LocalDate date) {
+        return ((Restaurant)this).availableTableIDInRestaurant(ppl, timeslotSession, date);
+    }
+
+    public void makeBookingInAccount(LocalDate date, int tableID, String bookSession, Customer ac, String contact, int ppl) {
+        ac.addBooking(((Restaurant)this).makeBookingInRestaurant(date, tableID, bookSession, ac, contact, ppl));
+    }
+
 }

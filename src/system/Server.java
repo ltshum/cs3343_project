@@ -130,57 +130,19 @@ public class Server {
     }
 
     public boolean tableValidation(Restaurant ac, int tableID) {
-        return ac.tableValidation(tableID);
+        return ac.tableValidationInRestaurant(tableID);
     }
 
     public boolean takeAttendance(Account ac, LocalDate date, String inputSession, int tableID) {
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Booking> allbookings = restaurant.getAllBookings();
-        for (Booking booking : allbookings) {
-            if (booking.getBookingDate().equals(date) && booking.getBookingTableID() == tableID && booking.getBookingTimeslot().equals(inputSession)) {
-                booking.takeAttendance();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Booking getBookingToBeComment(Account ac, int inputNumber, LocalDate date) {
-        Customer customer = (Customer) ac;
-        ArrayList<Booking> allbookings = customer.getAllBookings();
-        ArrayList<Booking> bookings = new ArrayList<>();
-        for (Booking booking : allbookings) {
-            if (booking.getBookingDate().equals(date)) {
-                bookings.add(booking);
-            }
-        }
-        return bookings.get(inputNumber - 1);
+        return ac.takeAttenanceInAccount(date, inputSession, tableID);
     }
 
     public boolean checkHasAttend(Account ac, int inputNumber, LocalDate date) {
-        if (!getBookingToBeComment(ac, inputNumber, date).hasArrived()) {
-            System.out.println("\nYou can only make comment after you have attended the appointment.");
-            return false;
-        }
-        return true;
+        return ac.checkHasAttendInAccount(inputNumber, date);
     }
 
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String commentString) {
-        Customer customer = (Customer) ac;
-        try {
-            Restaurant restaurant = getBookingToBeComment(ac, inputNumber, date).getBookingRestaurant();
-            ArrayList<Comment> allComments = restaurant.getAllCommentsList();
-            Comment comment = new Comment(customer.getCustomerName(), commentString, rate, date);
-            allComments.add(comment);
-            float recal_rate = 0;
-            for (Comment cm : allComments) {
-                recal_rate += cm.getCommentRate();
-            }
-            restaurant.setRate(recal_rate / allComments.size());
-            System.out.println("\nComment added!");
-        } catch (Exception e) {
-            System.out.println("Restaurant not found.");
-        }
+        ac.makeCommentInAccount(inputNumber, date, rate, commentString);
     }
 
     public ArrayList<Restaurant> getRestaurantAccounts() {
@@ -203,10 +165,10 @@ public class Server {
                 + "\n   Type: " + restaurant.getType();
     }
 
-    public Restaurant getRestaurantAccountByUserName(String username) {
+    public Account getRestaurantAccountByUserName(String username) {
         for (Account account : RestaurantAccounts.values()) {
             if (account.getAccountUserName().equals(username)) {
-                return (Restaurant) account;
+                return account;
             }
         }
         return null;
@@ -214,7 +176,7 @@ public class Server {
 
     public String getRestaurantBookingDetail(Restaurant restaurant) {
 
-        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
+        Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
             return requiredRestaurant.getProfileDetail();
         }
@@ -222,18 +184,17 @@ public class Server {
     }
 
     public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
-        Restaurant restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
-        return restaurant.availableTableID(ppl, timeslotSession, date);
+        Account restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
+        return restaurant.availableTableIDInAccount(ppl, timeslotSession, date);
     }
 
     public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
-        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
+        
+        Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant == null) {
             return "Restaurant not found.";
         } else {
-            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant, ac, contact, ppl);
-            requiredRestaurant.addBooking(bk);
-            ac.addBooking(bk);
+            requiredRestaurant.makeBookingInAccount(date, tableID, bookSession, ac, contact, ppl);
             return "\nAlready booked a seat for you";
         }
     }
@@ -246,28 +207,6 @@ public class Server {
     public void updateTableInfo(Account ac, Scanner in, int tableID) {
         Restaurant restaurant = (Restaurant) ac;
         restaurant.updateTableInfo(in, tableID);
-    }
-
-    public ArrayList<Booking> getPeriodBookings(Restaurant restaurant, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Booking> allBookings = restaurant.getAllBookings();
-        ArrayList<Booking> periodBookings = new ArrayList<>();
-        for (Booking bk : allBookings) {
-            if ((bk.getBookingDate().isEqual(startDate) || bk.getBookingDate().isAfter(startDate)) && (bk.getBookingDate().isEqual(endDate) || bk.getBookingDate().isBefore(endDate))) {
-                periodBookings.add(bk);
-            }
-        }
-        return periodBookings;
-    }
-
-    public ArrayList<Comment> getPeriodComments(Restaurant restaurant, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Comment> allComments = restaurant.getAllCommentsList();
-        ArrayList<Comment> periodComments = new ArrayList<>();
-        for (Comment cm : allComments) {
-            if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
-                periodComments.add(cm);
-            }
-        }
-        return periodComments;
     }
 
     public static void mergeSort(ArrayList<Account> accounts, String sortBy) {
@@ -391,7 +330,5 @@ public class Server {
     public void reset() {
         AccountList.clear();
         RestaurantAccounts.clear();
-        AllRestaurantLogs.clear();
-        restaurantLogDataMap.clear();
     }
 }

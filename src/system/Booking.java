@@ -8,7 +8,7 @@ public class Booking {
     private final int tableID;
     private final String timeslot;
     private final Restaurant restaurant;
-    private final Customer customer;
+    private Customer customer;
     private final String customerContact;
     private final int ppl;
     private boolean arrive = false;
@@ -66,5 +66,9 @@ public class Booking {
 
     public void setArrive(boolean arrive) {
         this.arrive = arrive;
+    }
+
+    public void setBookingCustomer(Customer ac) {
+        this.customer = ac;
     }
 }
