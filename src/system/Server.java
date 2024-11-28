@@ -133,7 +133,7 @@ public class Server {
     }
 
     public boolean timeslotValidation(String userName, String bookTimeslot) {
-        Account restaurant = getAccountByUserName(userName);
+        Restaurant restaurant = (Restaurant) getAccountByUserName(userName);
         String[] allTimeslots = restaurant.getTimeslots().split(" \n");
         for (String timeslot : allTimeslots) {
             if (timeslot.equals(bookTimeslot)) {
@@ -185,7 +185,8 @@ public class Server {
         return resultList;
     }
 
-    public String getListInfo(Account restaurant) {
+    public String getListInfo(String userName) {
+        Restaurant restaurant = (Restaurant) getAccountByUserName(userName);
         return restaurant.getName()
                 + "\n   Rate: " + restaurant.getRate()
                 + "\n   District: " + restaurant.getDistrict()
