@@ -9,18 +9,16 @@ import system.Server;
 public class WeeklyReport {
 
     Server server = Server.getInstance();
-    Account account;
-    private final Restaurant restaurant;
+    string accountUsername;
 
-    public WeeklyReport(Account account) {
-        this.account = account;
-        this.restaurant = (Restaurant) account;
+    public WeeklyReport(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
     public void displayWeeklyReport(Scanner in) {
         System.out.println("# Here is your weekly report #\n");
-        server.generateAccountLog(account);
-        server.generateAccountWeeklyReport(account);
+        server.generateAccountLog(accountUsername);
+        server.generateAccountWeeklyReport(accountUsername);
         System.out.println("1. Exit\n");
 
         boolean isValidOption = false;

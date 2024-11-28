@@ -168,9 +168,13 @@ public class Server {
         return result;
     }
 
-    public ArrayList<Account> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
+    public ArrayList<String> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
-        return search.searchRestaurantsIn(getRestaurantAccounts());
+        ArrayList<String> resultList = new ArrayList<>();
+        for (Account restaurant : search.searchRestaurantsIn(getRestaurantAccounts())) {
+            resultList.add(restaurant.getAccountUserName());
+        }
+        return resultList;
     }
 
     public String getListInfo(Account restaurant) {
@@ -353,5 +357,13 @@ public class Server {
     public void reset() {
         AccountList.clear();
         RestaurantAccounts.clear();
+    }
+
+    public boolean isRestaurantByUsername(String accountUsername) {
+        return getAccountByUserName(accountUsername) instanceof Restaurant;
+    }
+
+    public boolean isCustomerByUsername(String accountUsername) {
+        return getAccountByUserName(accountUsername) instanceof Customer;
     }
 }

@@ -20,7 +20,7 @@ public class Profile {
             System.out.println("\n# Here is your information #");
             System.out.println("\n# Username is not allowed to change #");
 
-            if (account instanceof Restaurant) {
+            if (server.isRestaurantByUsername(accountUsername)) {
                 System.out.println("# Comment is not allowed to change #");
             }
             System.out.println(server.getUserDetail(accountUsername));

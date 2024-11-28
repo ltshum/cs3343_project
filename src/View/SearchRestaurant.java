@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import system.Account;
-import system.Restaurant;
 import system.Server;
 
 public class SearchRestaurant {
 
     Server server = Server.getInstance();
-    private final Account account;
+    private final String accountUsername;
 
-    public SearchRestaurant(Account account) {
-        this.account = account;
+    public SearchRestaurant(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
     public boolean isValidRating(String rateRange) {
@@ -100,10 +99,10 @@ public class SearchRestaurant {
             }
         }
 
-        ArrayList<Account> results = server.searchRestaurantsIn(restaurantName, district, rateRange, type, ppl, startTime, session);
+        ArrayList<String> results = server.searchRestaurantsIn(restaurantName, district, rateRange, type, ppl, startTime, session);
 
         RestaurantList RestaurantList = new RestaurantList(results);
-        RestaurantList.displayRestaurantList(in, account);
+        RestaurantList.displayRestaurantList(in, accountUsername);
 
     }
 }
