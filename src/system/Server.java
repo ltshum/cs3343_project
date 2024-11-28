@@ -322,9 +322,6 @@ public class Server {
         ArrayList<Account> thisWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
         calAndSetRestaurantRank(thisWeekRankedRestaurantAccounts, "thisWeekRate");
 
-        for(Account ac: RestaurantAccounts.values()){
-            System.out.println(ac.getAccountUserName() + ": " + ac.getRestaurantThisWeekRank());
-        }
     }
 
     public void generateAccountLog(Account ac) {
