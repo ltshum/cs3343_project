@@ -1,8 +1,6 @@
 package View;
 
 import java.util.Scanner;
-
-import system.Account;
 import system.Server;
 
 public class SignIn {
@@ -20,13 +18,13 @@ public class SignIn {
         System.out.print("\nPlease input your password: ");
         String password = in.next();
         in.nextLine();
-        Account account = server.signIn(username, password);
+        String accountUsername = server.signIn(username, password);
 
         //Pass to Home page or Back to Main
         while (true) {
-            if (account != null) {
-                System.out.println("\n# Sign in successful! Welcome, " + server.getUserName(account) + " #\n");
-                Home homePage = new Home(account);
+            if (accountUsername != null) {
+                System.out.println("\n# Sign in successful! Welcome, " + accountUsername + " #\n");
+                Home homePage = new Home(accountUsername);
                 homePage.display(in);
                 return;
             } else {

@@ -36,6 +36,15 @@ public class Server {
         return AccountList;
     }
 
+    public Account getAccountByUserName(String username) {
+        for (Account account : AccountList) {
+            if (account.getAccountUserName().equals(username)) {
+                return account;
+            }
+        }
+        return null;
+    }
+
     // public void updateSeatNo(Account ac, int tableID, int seatNum) {
     //     ac.updateSeatNo(tableID, seatNum);
     // }
@@ -74,10 +83,10 @@ public class Server {
         }
     }
 
-    public Account signIn(String username, String password) {
+    public String signIn(String username, String password) {
         for (Account account : AccountList) {
             if (account.getAccountUserName().equals(username) && account.getAccountPassword().equals(password)) {
-                return account; // Return the account if credentials match
+                return account.getAccountUserName(); // Return the account if credentials match
             }
         }
         return null; // Return null if no match found
@@ -87,7 +96,8 @@ public class Server {
         return account.getAccountUserName();
     }
 
-    public int getPermissionNumber(Account ac) {
+    public int getPermissionNumber(String acUsername) {
+            Account ac = getAccountByUserName(acUsername);
         return ac.getAccountPermissionNumber();
     }
 
@@ -95,7 +105,8 @@ public class Server {
         return ac.getAccountPermissions().size();
     }
 
-    public String getPermissionResource(Account ac, int inputNumber) {
+    public String getPermissionResource(String acUsername, int inputNumber) {
+        Account ac = getAccountByUserName(acUsername);
         if (getPermissionSize(ac) + 1 == inputNumber) {
             return "LOGOUT";
         } else if (inputNumber >= 1 && inputNumber <= getPermissionSize(ac)) {

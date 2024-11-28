@@ -3,7 +3,6 @@ package View;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Scanner;
-
 import system.Restaurant;
 import system.Server;
 
@@ -45,11 +44,13 @@ public class Main {
                     int choice = Integer.parseInt(in.nextLine());
                     switch (choice) {
                         case 1 -> {
-                            (new SignIn()).signIn(in);
+                            SignIn signIn = new SignIn();
+                            signIn.signIn(in);
                             isValidChoice = true;
                         }
                         case 2 -> {
-                            (new SignUp()).signUp(in);
+                            SignUp signUp = new SignUp();
+                            signUp.signUp(in);
                             isValidChoice = true;
                         }
                         case 3 -> {
