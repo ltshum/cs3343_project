@@ -1,6 +1,14 @@
 package testSystem;
 
 
+import static org.junit.Assert.*;
+
+import java.io.InputStream;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.Scanner;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,21 +18,9 @@ import acm.Privilege;
 import acm.Resource;
 import acm.Role;
 import system.Account;
-import system.Booking;
 import system.Customer;
 import system.Restaurant;
-import system.RestaurantLog;
 import system.Server;
-
-import java.io.InputStream;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 
 public class ServerTest {
@@ -216,11 +212,11 @@ public class ServerTest {
    }
    @Test
    public void testgetPermissionNumber1() {
-	   assertEquals(4,server.getPermissionNumber(restaurant));
+	   assertEquals(5,server.getPermissionNumber(restaurant));
    }
    @Test
    public void testgetPermissionNumber2() {
-	   assertEquals(3,server.getPermissionNumber(customer));
+	   assertEquals(4,server.getPermissionNumber(customer));
    }
    @Test
    public void testetPermissionSize1() {
@@ -233,13 +229,13 @@ public class ServerTest {
    @Test
    public void testgetPermissionResource1() {
        Permission per=new Permission(Role.RESTAURANT, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE));
-       Resource res=per.getResource();
+       String res=per.getResource().toString();
 	   assertEquals(res,server.getPermissionResource(restaurant,1));
    }
    @Test
    public void testgetPermissionResource2() {
        Permission per=new Permission(Role.CUSTOMER, Resource.SEARCH_RESTAURANT, Set.of(Privilege.READ));
-       Resource res=per.getResource();
+       String res=per.getResource().toString();
 	   assertEquals(res,server.getPermissionResource(customer,3));
    }
    
