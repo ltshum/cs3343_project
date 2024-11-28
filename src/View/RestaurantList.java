@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import system.Account;
 import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 public class RestaurantList {

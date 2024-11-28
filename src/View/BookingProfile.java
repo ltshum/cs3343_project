@@ -2,6 +2,7 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+
 import system.Account;
 import system.Customer;
 import system.Server;
@@ -36,7 +37,8 @@ public class BookingProfile {
             try {
                 int op = Integer.parseInt(in.nextLine());
                 if (ac instanceof Customer) {
-                    outerloop: switch (op) {
+                    outerloop:
+                    switch (op) {
                         case 1 -> {
                             boolean isValidSession = false;
                             String bookSession = "";

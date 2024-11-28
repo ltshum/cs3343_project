@@ -152,7 +152,7 @@ public class Server {
     public ArrayList<Account> getRestaurantAccounts() {
         ArrayList<Account> result = new ArrayList<>();
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            result.add( restaurantAc);
+            result.add(restaurantAc);
         }
         return result;
     }
@@ -162,7 +162,7 @@ public class Server {
         return search.searchRestaurantsIn(getRestaurantAccounts());
     }
 
-    public String getListInfo(Restaurant restaurant) {
+    public String getListInfo(Account restaurant) {
         return restaurant.getName()
                 + "\n   Rate: " + restaurant.getRate()
                 + "\n   District: " + restaurant.getDistrict()
@@ -201,7 +201,7 @@ public class Server {
         return null;
     }
 
-    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
+    public String makeBooking(LocalDate date, int tableID, String bookSession, Account restaurant, Customer ac, String contact, int ppl) {
 
         Booking booking = new Booking(date, tableID, bookSession, restaurant.getName(), restaurant.getId(), ac.getName(), ac.getId(), contact, ppl);
 
@@ -317,7 +317,7 @@ public class Server {
         LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
         LocalDate lastWeekEndDate = thisWeekEndDate.minusWeeks(1);
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            restaurantAc.generateRestaurantLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+            restaurantAc.generateRestaurantLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
         }
 
         ArrayList<Account> lastWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());

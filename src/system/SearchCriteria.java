@@ -111,9 +111,9 @@ public final class SearchCriteria {
         return (int) Math.ceil(result * 100); // higher accuracy for comparator
     }
 
-    public ArrayList<Restaurant> searchRestaurantsIn(ArrayList<Restaurant> restaurants) {
-        ArrayList<Restaurant> result = new ArrayList<>();
-        for (Restaurant r : restaurants) {
+    public ArrayList<Account> searchRestaurantsIn(ArrayList<Account> restaurants) {
+        ArrayList<Account> result = new ArrayList<>();
+        for (Account r : restaurants) {
             // if (restaurantName != null && !r.getRestaurantName().contains(restaurantName)){
             //     continue;
             // }
@@ -138,7 +138,7 @@ public final class SearchCriteria {
                 continue;
             }
 
-            ArrayList<Table> tables = r.getAllTables();
+            ArrayList<Table> tables = r.getAccountAllTables();
             for (Table t : tables) {
                 boolean status;
                 if (startTime != null) {
