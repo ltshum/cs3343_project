@@ -9,7 +9,7 @@ public class Booking {
     private final String timeslot;
     private final String restaurantName;
     private final String restaurantUserName;
-    private String customerName;
+    private final String customerName;
     private final String customerContact;
     private final int ppl;
     private boolean arrive = false;

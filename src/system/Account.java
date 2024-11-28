@@ -1,13 +1,12 @@
 package system;
 
+import acm.Permission;
+import acm.PermissionRegistry;
+import acm.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import acm.Permission;
-import acm.PermissionRegistry;
-import acm.Role;
 
 public abstract class Account {
 
@@ -18,7 +17,7 @@ public abstract class Account {
     private String password;
     private String name;
     private String contact;
-    private ArrayList<Booking> allBookings = new ArrayList<>();
+    private final ArrayList<Booking> allBookings = new ArrayList<>();
 
     public Account(List<Role> r, String userName, String password, String name, String contact) {
         this.id = idCounter++;
@@ -29,19 +28,19 @@ public abstract class Account {
         this.contact = contact;
     }
 
-    public String getName() {
+    public String getAccountName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setAccountName(String name) {
         this.name = name;
     }
 
-    public String getContact() {
+    public String getAccountContact() {
         return contact;
     }
 
-    public void setContact(String contact) {
+    public void setAccountContact(String contact) {
         this.contact = contact;
     }
 
@@ -190,44 +189,40 @@ public abstract class Account {
         return getAccountPermissions().get(inputNumber - 1).getResource().toString();
     }
 
-    public String getAccountName() {
-        return ((Restaurant) this).getRestaurantName();
-    }
-
     public String getAccountDistrict() {
-        return ((Restaurant) this).getDistrict();
+        return ((Restaurant) this).getRestaurantDistrict();
     }
 
     public float getAccountRate() {
-        return ((Restaurant) this).getRate();
+        return ((Restaurant) this).getRestaurantRate();
     }
 
     public String getAccountType() {
-        return ((Restaurant) this).getType();
+        return ((Restaurant) this).getRestaurantType();
     }
 
     public ArrayList<Table> getAccountAllTables() {
-        return ((Restaurant) this).getAllTables();
+        return ((Restaurant) this).getRestaurantAllTables();
     }
 
-    public String getRestaurantName() {
-        return ((Restaurant) this).getRestaurantName();
+    public String getAccountTimeslots() {
+        return ((Restaurant) this).getRestaurantTimeslots();
     }
 
-    public float getRate() {
-        return ((Restaurant) this).getRate();
+    boolean tableValidationInAccount(int tableID) {
+        return ((Restaurant) this).tableValidationInRestaurant(tableID);
     }
 
-    public String getDistrict() {
-        return ((Restaurant) this).getDistrict();
+    void addCommentInAccount(Comment cm) {
+        ((Restaurant) this).addCommentInRestaurant(cm);
     }
 
-    public String getType() {
-        return ((Restaurant) this).getType();
+    StringBuilder getAccountAllTableInfo() {
+        return ((Restaurant) this).getRestaurantAllTableInfo();
     }
 
-    public String getTimeslots() {
-        return ((Restaurant) this).getTimeslots();
+    void updateAccountTableInfo(Scanner in, int tableID) {
+        ((Restaurant) this).updateRestaurantTableInfo(in, tableID);
     }
 
 }

@@ -48,7 +48,7 @@ public class Restaurant extends Account {
         //this.allTables = new ArrayList<>();
     }
 
-    public String getTimeslots() {
+    public String getRestaurantTimeslots() {
         LocalTime currentTime = openTime;
         String result = "";
         while (currentTime.plus(sessionDuration).isBefore(closeTime)
@@ -72,7 +72,7 @@ public class Restaurant extends Account {
         }
     }
 
-    public void addComment(Comment cm) {
+    public void addCommentInRestaurant(Comment cm) {
         allComments.add(cm);
         float newRate = 0;
         for (Comment comment : allComments) {
@@ -106,7 +106,7 @@ public class Restaurant extends Account {
         return 0;
     }
 
-    public StringBuilder getAllTableInfo() {
+    public StringBuilder getRestaurantAllTableInfo() {
         StringBuilder result = new StringBuilder();
         StringBuilder tableID = new StringBuilder("                ");
         StringBuilder seat = new StringBuilder("                ");
@@ -121,7 +121,7 @@ public class Restaurant extends Account {
         return result;
     }
 
-    public void updateTableInfo(Scanner in, int tableID) {
+    public void updateRestaurantTableInfo(Scanner in, int tableID) {
         Table table = allTables.get(tableID - 1);
 
         boolean isValidSeatNo = false;
@@ -142,47 +142,47 @@ public class Restaurant extends Account {
         }
     }
 
-    public String getType() {
+    public String getRestaurantType() {
         return type;
     }
 
-    public String getAddress() {
+    public String getRestaurantAddress() {
         return address;
     }
 
-    public float getRate() {
+    public float getRestaurantRate() {
         return rate;
     }
 
-    public float getLogRate() {
+    public float getRestaurantLogRate() {
         return rate;
     }
 
-    public LocalTime getOpenTime() {
+    public LocalTime getRestaurantOpenTime() {
         return openTime;
     }
 
-    public LocalTime getCloseTime() {
+    public LocalTime getRestaurantCloseTime() {
         return closeTime;
     }
 
-    public long getSessionDuration() {
+    public long getRestaurantSessionDuration() {
         return sessionDuration.toMinutes();
     }
 
-    public ArrayList<Table> getAllTables() {
+    public ArrayList<Table> getRestaurantAllTables() {
         return allTables;
     }
 
-    public String getDistrict() {
+    public String getRestaurantDistrict() {
         return district;
     }
 
-    public ArrayList<Comment> getAllCommentsList() {
+    public ArrayList<Comment> getRestaurantAllCommentsList() {
         return allComments;
     }
 
-    public String getAllComments() {
+    public String getRestaurantAllComments() {
         String result = "";
         for (Comment cm : allComments) {
             result = result + cm.getCommentCustomerName() + ": " + cm.getCommentContent() + " " + cm.getCommentRate() + "\n";
@@ -190,31 +190,31 @@ public class Restaurant extends Account {
         return result;
     }
 
-    public void setType(String type) {
+    public void setRestaurantType(String type) {
         this.type = type;
     }
 
-    public void setDistrict(String district) {
+    public void setRestaurantDistrict(String district) {
         this.district = district;
     }
 
-    public void setAddress(String address) {
+    public void setRestaurantAddress(String address) {
         this.address = address;
     }
 
-    public void setRate(float rate) {
+    public void setRestaurantRate(float rate) {
         this.rate = rate;
     }
 
-    public void setOpenTime(LocalTime openTime) {
+    public void setRestaurantOpenTime(LocalTime openTime) {
         this.openTime = openTime;
     }
 
-    public void setCloseTime(LocalTime closeTime) {
+    public void setRestaurantCloseTime(LocalTime closeTime) {
         this.closeTime = closeTime;
     }
 
-    public void setSessionDuration(Duration sessionDuration) {
+    public void setRestaurantSessionDuration(Duration sessionDuration) {
         if (!sessionDuration.isZero() && !sessionDuration.isNegative()) {
             this.sessionDuration = sessionDuration;
         } else {
@@ -222,7 +222,7 @@ public class Restaurant extends Account {
         }
     }
 
-    public void setAllTables(ArrayList<Table> allTables) {
+    public void setRestaurantAllTables(ArrayList<Table> allTables) {
         this.allTables = allTables;
     }
 
@@ -234,18 +234,18 @@ public class Restaurant extends Account {
 
     @Override
     public String getProfileDetail() {
-        return "Rate: " + this.getRate()
-                + "\nRestaurant Name: " + getName()
+        return "Rate: " + this.getRestaurantRate()
+                + "\nRestaurant Name: " + getAccountName()
                 + "\nType: " + type
                 + "\nDistrict: " + district
                 + "\nAddress: " + address
-                + "\nPhone: " + getContact()
+                + "\nPhone: " + getAccountContact()
                 + "\nOpen Time: " + openTime
                 + "\nClose Time: " + closeTime
                 + "\nSession Duration: " + sessionDuration.toMinutes() + "mins"
                 + "\nTable Amount: " + allTables.size()
-                + "\n\nTimeslot: \n" + this.getTimeslots()
-                + "\nComment: \n" + this.getAllComments();
+                + "\n\nTimeslot: \n" + this.getRestaurantTimeslots()
+                + "\nComment: \n" + this.getRestaurantAllComments();
     }
 
     @Override
@@ -277,32 +277,32 @@ public class Restaurant extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Restaurant Name: ");
-                                setName(in.nextLine());
-                                System.out.println("\nRestaurant Name has been changed to " + getName() + "\n");
+                                setAccountName(in.nextLine());
+                                System.out.println("\nRestaurant Name has been changed to " + getAccountName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Type: ");
-                                setType(in.nextLine());
-                                System.out.println("\nType has been changed to " + getType() + "\n");
+                                setRestaurantType(in.nextLine());
+                                System.out.println("\nType has been changed to " + getRestaurantType() + "\n");
                                 isValidOption = true;
                             }
                             case 3 -> {
                                 System.out.print("Please input new Distrct: ");
-                                setDistrict(in.nextLine());
-                                System.out.println("\nDistrict has been changed to " + getDistrict() + "\n");
+                                setRestaurantDistrict(in.nextLine());
+                                System.out.println("\nDistrict has been changed to " + getRestaurantDistrict() + "\n");
                                 isValidOption = true;
                             }
                             case 4 -> {
                                 System.out.print("Please input new Address: ");
-                                setAddress(in.nextLine());
-                                System.out.println("\nAddress has been changed to " + getAddress() + "\n");
+                                setRestaurantAddress(in.nextLine());
+                                System.out.println("\nAddress has been changed to " + getRestaurantAddress() + "\n");
                                 isValidOption = true;
                             }
                             case 5 -> {
                                 System.out.print("Please input new Phone: ");
-                                setContact(in.nextLine());
-                                System.out.println("\nPhone has been changed to " + getContact() + "\n");
+                                setAccountContact(in.nextLine());
+                                System.out.println("\nPhone has been changed to " + getAccountContact() + "\n");
                                 isValidOption = true;
                             }
                             case 6 -> {
@@ -314,9 +314,9 @@ public class Restaurant extends Account {
                                         if (newOpenTime.isAfter(closeTime)) {
                                             System.out.println("Open Time must not  earlier than Open Time.Please input again");
                                         } else {
-                                            setOpenTime(newOpenTime);
+                                            setRestaurantOpenTime(newOpenTime);
                                             generateTimeslots();
-                                            System.out.println("\nOpen Time has been changed to " + getOpenTime() + "\n");
+                                            System.out.println("\nOpen Time has been changed to " + getRestaurantOpenTime() + "\n");
                                             isValidOpenTime = true;
                                             isValidOption = true;
                                         }
@@ -335,9 +335,9 @@ public class Restaurant extends Account {
                                         if (newClosingTime.isBefore(openTime)) {
                                             System.out.println("Close Time must not be earlier than Open Time.Please input again");
                                         } else {
-                                            setCloseTime(newClosingTime);
+                                            setRestaurantCloseTime(newClosingTime);
                                             generateTimeslots();
-                                            System.out.println("\nClose Time has been changed to " + getCloseTime() + "\n");
+                                            System.out.println("\nClose Time has been changed to " + getRestaurantCloseTime() + "\n");
                                             isValidCloseTime = true;
                                             isValidOption = true;
                                         }
@@ -356,9 +356,9 @@ public class Restaurant extends Account {
                                         if (newSessionDuration <= 0) {
                                             System.out.println("New session duration cannot be smaller or equal to 0.Please input again");
                                         } else {
-                                            setSessionDuration(Duration.ofMinutes(newSessionDuration));
+                                            setRestaurantSessionDuration(Duration.ofMinutes(newSessionDuration));
                                             generateTimeslots();
-                                            System.out.println("\nSession Duration has been changed to " + getSessionDuration() + "\n");
+                                            System.out.println("\nSession Duration has been changed to " + getRestaurantSessionDuration() + "\n");
                                             isValidSessionDuration = true;
                                             isValidOption = true;
                                         }
@@ -378,7 +378,7 @@ public class Restaurant extends Account {
                                             System.out.println("Table Amount cannot be smaller or equal to 0.Please input again");
                                         } else {
                                             initializeTables(TableAmountInput);
-                                            System.out.println("\nTable Amount has been changed to " + getAllTables().size() + "\n");
+                                            System.out.println("\nTable Amount has been changed to " + getRestaurantAllTables().size() + "\n");
                                             isValidTableAmount = true;
                                             isValidOption = true;
                                         }

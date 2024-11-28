@@ -133,8 +133,8 @@ public class Server {
     }
 
     public boolean timeslotValidation(String userName, String bookTimeslot) {
-        Restaurant restaurant = (Restaurant) getAccountByUserName(userName);
-        String[] allTimeslots = restaurant.getTimeslots().split(" \n");
+        Account restaurantAc = getAccountByUserName(userName);
+        String[] allTimeslots = restaurantAc.getAccountTimeslots().split(" \n");
         for (String timeslot : allTimeslots) {
             if (timeslot.equals(bookTimeslot)) {
                 return true;
@@ -144,8 +144,8 @@ public class Server {
     }
 
     public boolean tableValidation(String userName, int tableID) {
-        Restaurant ac = (Restaurant) getAccountByUserName(userName);
-        return ac.tableValidationInRestaurant(tableID);
+        Account restaurantAc = getAccountByUserName(userName);
+        return restaurantAc.tableValidationInAccount(tableID);
     }
 
     public boolean takeAttendance(String userName, LocalDate date, String inputSession, int tableID) {
@@ -160,11 +160,11 @@ public class Server {
 
     public void makeComment(String userName, int inputNumber, LocalDate date, int rate, String commentString) {
 
-        Account ac = getAccountByUserName(userName);
-        String restaurantUserName = ac.getCommentRestaurantUserName(inputNumber, date);
-        Restaurant commentRestaurant = (Restaurant) getAccountByUserName(restaurantUserName);
-        Comment cm = new Comment(ac.getName(), commentString, rate, date);
-        commentRestaurant.addComment(cm);
+        Account restaurantAc = getAccountByUserName(userName);
+        String restaurantUserName = restaurantAc.getCommentRestaurantUserName(inputNumber, date);
+        Account commentRestaurant = getAccountByUserName(restaurantUserName);
+        Comment cm = new Comment(restaurantAc.getAccountName(), commentString, rate, date);
+        commentRestaurant.addCommentInAccount(cm);
 
     }
 
@@ -186,11 +186,11 @@ public class Server {
     }
 
     public String getListInfo(String userName) {
-        Restaurant restaurant = (Restaurant) getAccountByUserName(userName);
-        return restaurant.getName()
-                + "\n   Rate: " + restaurant.getRate()
-                + "\n   District: " + restaurant.getDistrict()
-                + "\n   Type: " + restaurant.getType();
+        Account restaurant = getAccountByUserName(userName);
+        return restaurant.getAccountName()
+                + "\n   Rate: " + restaurant.getAccountRate()
+                + "\n   District: " + restaurant.getAccountDistrict()
+                + "\n   Type: " + restaurant.getAccountType();
     }
 
     public Account getRestaurantAccountByUserName(String username) {
@@ -230,7 +230,7 @@ public class Server {
 
         Account restaurant = getAccountByUserName(restaurantUserName);
         Account customer = getAccountByUserName(customerUserName);
-        Booking booking = new Booking(date, tableID, bookSession, restaurant.getName(), restaurantUserName, customer.getName(), contact, ppl);
+        Booking booking = new Booking(date, tableID, bookSession, restaurant.getAccountName(), restaurantUserName, customer.getAccountName(), contact, ppl);
         restaurant.addBooking(booking);
         customer.addBooking(booking);
         return "\nAlready booked a seat for you";
@@ -239,14 +239,12 @@ public class Server {
 
     public StringBuilder getAllTableInfo(String userName) {
         Account ac = getAccountByUserName(userName);
-        Restaurant restaurant = (Restaurant) ac;
-        return restaurant.getAllTableInfo();
+        return ac.getAccountAllTableInfo();
     }
 
     public void updateTableInfo(String userName, Scanner in, int tableID) {
         Account ac = getAccountByUserName(userName);
-        Restaurant restaurant = (Restaurant) ac;
-        restaurant.updateTableInfo(in, tableID);
+        ac.updateAccountTableInfo(in, tableID);
     }
 
     public static void mergeSort(ArrayList<Account> accounts, String sortBy) {
@@ -354,7 +352,7 @@ public class Server {
         calAndSetRestaurantRank(thisWeekRankedRestaurantAccounts, "thisWeekRate");
 
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            System.out.println(restaurantAc.getName() + ":" + restaurantAc.getRestaurantThisWeekRank() + "     " + restaurantAc.getRestaurantLastWeekRank());
+            System.out.println(restaurantAc.getAccountName() + ":" + restaurantAc.getRestaurantThisWeekRank() + "     " + restaurantAc.getRestaurantLastWeekRank());
         }
     }
 

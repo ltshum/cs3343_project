@@ -1,13 +1,12 @@
 package system;
 
+import acm.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
-
-import acm.Role;
 
 public class Customer extends Account {
 
@@ -17,8 +16,8 @@ public class Customer extends Account {
 
     @Override
     public String getProfileDetail() {
-        return "Name: " + this.getName()
-                + "\nPhone: " + this.getContact();
+        return "Name: " + this.getAccountName()
+                + "\nPhone: " + this.getAccountContact();
     }
 
     @Override
@@ -38,14 +37,14 @@ public class Customer extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Name: ");
-                                setName(in.nextLine());
-                                System.out.println("\nName has been changed to " + getName() + "\n");
+                                setAccountName(in.nextLine());
+                                System.out.println("\nName has been changed to " + getAccountName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Phone: ");
-                                setContact(in.nextLine());
-                                System.out.println("\nPhone has been changed to " + getContact() + "\n");
+                                setAccountContact(in.nextLine());
+                                System.out.println("\nPhone has been changed to " + getAccountContact() + "\n");
                                 isValidOption = true;
                             }
                             default -> {

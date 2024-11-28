@@ -2,7 +2,6 @@ package View;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import system.Server;
 
 public class RestaurantList {
@@ -21,7 +20,7 @@ public class RestaurantList {
             System.out.println("\n# Here is the result list #");
             System.out.println("# If you want to leave please input X #\n");
             for (String r : result) {
-                System.out.println(count + ". " + server.getListInfo(accountUsername));
+                System.out.println(count + ". " + server.getListInfo(r));
                 count++;
             }
 
