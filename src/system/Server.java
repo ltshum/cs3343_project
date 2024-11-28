@@ -33,9 +33,9 @@ public class Server {
     public void addAccount(Account ac) {
         AccountList.add(ac);
     }
-    
+
     public ArrayList<Account> getAccountList() {
-    	return AccountList;
+        return AccountList;
     }
 
     // public void updateSeatNo(Account ac, int tableID, int seatNum) {
@@ -103,13 +103,11 @@ public class Server {
     }
 
     public String getPermissionResource(Account ac, int inputNumber) {
-        if (getPermissionSize(ac) + 1 == inputNumber){
+        if (getPermissionSize(ac) + 1 == inputNumber) {
             return "LOGOUT";
-        }
-        else if (inputNumber >= 1 && inputNumber <= getPermissionSize(ac)){
+        } else if (inputNumber >= 1 && inputNumber <= getPermissionSize(ac)) {
             return ac.getAccountPermissions().get(inputNumber - 1).getResource().toString();
-        }
-        else{
+        } else {
             return "invalid";
         }
     }
@@ -150,7 +148,12 @@ public class Server {
     }
 
     public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String commentString) {
-        ac.makeCommentInAccount(inputNumber, date, rate, commentString);
+
+        int restaurantId = ac.getCommentRestaurantId(inputNumber, date);
+        Restaurant commentRestaurant = (Restaurant) searchAccountById(restaurantId);
+        Comment cm = new Comment(ac.getName(), commentString, rate, date);
+        commentRestaurant.addComment(cm);
+
     }
 
     public ArrayList<Restaurant> getRestaurantAccounts() {
@@ -167,7 +170,7 @@ public class Server {
     }
 
     public String getListInfo(Restaurant restaurant) {
-        return restaurant.getRestaurantName()
+        return restaurant.getName()
                 + "\n   Rate: " + restaurant.getRate()
                 + "\n   District: " + restaurant.getDistrict()
                 + "\n   Type: " + restaurant.getType();
@@ -196,15 +199,23 @@ public class Server {
         return restaurant.availableTableIDInAccount(ppl, timeslotSession, date);
     }
 
-    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
-        
-        Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
-        if (requiredRestaurant == null) {
-            return "Restaurant not found.";
-        } else {
-            requiredRestaurant.makeBookingInAccount(date, tableID, bookSession, ac, contact, ppl);
-            return "\nAlready booked a seat for you";
+    public Account searchAccountById(int id) {
+        for (Account ac : AccountList) {
+            if (ac.getId() == id) {
+                return ac;
+            }
         }
+        return null;
+    }
+
+    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
+
+        Booking booking = new Booking(date, tableID, bookSession, restaurant.getName(), restaurant.getId(), ac.getName(), ac.getId(), contact, ppl);
+
+        restaurant.addBooking(booking);
+        ac.addBooking(booking);
+
+        return "\nAlready booked a seat for you";
     }
 
     public StringBuilder getAllTableInfo(Account ac) {
@@ -223,9 +234,9 @@ public class Server {
         }
 
         ArrayList<Account> temp = new ArrayList<>(accounts);
-        Comparator<Account> comparator = sortBy.equals("lastWeekRate") ?
-                Comparator.comparingDouble(Account::getRestaurantLastWeekRate) :
-                Comparator.comparingDouble(Account::getRestaurantThisWeekRate);
+        Comparator<Account> comparator = sortBy.equals("lastWeekRate")
+                ? Comparator.comparingDouble(Account::getRestaurantLastWeekRate)
+                : Comparator.comparingDouble(Account::getRestaurantThisWeekRate);
 
         mergeSort(accounts, temp, 0, accounts.size() - 1, comparator);
     }
@@ -247,7 +258,7 @@ public class Server {
         int left = leftStart;
         int right = rightStart;
         int index = leftStart;
-    
+
         while (left <= leftEnd && right <= rightEnd) {
             if (comparator.compare(accounts.get(left), accounts.get(right)) >= 0) { // Sort in descending order
                 temp.set(index, accounts.get(left));
@@ -258,19 +269,19 @@ public class Server {
             }
             index++;
         }
-    
+
         while (left <= leftEnd) {
             temp.set(index, accounts.get(left));
             left++;
             index++;
         }
-    
+
         while (right <= rightEnd) {
             temp.set(index, accounts.get(right));
             right++;
             index++;
         }
-    
+
         for (int i = leftStart; i <= rightEnd; i++) {
             accounts.set(i, temp.get(i));
         }
@@ -313,9 +324,9 @@ public class Server {
         LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
         LocalDate lastWeekEndDate = thisWeekEndDate.minusWeeks(1);
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            restaurantAc.generateRestaurantLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate); 
+            restaurantAc.generateRestaurantLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
         }
-        
+
         ArrayList<Account> lastWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
         calAndSetRestaurantRank(lastWeekRankedRestaurantAccounts, "lastWeekRate");
 
@@ -332,6 +343,7 @@ public class Server {
     public void generateAccountWeeklyReport(Account restaurant) {
         restaurant.generateRestaurantWeeklyReport();
     }
+
     public void reset() {
         AccountList.clear();
         RestaurantAccounts.clear();

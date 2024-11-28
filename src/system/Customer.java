@@ -1,6 +1,5 @@
 package system;
 
-import acm.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,51 +7,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import acm.Role;
+
 public class Customer extends Account {
 
-    private String customerName;
-    private String customerContact;
-    private ArrayList<String> allWrittenComment = new ArrayList<>();
-    private final ArrayList<Booking> allBookings = new ArrayList<>();
-
     public Customer(String userName, String password, String name, String contact) {
-        super(Arrays.asList(Role.CUSTOMER), userName, password);
-        this.customerName = name;
-        this.customerContact = contact;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public ArrayList<Booking> getAllBookings() {
-        return allBookings;
-    }
-
-    public String getCustomerContact() {
-        return customerContact;
-    }
-
-    public ArrayList<String> getAllWrittenComment() {
-        return allWrittenComment;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public void setCustomerContact(String customerContact) {
-        this.customerContact = customerContact;
-    }
-
-    public void setAllWrittenComment(ArrayList<String> allWrittenComment) {
-        this.allWrittenComment = allWrittenComment;
+        super(Arrays.asList(Role.CUSTOMER), userName, password, name, contact);
     }
 
     @Override
     public String getProfileDetail() {
-        return "Name: " + this.getCustomerName()
-                + "\nPhone: " + this.getCustomerContact();
+        return "Name: " + this.getName()
+                + "\nPhone: " + this.getContact();
     }
 
     @Override
@@ -72,14 +38,14 @@ public class Customer extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Name: ");
-                                setCustomerName(in.nextLine());
-                                System.out.println("\nName has been changed to " + getCustomerName() + "\n");
+                                setName(in.nextLine());
+                                System.out.println("\nName has been changed to " + getName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Phone: ");
-                                setCustomerContact(in.nextLine());
-                                System.out.println("\nPhone has been changed to " + getCustomerContact() + "\n");
+                                setContact(in.nextLine());
+                                System.out.println("\nPhone has been changed to " + getContact() + "\n");
                                 isValidOption = true;
                             }
                             default -> {
@@ -96,10 +62,10 @@ public class Customer extends Account {
 
     @Override
     public int getBookingRecord(LocalDate date) {
-        Collections.sort(allBookings, Comparator.comparing(Booking::getBookingTimeslot));
+        Collections.sort(getAllBookings(), Comparator.comparing(Booking::getBookingTimeslot));
         String bookingString = "";
         int index = 0;
-        for (Booking booking : allBookings) {
+        for (Booking booking : getAllBookings()) {
             if (booking.getBookingDate().equals(date)) {
                 index++;
                 bookingString += index + ". " + booking.getCustomerBookingData();
@@ -109,14 +75,10 @@ public class Customer extends Account {
         return index;
     }
 
-    public void addBooking(Booking bk) {
-        this.allBookings.add(bk);
-    }
-
     public Booking getBookingToBeCommentInCustomer(int inputNumber, LocalDate date) {
-        
+
         ArrayList<Booking> requiredbookings = new ArrayList<>();
-        for (Booking booking : allBookings) {
+        for (Booking booking : getAllBookings()) {
             if (booking.getBookingDate().equals(date)) {
                 requiredbookings.add(booking);
             }
@@ -132,24 +94,4 @@ public class Customer extends Account {
         return true;
     }
 
-    public void makeCommentInCustomer(int inputNumber, LocalDate date, int rate, String commentString) {
-        try {
-            Restaurant restaurant = getBookingToBeCommentInCustomer(inputNumber, date).getBookingRestaurant();
-            ArrayList<Comment> allComments = restaurant.getAllCommentsList();
-            Comment comment = new Comment(getCustomerName(), commentString, rate, date);
-            allComments.add(comment);
-            float recal_rate = 0;
-            for (Comment cm : allComments) {
-                recal_rate += cm.getCommentRate();
-            }
-            restaurant.setRate(recal_rate / allComments.size());
-            System.out.println("\nComment added!");
-        } catch (Exception e) {
-            System.out.println("Restaurant not found.");
-        }
-    }
-
-    public Restaurant getRestaurantToBeComment(int inputNumber, LocalDate date) {
-        return getBookingToBeCommentInCustomer(inputNumber, date).getBookingRestaurant();
-    }
 }
