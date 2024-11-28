@@ -11,9 +11,9 @@ import system.Server;
 public class RestaurantList {
 
     Server server = Server.getInstance();
-    ArrayList<Restaurant> result = new ArrayList<>();
+    ArrayList<Account> result = new ArrayList<>();
 
-    public RestaurantList(ArrayList<Restaurant> result) {
+    public RestaurantList(ArrayList<Account> result) {
         this.result = result;
     }
 
@@ -23,7 +23,7 @@ public class RestaurantList {
             int count = 1;
             System.out.println("\n# Here is the result list #");
             System.out.println("# If you want to leave please input X #\n");
-            for (Restaurant r : result) {
+            for (Account r : result) {
                 System.out.println(count + ". " + server.getListInfo(r));
                 count++;
             }

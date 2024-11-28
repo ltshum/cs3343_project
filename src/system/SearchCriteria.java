@@ -78,7 +78,7 @@ public final class SearchCriteria {
     // +1: match, +0: mismatch
     // word score ranges between 0 and 1
     // result = 0: complete mismatch, do not add to results
-    public int getSearchScore(Restaurant r) {
+    public int getSearchScore(Account r) {
         float result = 0;
 
         if (isAllNull()) {
@@ -92,7 +92,7 @@ public final class SearchCriteria {
         }
 
         if (district != null) {
-            float[] districtScore = getWordScore(r.getDistrict(), district);
+            float[] districtScore = getWordScore(r.getAccountDistrict(), district);
             result += districtScore[0] / districtScore[1];
         }
 
@@ -103,7 +103,7 @@ public final class SearchCriteria {
         }
 
         if (type != null) {
-            float[] typeScore = getWordScore(r.getType(), type);
+            float[] typeScore = getWordScore(r.getAccountType(), type);
             result += typeScore[0] / typeScore[1];
         }
 
@@ -122,16 +122,16 @@ public final class SearchCriteria {
             // }
 
             // if (rateRange != null){
-            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getRate()){
+            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getAccountRate()){
             //         continue;
             //     }
             //     int minRate = rateRange.charAt(0) - '0';
             //     int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
-            //     if (r.getRate() > maxRate || r.getRate() < minRate){
+            //     if (r.getAccountRate() > maxRate || r.getAccountRate() < minRate){
             //         continue;
             //     }
             // }
-            // if (type != null && !type.contains(r.getType())){
+            // if (type != null && !type.contains(r.getAccountType())){
             //     continue;
             // }
             if (getSearchScore(r) == 0) {
@@ -154,7 +154,7 @@ public final class SearchCriteria {
         }
         // if (ppl >0 && ppl < r.get)
 
-        Comparator<Restaurant> sorter = (final Restaurant r1, final Restaurant r2) -> getSearchScore(r1) - getSearchScore(r2);
+        Comparator<Account> sorter = (final Account r1, final Account r2) -> getSearchScore(r1) - getSearchScore(r2);
         result.sort(sorter.reversed());
         return result;
     }

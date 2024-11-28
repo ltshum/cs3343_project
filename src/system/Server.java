@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import acm.Permission;
-
 public class Server {
 
     private static final Server instance = new Server();
@@ -56,14 +54,14 @@ public class Server {
         switch (role) {
             case "CUSTOMER" -> {
                 // Create a Customer account
-                Customer customer = new Customer(userName, password, name, contact);
+                Account customer = new Customer(userName, password, name, contact);
                 System.out.println("\n# Customer signed up successfully! #");
                 AccountList.add(customer);
                 return customer;
             }
             case "RESTAURANT" -> {
                 // Create a Restaurant account
-                Restaurant restaurant = new Restaurant(userName, password, name, type, district, address, contact,
+                Account restaurant = new Restaurant(userName, password, name, type, district, address, contact,
                         openTime, closeTime, sessionDuration, tableNum);
                 System.out.println("\n# Restaurant signed up successfully! #");
                 AccountList.add(restaurant);
@@ -90,12 +88,7 @@ public class Server {
     }
 
     public int getPermissionNumber(Account ac) {
-        int count = 1;
-        for (Permission permission : ac.getAccountPermissions()) {
-            System.out.println("\n" + count + ". " + permission.getResource());
-            count++;
-        }
-        return count;
+        return ac.getAccountPermissionNumber();
     }
 
     public int getPermissionSize(Account ac) {
@@ -125,8 +118,8 @@ public class Server {
         return ac.getBookingRecord(date);
     }
 
-    public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
-        String[] allTimeslots = ac.getTimeslots().split(" \n");
+    public boolean timeslotValidation(Account restaurant, String bookTimeslot) {
+        String[] allTimeslots = restaurant.getTimeslots().split(" \n");
         for (String timeslot : allTimeslots) {
             if (timeslot.equals(bookTimeslot)) {
                 return true;
@@ -156,15 +149,15 @@ public class Server {
 
     }
 
-    public ArrayList<Restaurant> getRestaurantAccounts() {
-        ArrayList<Restaurant> result = new ArrayList<>();
+    public ArrayList<Account> getRestaurantAccounts() {
+        ArrayList<Account> result = new ArrayList<>();
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            result.add((Restaurant) restaurantAc);
+            result.add( restaurantAc);
         }
         return result;
     }
 
-    public ArrayList<Restaurant> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
+    public ArrayList<Account> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
         return search.searchRestaurantsIn(getRestaurantAccounts());
     }
@@ -185,7 +178,7 @@ public class Server {
         return null;
     }
 
-    public String getRestaurantBookingDetail(Restaurant restaurant) {
+    public String getRestaurantBookingDetail(Account restaurant) {
 
         Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
@@ -194,7 +187,7 @@ public class Server {
         return "Restaurant not found.";
     }
 
-    public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
+    public int availableTableID(Account ac, int ppl, String timeslotSession, LocalDate date) {
         Account restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
         return restaurant.availableTableIDInAccount(ppl, timeslotSession, date);
     }
@@ -337,7 +330,6 @@ public class Server {
 
     public void generateAccountLog(Account ac) {
         generateAccountLogData();
-        ac.generateRestaurantLog();
     }
 
     public void generateAccountWeeklyReport(Account restaurant) {

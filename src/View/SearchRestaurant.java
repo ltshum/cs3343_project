@@ -100,7 +100,7 @@ public class SearchRestaurant {
             }
         }
 
-        ArrayList<Restaurant> results = server.searchRestaurantsIn(restaurantName, district, rateRange, type, ppl, startTime, session);
+        ArrayList<Account> results = server.searchRestaurantsIn(restaurantName, district, rateRange, type, ppl, startTime, session);
 
         RestaurantList RestaurantList = new RestaurantList(results);
         RestaurantList.displayRestaurantList(in, account);
