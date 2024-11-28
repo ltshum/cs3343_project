@@ -18,20 +18,25 @@ public class SearchRestaurant {
         this.account = account;
     }
 
-    private boolean isValidRating(String rateRange) {
+    public boolean isValidRating(String rateRange) {
         if (rateRange.equals("null")) {
             return true;
         }
+    
         if (rateRange.length() == 1 && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5') {
             return true;
         }
-
-        return rateRange.length() == 4 && rateRange.charAt(1) == '-' && rateRange.charAt(2) == '-' && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5' && rateRange.charAt(3) >= '0' && rateRange.charAt(3) <= '5' && rateRange.charAt(0) <= rateRange.charAt(3);
+    
+        if (rateRange.length() == 3 && rateRange.charAt(1) == '-' && rateRange.charAt(0) >= '0' && rateRange.charAt(0) <= '5' && rateRange.charAt(2) >= '0' && rateRange.charAt(2) <= '5' && rateRange.charAt(0) <= rateRange.charAt(2)) {
+            return true;
+        }else{
+            return false;
+        }     
     }
 
     public void displaySearchRestaurnt(Scanner in) {
         System.out.println("\n# If you  want to leave it empty just enter null #");
-        System.out.println("# Rate could input a range #\n");
+        System.out.println("# Rate could input a range by 0-5 format #\n");
 
         //in.nextLine();
         System.out.print("Restaurant Name?: ");
@@ -43,7 +48,7 @@ public class SearchRestaurant {
 
         String rateRange;
         do {
-            System.out.print("Restaurant Rate(0--5)?: ");
+            System.out.print("Restaurant Rate(0-5)?: ");
             rateRange = in.nextLine();
             if (!isValidRating(rateRange)) {
                 System.out.print("Invalid input\n");

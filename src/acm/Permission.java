@@ -26,8 +26,8 @@ public class Permission {
         return privileges;
     }
 
-    public boolean canPerform(Privilege privilege) {
-        return privileges.contains(privilege);
-    }
+    // public boolean canPerform(Privilege privilege) {
+    //     return privileges.contains(privilege);
+    // }
 
 }

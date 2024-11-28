@@ -1,7 +1,5 @@
 package system;
 
-import acm.Permission;
-import acm.Resource;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -12,6 +10,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import acm.Permission;
 
 public class Server {
 
@@ -30,7 +30,7 @@ public class Server {
         RestaurantAccounts.put(restaurant.getAccountUserName(), restaurant);
     }
 
-    public void addRestaurant(Restaurant ac) {
+    public void addAccount(Account ac) {
         AccountList.add(ac);
     }
     
@@ -102,8 +102,16 @@ public class Server {
         return ac.getAccountPermissions().size();
     }
 
-    public Resource getPermissionResource(Account ac, int inputNumber) {
-        return ac.getAccountPermissions().get(inputNumber - 1).getResource();
+    public String getPermissionResource(Account ac, int inputNumber) {
+        if (getPermissionSize(ac) + 1 == inputNumber){
+            return "LOGOUT";
+        }
+        else if (inputNumber >= 1 && inputNumber <= getPermissionSize(ac)){
+            return ac.getAccountPermissions().get(inputNumber - 1).getResource().toString();
+        }
+        else{
+            return "invalid";
+        }
     }
 
     public String getUserDetail(Account ac) {

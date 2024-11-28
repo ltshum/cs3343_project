@@ -35,7 +35,7 @@ public class PermissionRegistry {
         return rolePermissions.getOrDefault(role, Collections.emptyList());
     }
 
-    public static void updatePermissionsForRole(Role role, List<Permission> newPermissions) {
-        rolePermissions.put(role, newPermissions);
-    }
+    // public static void updatePermissionsForRole(Role role, List<Permission> newPermissions) {
+    //     rolePermissions.put(role, newPermissions);
+    // }
 }
