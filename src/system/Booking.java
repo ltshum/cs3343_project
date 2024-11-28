@@ -67,8 +67,4 @@ public class Booking {
     public void setArrive(boolean arrive) {
         this.arrive = arrive;
     }
-
-    public void setBookingCustomer(Customer ac) {
-        this.customer = ac;
-    }
 }

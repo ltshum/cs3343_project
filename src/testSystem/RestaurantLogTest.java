@@ -52,5 +52,17 @@ public class RestaurantLogTest {
         assertEquals(new ArrayList<Comment>(List.of(comment1, comment2)), restaurantLog1.getLogComments());
         assertEquals(new ArrayList<Comment>(List.of(comment2, comment3)), restaurantLog2.getLogComments());
     }
+
+    @Test
+    public void testSetRank() {
+        restaurantLog1.setRank(7);
+        assertEquals(7, restaurantLog1.getLogRank());
+    }
+
+    @Test
+    public void testGetRate() {
+        assertEquals(3.5f, restaurantLog1.getRate(), 0.01);
+    }
+    
     
 }

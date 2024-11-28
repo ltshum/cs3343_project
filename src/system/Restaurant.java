@@ -158,11 +158,7 @@ public class Restaurant extends Account {
         return restaurantContact;
     }
 
-    @Override
     public float getRate() {
-        return rate;
-    }
-    public float getLogRate() {
         return rate;
     }
 
@@ -512,11 +508,11 @@ public class Restaurant extends Account {
     }
 
     public float getLastWeekRate() {
-        return lastWeekLog.getRate();
+        return lastWeekLog.getLogRate();
     }
 
     public float getThisWeekRate() {
-        return thisWeekLog.getRate();
+        return thisWeekLog.getLogRate();
     }
 
     public void setLastWeekRank(int rank) {
@@ -528,11 +524,11 @@ public class Restaurant extends Account {
     }
 
     public int getThisWeekRank() {
-        return thisWeekLog.getRank();
+        return thisWeekLog.getLogRank();
     }
 
     public int getLastWeekRank() {
-        return lastWeekLog.getRank();
+        return lastWeekLog.getLogRank();
     }
 
     public void generateWeeklyReport() {

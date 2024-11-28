@@ -57,7 +57,8 @@ public abstract class Account {
     public List<Permission> getAccountPermissions() {
         List<Permission> allPermissions = new ArrayList<>();
         for (Role role : roles) {
-            allPermissions.addAll(PermissionRegistry.getPermissionsForRole(role));
+            PermissionRegistry permissionRegistry = new PermissionRegistry();
+            allPermissions.addAll(permissionRegistry.getPermissionsForRole(role));
         }
         return allPermissions;
     }

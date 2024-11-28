@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class PermissionRegistry {
+public class PermissionRegistry {       
 
     private static final Map<Role, List<Permission>> rolePermissions = new HashMap<>();
+    
+    public PermissionRegistry() {}
 
     static {
         // Register permissions for all roles initially
@@ -31,7 +33,7 @@ public class PermissionRegistry {
         rolePermissions.put(role, permissions);
     }
 
-    public static List<Permission> getPermissionsForRole(Role role) {
+    public List<Permission> getPermissionsForRole(Role role) {
         return rolePermissions.getOrDefault(role, Collections.emptyList());
     }
 

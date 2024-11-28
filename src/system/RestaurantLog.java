@@ -35,12 +35,4 @@ public class RestaurantLog {
     public void setRank(int rank) {
         this.rank = rank;
     }
-
-    public float getRate() {
-        return rate;
-    }
-
-    public int getRank() {
-        return rank;
-    }
 }
