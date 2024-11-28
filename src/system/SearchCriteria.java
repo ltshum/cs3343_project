@@ -89,7 +89,7 @@ public final class SearchCriteria {
         }
 
         if (restaurantName != null) {
-            float[] nameScore = getWordScore(r.getName(), restaurantName);
+            float[] nameScore = getWordScore(r.getAccountName(), restaurantName);
             result += nameScore[0] / nameScore[1];
         }
 
@@ -101,7 +101,7 @@ public final class SearchCriteria {
         if (rateRange != null) {
             int minRate = rateRange.charAt(0) - '0';
             int maxRate = rateRange.charAt(rateRange.length() - 1) - '0';
-            result += r.getRate() > minRate && r.getRate() < maxRate ? 1 : 0;
+            result += r.getAccountRate() > minRate && r.getAccountRate() < maxRate ? 1 : 0;
         }
 
         if (type != null) {
