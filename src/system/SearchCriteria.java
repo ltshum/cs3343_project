@@ -79,7 +79,7 @@ public final class SearchCriteria {
     // +1: match, +0: mismatch
     // word score ranges between 0 and 1
     // result = 0: complete mismatch, do not add to results
-    public int getSearchScore(Restaurant r) {
+    public int getSearchScore(Account r) {
         float result = 0;
 
         if(isAllNull()) {
@@ -88,23 +88,23 @@ public final class SearchCriteria {
         }
 
         if (restaurantName != null) {
-            float[] nameScore = getWordScore(r.getRestaurantName(), restaurantName);
+            float[] nameScore = getWordScore(r.getAccountName(), restaurantName);
             result += nameScore[0] / nameScore[1];
         }
 
         if (district != null) {
-            float[] districtScore = getWordScore(r.getDistrict(), district);
+            float[] districtScore = getWordScore(r.getAccountDistrict(), district);
             result += districtScore[0] / districtScore[1];
         }
 
         if (rateRange != null){
             int minRate = rateRange.charAt(0) - '0';
             int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
-            result += r.getRate() > minRate && r.getRate() < maxRate ? 1 : 0;
+            result += r.getAccountRate() > minRate && r.getAccountRate() < maxRate ? 1 : 0;
         }
 
         if (type != null) {
-            float[] typeScore = getWordScore(r.getType(), type);
+            float[] typeScore = getWordScore(r.getAccountType(), type);
             result += typeScore[0] / typeScore[1];
         }
 
@@ -113,9 +113,9 @@ public final class SearchCriteria {
         return (int) Math.ceil(result * 100); // higher accuracy for comparator
     }
 
-    public ArrayList<Restaurant> searchRestaurantsIn(ArrayList<Restaurant> restaurants){
-        ArrayList<Restaurant> result = new ArrayList<>();
-        for (Restaurant r : restaurants){
+    public ArrayList<Account> searchRestaurantsIn(ArrayList<Account> restaurants){
+        ArrayList<Account> result = new ArrayList<>();
+        for (Account r : restaurants){
             // if (restaurantName != null && !r.getRestaurantName().contains(restaurantName)){
             //     continue;
             // }
@@ -124,16 +124,16 @@ public final class SearchCriteria {
             // }
 
             // if (rateRange != null){
-            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getRate()){
+            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getAccountRate()){
             //         continue;
             //     }
             //     int minRate = rateRange.charAt(0) - '0';
             //     int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
-            //     if (r.getRate() > maxRate || r.getRate() < minRate){
+            //     if (r.getAccountRate() > maxRate || r.getAccountRate() < minRate){
             //         continue;
             //     }
             // }
-            // if (type != null && !type.contains(r.getType())){
+            // if (type != null && !type.contains(r.getAccountType())){
             //     continue;
             // }
 
@@ -141,7 +141,7 @@ public final class SearchCriteria {
                 continue;
             }
 
-            ArrayList<Table> tables = r.getAllTables();
+            ArrayList<Table> tables = r.getAccountAllTables();
             for (Table t : tables){
                 boolean status;
                 if (startTime != null){
@@ -157,7 +157,7 @@ public final class SearchCriteria {
         }
             // if (ppl >0 && ppl < r.get)
 
-        Comparator<Restaurant> sorter = (final Restaurant r1, final Restaurant r2) -> getSearchScore(r1) - getSearchScore(r2);
+        Comparator<Account> sorter = (final Account r1, final Account r2) -> getSearchScore(r1) - getSearchScore(r2);
         result.sort(sorter.reversed());
         return result;
     }

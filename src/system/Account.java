@@ -1,13 +1,12 @@
 package system;
 
+import acm.Permission;
+import acm.PermissionRegistry;
+import acm.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import acm.Permission;
-import acm.PermissionRegistry;
-import acm.Role;
 
 public abstract class Account {
 
@@ -92,8 +91,8 @@ public abstract class Account {
 
     //protected abstract void updateSeatNo(int tableID, int seatNum);
 
-    public void generateRestaurantLogDataWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate ) {
-       ((Restaurant)this).generateLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+    public void generateRestaurantLogWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate ) {
+       ((Restaurant)this).generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
     }
 
     public float getRestaurantLastWeekRate() {
@@ -118,10 +117,6 @@ public abstract class Account {
 
     public int getRestaurantLastWeekRank() {
         return ((Restaurant)this).getLastWeekRank();
-    }
-
-    public void generateRestaurantLog() {
-        ((Restaurant)this).generateLog();
     }
 
     public void generateRestaurantWeeklyReport() {
@@ -153,6 +148,59 @@ public abstract class Account {
 
     public void makeBookingInAccount(LocalDate date, int tableID, String bookSession, Customer ac, String contact, int ppl) {
         ac.addBooking(((Restaurant)this).makeBookingInRestaurant(date, tableID, bookSession, ac, contact, ppl));
+    }
+
+    public int getAccountPermissionNumber() {
+        int count = 1;
+        for (Permission permission : getAccountPermissions()) {
+            System.out.println("\n" + count + ". " + permission.getResource());
+            count++;
+        }
+        return count;
+    }
+
+    public String getAccountPermissionsString(int inputNumber) {
+        return getAccountPermissions().get(inputNumber - 1).getResource().toString();
+    }
+
+    public String getAccountName() {
+        return ((Restaurant)this).getRestaurantName();
+    }
+
+    public String getAccountDistrict() {
+        return ((Restaurant)this).getDistrict();
+    }
+
+    public float getAccountRate() {
+        return ((Restaurant)this).getRate();
+    }
+
+    public String getAccountType() {
+        return ((Restaurant)this).getType();
+    }
+
+    public ArrayList<Table> getAccountAllTables() {
+        return ((Restaurant)this).getAllTables();
+    }
+
+    public String getRestaurantName() {
+        return ((Restaurant)this).getRestaurantName();
+    }
+
+    public float getRate() {
+        return ((Restaurant)this).getRate();
+    }
+
+    public String getDistrict() {
+        return ((Restaurant)this).getDistrict();
+    }
+
+    public String getType() {
+        return ((Restaurant)this).getType();
+    }
+
+    public String getTimeslots() {
+        return ((Restaurant)this).getTimeslots();
     }
 
 }

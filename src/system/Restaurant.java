@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Restaurant extends Account {
@@ -29,8 +27,8 @@ public class Restaurant extends Account {
     private ArrayList<Table> allTables = new ArrayList<>();
     private final ArrayList<Comment> allComments = new ArrayList<>();
     private ArrayList<Booking> allBookings = new ArrayList<>();
-    private RestaurantLogData logData;
-    private final Map<String, RestaurantLog> logs = new HashMap<>();
+    private RestaurantLog lastWeekLog;
+    private RestaurantLog thisWeekLog;
 
     //Test
     Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
@@ -142,10 +140,12 @@ public class Restaurant extends Account {
         }
     }
 
+    @Override
     public String getRestaurantName() {
         return restaurantName;
     }
 
+    @Override
     public String getType() {
         return type;
     }
@@ -158,6 +158,7 @@ public class Restaurant extends Account {
         return restaurantContact;
     }
 
+    @Override
     public float getRate() {
         return rate;
     }
@@ -181,6 +182,7 @@ public class Restaurant extends Account {
         return allTables;
     }
 
+    @Override
     public String getDistrict() {
         return district;
     }
@@ -494,7 +496,7 @@ public class Restaurant extends Account {
         return periodComments;
     }
 
-    public void generateLogDataWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate) {
+    public void generateLogWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate) {
             ArrayList<Booking> lastWeekBookings = getPeriodBookings(lastWeekStartDate, lastWeekEndDate);
             ArrayList<Comment> lastWeekComments = getPeriodComments(lastWeekStartDate, lastWeekEndDate);
             int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
@@ -505,43 +507,35 @@ public class Restaurant extends Account {
             ArrayList<Comment> thisWeekComments = getPeriodComments(thisWeekStartDate, thisWeekEndDate);
             int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
             float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-            logData =  new RestaurantLogData(lastWeekComments, lastWeekTotalPpl, lastWeekRate, 0, thisWeekComments, thisWeekTotalPpl, thisWeekRate, 0);
+            thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
+            lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
     }
 
     public float getLastWeekRate() {
-        return logData.getLastWeekRate();
+        return lastWeekLog.getRate();
     }
 
     public float getThisWeekRate() {
-        return logData.getThisWeekRate();
+        return thisWeekLog.getRate();
     }
 
     public void setLastWeekRank(int rank) {
-        logData.setLastWeekRank(rank);
+        lastWeekLog.setRank(rank);
     }
 
     public void setThisWeekRank(int rank) {
-        logData.setThisWeekRank(rank);
+        thisWeekLog.setRank(rank);
     }
 
     public int getThisWeekRank() {
-        return logData.getThisWeekRank();
+        return thisWeekLog.getRank();
     }
 
     public int getLastWeekRank() {
-        return logData.getLastWeekRank();
-    }
-
-    public void generateLog() {
-        RestaurantLog thisWeekLog = new RestaurantLog(logData.getThisWeekRank(), logData.getThisWeekRate(), logData.getThisWeekTotalPpl(), logData.getThisWeekComments()); 
-        logs.put("this week", thisWeekLog);   
-        RestaurantLog lastWeekLog = new RestaurantLog(logData.getLastWeekRank(), logData.getLastWeekRate(), logData.getLastWeekTotalPpl(), logData.getLastWeekComments());
-        logs.put("last week", lastWeekLog);
+        return lastWeekLog.getRank();
     }
 
     public void generateWeeklyReport() {
-        RestaurantLog thisWeekLog = logs.get("this week");
-        RestaurantLog lastWeekLog = logs.get("last week");
 
         StringBuilder report = new StringBuilder();
 

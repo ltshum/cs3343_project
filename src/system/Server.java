@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import acm.Permission;
-
 public class Server {
 
     private static final Server instance = new Server();
@@ -56,14 +54,14 @@ public class Server {
         switch (role) {
             case "CUSTOMER" -> {
                 // Create a Customer account
-                Customer customer = new Customer(userName, password, name, contact);
+                Account customer = new Customer(userName, password, name, contact);
                 System.out.println("\n# Customer signed up successfully! #");
                 AccountList.add(customer);
                 return customer;
             }
             case "RESTAURANT" -> {
                 // Create a Restaurant account
-                Restaurant restaurant = new Restaurant(userName, password, name, type, district, address, contact,
+                Account restaurant = new Restaurant(userName, password, name, type, district, address, contact,
                         openTime, closeTime, sessionDuration, tableNum);
                 System.out.println("\n# Restaurant signed up successfully! #");
                 AccountList.add(restaurant);
@@ -90,12 +88,7 @@ public class Server {
     }
 
     public int getPermissionNumber(Account ac) {
-        int count = 1;
-        for (Permission permission : ac.getAccountPermissions()) {
-            System.out.println("\n" + count + ". " + permission.getResource());
-            count++;
-        }
-        return count;
+        return ac.getAccountPermissionNumber();
     }
 
     public int getPermissionSize(Account ac) {
@@ -107,7 +100,7 @@ public class Server {
             return "LOGOUT";
         }
         else if (inputNumber >= 1 && inputNumber <= getPermissionSize(ac)){
-            return ac.getAccountPermissions().get(inputNumber - 1).getResource().toString();
+            return ac.getAccountPermissionsString(inputNumber);
         }
         else{
             return "invalid";
@@ -127,8 +120,8 @@ public class Server {
         return ac.getBookingRecord(date);
     }
 
-    public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
-        String[] allTimeslots = ac.getTimeslots().split(" \n");
+    public boolean timeslotValidation(Account restaurant, String bookTimeslot) {
+        String[] allTimeslots = restaurant.getTimeslots().split(" \n");
         for (String timeslot : allTimeslots) {
             if (timeslot.equals(bookTimeslot)) {
                 return true;
@@ -153,20 +146,20 @@ public class Server {
         ac.makeCommentInAccount(inputNumber, date, rate, commentString);
     }
 
-    public ArrayList<Restaurant> getRestaurantAccounts() {
-        ArrayList<Restaurant> result = new ArrayList<>();
+    public ArrayList<Account> getRestaurantAccounts() {
+        ArrayList<Account> result = new ArrayList<>();
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            result.add((Restaurant) restaurantAc);
+            result.add( restaurantAc);
         }
         return result;
     }
 
-    public ArrayList<Restaurant> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
+    public ArrayList<Account> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
         return search.searchRestaurantsIn(getRestaurantAccounts());
     }
 
-    public String getListInfo(Restaurant restaurant) {
+    public String getListInfo(Account restaurant) {
         return restaurant.getRestaurantName()
                 + "\n   Rate: " + restaurant.getRate()
                 + "\n   District: " + restaurant.getDistrict()
@@ -182,7 +175,7 @@ public class Server {
         return null;
     }
 
-    public String getRestaurantBookingDetail(Restaurant restaurant) {
+    public String getRestaurantBookingDetail(Account restaurant) {
 
         Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
@@ -191,20 +184,17 @@ public class Server {
         return "Restaurant not found.";
     }
 
-    public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
+    public int availableTableID(Account ac, int ppl, String timeslotSession, LocalDate date) {
         Account restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
         return restaurant.availableTableIDInAccount(ppl, timeslotSession, date);
     }
 
-    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
+    public String makeBooking(LocalDate date, int tableID, String bookSession, Account restaurant, Customer ac, String contact, int ppl) {
         
         Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
-        if (requiredRestaurant == null) {
-            return "Restaurant not found.";
-        } else {
-            requiredRestaurant.makeBookingInAccount(date, tableID, bookSession, ac, contact, ppl);
-            return "\nAlready booked a seat for you";
-        }
+        requiredRestaurant.makeBookingInAccount(date, tableID, bookSession, ac, contact, ppl);
+        return "\nAlready booked a seat for you";
+        
     }
 
     public StringBuilder getAllTableInfo(Account ac) {
@@ -313,7 +303,7 @@ public class Server {
         LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
         LocalDate lastWeekEndDate = thisWeekEndDate.minusWeeks(1);
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            restaurantAc.generateRestaurantLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate); 
+            restaurantAc.generateRestaurantLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate); 
         }
         
         ArrayList<Account> lastWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
@@ -326,7 +316,6 @@ public class Server {
 
     public void generateAccountLog(Account ac) {
         generateAccountLogData();
-        ac.generateRestaurantLog();
     }
 
     public void generateAccountWeeklyReport(Account restaurant) {

@@ -2,22 +2,22 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+import system.Account;
 import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 public class BookingProfile {
 
     Server server = Server.getInstance();
-    private final Restaurant restaurant;
+    private final Account restaurant;
     private final Customer ac;
 
-    public BookingProfile(Restaurant restaurant) {
+    public BookingProfile(Account restaurant) {
         this.restaurant = restaurant;
         this.ac = null;
     }
 
-    public BookingProfile(Restaurant restaurant, Customer ac) {
+    public BookingProfile(Account restaurant, Customer ac) {
         this.restaurant = restaurant;
         this.ac = ac;
     }
