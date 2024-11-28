@@ -3,9 +3,7 @@ package View;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import system.Account;
-import system.Customer;
-import system.Restaurant;
+
 import system.Server;
 
 public class ViewBooking {
@@ -62,7 +60,7 @@ public class ViewBooking {
                                     System.out.println("\nExiting attendance taking session...");
                                     break outerLoop;
                                 }
-                                if (server.timeslotValidation((accountUsername, inputSession))) {
+                                if (server.timeslotValidation(accountUsername, inputSession)) {
                                     isValidSession = true;
                                 } else {
                                     System.out.print("\nNot valid. Please enter the session again.");

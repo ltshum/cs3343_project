@@ -3,8 +3,6 @@ package View;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import system.Account;
-import system.Customer;
 import system.Server;
 
 public class RestaurantList {
@@ -23,7 +21,7 @@ public class RestaurantList {
             System.out.println("\n# Here is the result list #");
             System.out.println("# If you want to leave please input X #\n");
             for (String r : result) {
-                System.out.println(count + ". " + server.getListInfo(r));
+                System.out.println(count + ". " + server.getListInfo(accountUsername));
                 count++;
             }
 
@@ -40,7 +38,7 @@ public class RestaurantList {
                             if (server.isCustomerByUsername(accountUsername)) {
                                 BookingProfile bookingProfile = new BookingProfile(result.get(op - 1), accountUsername);
                                 bookingProfile.displayBookingProfile(in);
-                            } 
+                            }
                             isValidOption = true;
                         } catch (Exception e) {
                             System.out.print("\nInvalid input! Please input again.");
