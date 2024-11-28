@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
 import java.util.Set;
@@ -18,6 +19,7 @@ import acm.Privilege;
 import acm.Resource;
 import acm.Role;
 import system.Account;
+import system.Booking;
 import system.Customer;
 import system.Restaurant;
 import system.Server;
@@ -238,6 +240,139 @@ public class ServerTest {
        String res=per.getResource().toString();
 	   assertEquals(res,server.getPermissionResource(customer,3));
    }
+	
+	@Test
+	public void testgetPermissionNumber11() {
+	assertEquals(4,server.getPermissionNumber(restaurant));
+	assertEquals(5,server.getPermissionNumber(restaurant));
+	}
+	@Test
+	public void testgetPermissionNumber21() {
+	assertEquals(3,server.getPermissionNumber(customer));
+	assertEquals(4,server.getPermissionNumber(customer));
+	}
+	
+	
+	
+	@Test
+	public void testgetPermissionResource11() {
+	Permission per=new Permission(Role.RESTAURANT, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE));
+	Resource res=per.getResource();
+	assertEquals(res,server.getPermissionResource(restaurant,1));
+	assertEquals("PROFILE",server.getPermissionResource(restaurant,1));
+	assertEquals("LOGOUT",server.getPermissionResource(restaurant,5));
+	assertEquals("invalid",server.getPermissionResource(restaurant,6));
+	assertEquals("PROFILE",server.getPermissionResource(restaurant,1));
+	assertEquals("invalid",server.getPermissionResource(restaurant,0));
+	
+	}
+	@Test
+	public void testgetPermissionResource21() {
+	Permission per=new Permission(Role.CUSTOMER, Resource.SEARCH_RESTAURANT, Set.of(Privilege.READ));
+	Resource res=per.getResource();
+	assertEquals(res,server.getPermissionResource(customer,3));
+	
+	
+	
+	   assertEquals("SEARCH_RESTAURANT",server.getPermissionResource(customer,3));
+	}
+	
+	@Test
+	public void testgetViewBookingRecord1() {
+	LocalDate differentDate = LocalDate.of(2023, 11, 26);
+	LocalDate bookingDate=LocalDate.now();
+	Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+	restaurant.addBooking(booking);
+	customer.addBooking(booking);
+	int cusbooking =server.getViewBookingRecord(customer, bookingDate);
+	int restbooking = server.getViewBookingRecord(restaurant, bookingDate);
+	assertEquals( 0, cusbooking);
+	assertEquals( cusbooking, restbooking);
+	}
+	@Test
+	public void testgetViewBookingRecord2() {
+	LocalDate bookingDate=LocalDate.now();
+	Booking booking = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+	restaurant.addBooking(booking);
+	customer.addBooking(booking);
+	int cusbooking =server.getViewBookingRecord(customer, bookingDate);
+	int restbooking = server.getViewBookingRecord(restaurant, bookingDate);
+	assertEquals( 1, cusbooking);
+	assertEquals( cusbooking, restbooking);
+	}
+	
+	@Test
+	public void testtimeslotValidation() {
+	assertEquals(false,server.timeslotValidation(restaurant, "12:30-13:00"));
+	assertEquals(true,server.timeslotValidation(restaurant, "12:00 - 13:00"));
+	}
+	
+	@Test
+	public void testtableValidation() {
+	assertFalse(server.tableValidation(restaurant, 0));
+	assertTrue(server.tableValidation(restaurant, 3));
+	}
+	@Test
+	public void testtakeattendance() {
+	LocalDate bookingDate=LocalDate.now();
+	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant,customer,customer.getCustomerContact(),2);
+	restaurant.addBooking(booking);
+	assertTrue(server.takeAttendance(restaurant, bookingDate, "12:00 - 13:00", 1));
+	assertFalse(server.takeAttendance(restaurant, bookingDate, "13:00 - 14:00", 1));
+	assertFalse(server.takeAttendance(restaurant, bookingDate, "13:30 - 14:00", 1));
+	assertFalse(server.takeAttendance(restaurant, bookingDate.plusDays(1),"13:00 - 14:00", 1));
+	assertFalse(server.takeAttendance(restaurant, bookingDate, "13:00 - 14:00", 6));
+	}
+	
+	@Test
+	public void testgetListInfo() {
+	String res="Test"
+	+ "\n Rate: 0.0"
+	+ "\n District: District"
+	+ "\n Type: Cuisine" ;
+	assertEquals(res,server.getListInfo(restaurant));
+	}
+	
+	@Test
+	public void testgetRestaurantAccountByUserName() {
+	server.addRestaurantAccount(restaurant);
+	Restaurant temp=server.getRestaurantAccountByUserName("Test Restaurant");
+	assertEquals(temp.getRestaurantName(),restaurant.getRestaurantName());
+	Restaurant temp2=server.getRestaurantAccountByUserName("Test ");
+	assertNull(temp2);
+	
+	}
+	
+	@Test
+	public void testGetBookingToBeCommentSuccess() {
+	LocalDate differentDate = LocalDate.of(2023, 11, 26);
+	LocalDate bookingDate=LocalDate.now();
+	Booking booking1 = new Booking(differentDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+	Booking booking = server.getBookingToBeComment(customer, 1, differentDate);
+	assertEquals(booking1, booking); // Check if the correct booking is returned
+	}
+	
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testGetBookingToBeCommentInvalidIndex() {
+	server.getBookingToBeComment(customer, 3, LocalDate.now()); // Out of bounds
+	}
+	
+	@Test
+	public void testCheckHasAttendBookingArrived() {
+	LocalDate differentDate = LocalDate.of(2023, 11, 26);
+	LocalDate bookingDate=LocalDate.now();
+	Booking booking1 = new Booking(differentDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+	booking1.takeAttendance(); // Assuming there’s a method to set the booking as arrived
+	
+	   boolean result = server.checkHasAttend(customer, 1, LocalDate.now());
+	   assertTrue(result); // Should return true since the booking has arrived
+	}
+	
+	@Test
+	public void testCheckHasAttendBookingNotArrived() {
+	boolean result = server.checkHasAttend(customer, 1, LocalDate.now());
+	assertFalse(result); // Should return false since the booking has not arrived
+	}
    
 //
 ////    @Test

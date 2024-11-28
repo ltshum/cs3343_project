@@ -162,7 +162,11 @@ public class Server {
                 bookings.add(booking);
             }
         }
+        if(bookings.size()!=0) {
         return bookings.get(inputNumber - 1);
+        }else {
+        	return null;
+        }
     }
 
     public boolean checkHasAttend(Account ac, int inputNumber, LocalDate date) {
