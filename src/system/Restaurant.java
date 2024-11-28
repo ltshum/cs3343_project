@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Restaurant extends Account {
@@ -27,6 +29,8 @@ public class Restaurant extends Account {
     private ArrayList<Table> allTables = new ArrayList<>();
     private final ArrayList<Comment> allComments = new ArrayList<>();
     private ArrayList<Booking> allBookings = new ArrayList<>();
+    private RestaurantLogData logData;
+    private final Map<String, RestaurantLog> logs = new HashMap<>();
 
     //Test
     Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
@@ -155,6 +159,9 @@ public class Restaurant extends Account {
     }
 
     public float getRate() {
+        return rate;
+    }
+    public float getLogRate() {
         return rate;
     }
 
@@ -466,4 +473,102 @@ public class Restaurant extends Account {
     public void addBooking(Booking bk) {
         this.allBookings.add(bk);
     }
+
+    public ArrayList<Booking> getPeriodBookings(LocalDate startDate, LocalDate endDate){
+        ArrayList<Booking> periodBookings = new ArrayList<>();
+        for (Booking bk : allBookings) {
+            if ((bk.getBookingDate().isEqual(startDate) || bk.getBookingDate().isAfter(startDate)) && (bk.getBookingDate().isEqual(endDate) || bk.getBookingDate().isBefore(endDate))) {
+                periodBookings.add(bk);
+            }
+        }
+        return periodBookings;
+    }
+
+    public ArrayList<Comment> getPeriodComments(LocalDate startDate, LocalDate endDate){
+        ArrayList<Comment> periodComments = new ArrayList<>();
+        for (Comment cm : allComments) {
+            if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
+                periodComments.add(cm);
+            }
+        }
+        return periodComments;
+    }
+
+    public void generateLogDataWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate) {
+            ArrayList<Booking> lastWeekBookings = getPeriodBookings(lastWeekStartDate, lastWeekEndDate);
+            ArrayList<Comment> lastWeekComments = getPeriodComments(lastWeekStartDate, lastWeekEndDate);
+            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
+
+            //this week data
+            ArrayList<Booking> thisWeekBookings = getPeriodBookings(thisWeekStartDate, thisWeekEndDate);
+            ArrayList<Comment> thisWeekComments = getPeriodComments(thisWeekStartDate, thisWeekEndDate);
+            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
+            logData =  new RestaurantLogData(lastWeekComments, lastWeekTotalPpl, lastWeekRate, 0, thisWeekComments, thisWeekTotalPpl, thisWeekRate, 0);
+    }
+
+    public float getLastWeekRate() {
+        return logData.getLastWeekRate();
+    }
+
+    public float getThisWeekRate() {
+        return logData.getThisWeekRate();
+    }
+
+    public void setLastWeekRank(int rank) {
+        logData.setLastWeekRank(rank);
+    }
+
+    public void setThisWeekRank(int rank) {
+        logData.setThisWeekRank(rank);
+    }
+
+    public int getThisWeekRank() {
+        return logData.getThisWeekRank();
+    }
+
+    public int getLastWeekRank() {
+        return logData.getLastWeekRank();
+    }
+
+    public void generateLog() {
+        RestaurantLog thisWeekLog = new RestaurantLog(logData.getThisWeekRank(), logData.getThisWeekRate(), logData.getThisWeekTotalPpl(), logData.getThisWeekComments()); 
+        logs.put("this week", thisWeekLog);   
+        RestaurantLog lastWeekLog = new RestaurantLog(logData.getLastWeekRank(), logData.getLastWeekRate(), logData.getLastWeekTotalPpl(), logData.getLastWeekComments());
+        logs.put("last week", lastWeekLog);
+    }
+
+    public void generateWeeklyReport() {
+        RestaurantLog thisWeekLog = logs.get("this week");
+        RestaurantLog lastWeekLog = logs.get("last week");
+
+        StringBuilder report = new StringBuilder();
+
+        report.append("Last week:\n");
+        report.append("Rank: ").append(lastWeekLog.getLogRank()).append("\n");
+        report.append("Rate: ").append(lastWeekLog.getLogRate()).append("\n");
+        report.append("Total ppl: ").append(lastWeekLog.getLogTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : lastWeekLog.getLogComments()) {
+            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
+        }
+
+        report.append("\nThis week:\n");
+        report.append("Rank: ").append(thisWeekLog.getLogRank()).append("\n");
+        report.append("Rate: ").append(thisWeekLog.getLogRate()).append("\n");
+        report.append("Total ppl: ").append(thisWeekLog.getLogTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : thisWeekLog.getLogComments()) {
+            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
+        }
+
+        report.append("\nRank decrease/increase ").append(~(thisWeekLog.getLogRank() - lastWeekLog.getLogRank()) + 1).append("\n");
+        report.append("Rate decrease/increase ").append(thisWeekLog.getLogRate() - lastWeekLog.getLogRate()).append("\n");
+        report.append("Total ppl decrease/increase ").append(thisWeekLog.getLogTotalPpl() - lastWeekLog.getLogTotalPpl()).append("\n");
+
+        System.out.println(report.toString());
+    }
+
+    
 }

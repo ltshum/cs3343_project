@@ -16,19 +16,19 @@ public class RestaurantLog {
         this.comments = comments;
     }
 
-    public int getRank() {
+    public int getLogRank() {
         return rank;
     }
 
-    public float getRate() {
+    public float getLogRate() {
         return rate;
     }
 
-    public int getTotalPpl() {
+    public int getLogTotalPpl() {
         return totalPpl;
     }
 
-    public List<Comment> getComments() {
+    public List<Comment> getLogComments() {
         return comments;
     }
 }

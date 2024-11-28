@@ -8,21 +8,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Server {
 
     private static final Server instance = new Server();
     private static final ArrayList<Account> AccountList = new ArrayList<>();
     private final Map<String, Account> RestaurantAccounts = new HashMap<>();
-    private final Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
-    private final Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
     private Server() {
     }
@@ -68,6 +63,7 @@ public class Server {
                         openTime, closeTime, sessionDuration, tableNum);
                 System.out.println("\n# Restaurant signed up successfully! #");
                 AccountList.add(restaurant);
+                RestaurantAccounts.put(restaurant.getAccountUserName(), restaurant);
                 return restaurant;
             }
             default -> {
@@ -270,126 +266,122 @@ public class Server {
         return periodComments;
     }
 
-    private void generateRestaurantLogData() {
+    public static void mergeSort(ArrayList<Account> accounts, String sortBy) {
+        if (accounts == null || accounts.size() <= 1) {
+            return;
+        }
+
+        ArrayList<Account> temp = new ArrayList<>(accounts);
+        Comparator<Account> comparator = sortBy.equals("lastWeekRate") ?
+                Comparator.comparingDouble(Account::getRestaurantLastWeekRate) :
+                Comparator.comparingDouble(Account::getRestaurantThisWeekRate);
+
+        mergeSort(accounts, temp, 0, accounts.size() - 1, comparator);
+    }
+
+    private static void mergeSort(ArrayList<Account> accounts, ArrayList<Account> temp, int leftStart, int rightEnd, Comparator<Account> comparator) {
+        if (leftStart >= rightEnd) {
+            return;
+        }
+
+        int middle = (leftStart + rightEnd) / 2;
+        mergeSort(accounts, temp, leftStart, middle, comparator);
+        mergeSort(accounts, temp, middle + 1, rightEnd, comparator);
+        mergeHalves(accounts, temp, leftStart, rightEnd, middle, comparator);
+    }
+
+    private static void mergeHalves(ArrayList<Account> accounts, ArrayList<Account> temp, int leftStart, int rightEnd, int middle, Comparator<Account> comparator) {
+        int leftEnd = middle;
+        int rightStart = middle + 1;
+        int left = leftStart;
+        int right = rightStart;
+        int index = leftStart;
+    
+        while (left <= leftEnd && right <= rightEnd) {
+            if (comparator.compare(accounts.get(left), accounts.get(right)) >= 0) { // Sort in descending order
+                temp.set(index, accounts.get(left));
+                left++;
+            } else {
+                temp.set(index, accounts.get(right));
+                right++;
+            }
+            index++;
+        }
+    
+        while (left <= leftEnd) {
+            temp.set(index, accounts.get(left));
+            left++;
+            index++;
+        }
+    
+        while (right <= rightEnd) {
+            temp.set(index, accounts.get(right));
+            right++;
+            index++;
+        }
+    
+        for (int i = leftStart; i <= rightEnd; i++) {
+            accounts.set(i, temp.get(i));
+        }
+    }
+
+    public void calAndSetRestaurantRank(ArrayList<Account> accounts, String sortBy) {
+        mergeSort(accounts, sortBy);
+        int rank = 1;
+        for (int i = 0; i < accounts.size(); i++) {
+            Account current = accounts.get(i);
+            if (i == 0) {
+                if (sortBy.equals("lastWeekRate")) {
+                    current.setRestaurantLastWeekRank(rank);
+                } else {
+                    current.setRestaurantThisWeekRank(rank);
+                }
+            } else {
+                Account previous = accounts.get(i - 1);
+                if (sortBy.equals("lastWeekRate")) {
+                    if (current.getRestaurantLastWeekRate() == previous.getRestaurantLastWeekRate()) {
+                        current.setRestaurantLastWeekRank(previous.getRestaurantLastWeekRank());
+                    } else {
+                        current.setRestaurantLastWeekRank(++rank);
+                    }
+                } else {
+                    if (current.getRestaurantThisWeekRate() == previous.getRestaurantThisWeekRate()) {
+                        current.setRestaurantThisWeekRank(previous.getRestaurantThisWeekRank());
+                    } else {
+                        current.setRestaurantThisWeekRank(++rank);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void generateAccountLogData() {
         LocalDate thisWeekStartDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisWeekEndDate = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
         LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
         LocalDate lastWeekEndDate = thisWeekEndDate.minusWeeks(1);
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            Restaurant restaurant = (Restaurant) restaurantAc;
-
-            //last week data
-            ArrayList<Booking> lastWeekBookings = getPeriodBookings(restaurant, lastWeekStartDate, lastWeekEndDate);
-            ArrayList<Comment> lastWeekComments = getPeriodComments(restaurant, lastWeekStartDate, lastWeekEndDate);
-            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
-            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-
-            //this week data
-            ArrayList<Booking> thisWeekBookings = getPeriodBookings(restaurant, thisWeekStartDate, thisWeekEndDate);
-            ArrayList<Comment> thisWeekComments = getPeriodComments(restaurant, thisWeekStartDate, thisWeekEndDate);
-            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
-            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-
-            RestaurantLogData restaurantLogData = new RestaurantLogData(lastWeekComments, lastWeekTotalPpl, lastWeekRate, 0, thisWeekComments, thisWeekTotalPpl, thisWeekRate, 0);
-            restaurantLogDataMap.put(restaurant.getAccountUserName(), restaurantLogData);
-
+            restaurantAc.generateRestaurantLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate); 
         }
+        
+        ArrayList<Account> lastWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
+        calAndSetRestaurantRank(lastWeekRankedRestaurantAccounts, "lastWeekRate");
 
-        // Sort the map by thisWeekRate
-        @SuppressWarnings("unused")
-        Map<String, RestaurantLogData> sortedByThisWeekRate = restaurantLogDataMap.entrySet()
-                .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        ArrayList<Account> thisWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
+        calAndSetRestaurantRank(thisWeekRankedRestaurantAccounts, "thisWeekRate");
 
-        // Update thisWeekRank based on the index after sorting
-        int thisWeekRank = 1;
-        Float thisWeekPreviousRate = null;
-        int thisWeekSameRateRank = 0;
-        for (Map.Entry<String, RestaurantLogData> entry : sortedByThisWeekRate.entrySet()) {
-            Float currentRate = entry.getValue().getLastWeekRate();
-            if (thisWeekPreviousRate == null || currentRate.compareTo(thisWeekPreviousRate) != 0) {
-                thisWeekRank += thisWeekSameRateRank;
-                thisWeekSameRateRank = 1;
-                thisWeekPreviousRate = currentRate;
-            } else {
-                thisWeekSameRateRank++;
-            }
-            entry.getValue().setThisWeekRank(thisWeekRank);
-        }
-
-        // Sort the map by lastWeekRate 
-        @SuppressWarnings("unused")
-        Map<String, RestaurantLogData> sortedByLastWeekRate = restaurantLogDataMap.entrySet()
-                .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getLastWeekRate))))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-        // Update lastWeekRank based on the index after sorting
-        int lastWeekRank = 1;
-        Float lastWeekPreviousRate = null;
-        int lastWeekSameRateRank = 0;
-        for (Map.Entry<String, RestaurantLogData> entry : sortedByLastWeekRate.entrySet()) {
-            Float currentRate = entry.getValue().getLastWeekRate();
-            if (lastWeekPreviousRate == null || currentRate.compareTo(lastWeekPreviousRate) != 0) {
-                lastWeekRank += lastWeekSameRateRank;
-                lastWeekSameRateRank = 1;
-                lastWeekPreviousRate = currentRate;
-            } else {
-                lastWeekSameRateRank++;
-            }
-            entry.getValue().setLastWeekRank(lastWeekRank);
+        for(Account ac: RestaurantAccounts.values()){
+            System.out.println(ac.getAccountUserName() + ": " + ac.getRestaurantThisWeekRank());
         }
     }
 
-    public void generateRestaurantLog() {
-        generateRestaurantLogData();
-        for (Account restaurantAc : (RestaurantAccounts.values())) {
-            Restaurant restaurant = (Restaurant) restaurantAc;
-            RestaurantLogData restaurantLogData = restaurantLogDataMap.get(restaurant.getAccountUserName());
-            Map<String, RestaurantLog> restaurantLogs = new HashMap<>();
-            restaurantLogs.put("lastWeek", new RestaurantLog(restaurantLogData.getLastWeekRank(), restaurantLogData.getLastWeekRate(), restaurantLogData.getLastWeekTotalPpl(), restaurantLogData.getLastWeekComments()));
-            restaurantLogs.put("thisWeek", new RestaurantLog(restaurantLogData.getThisWeekRank(), restaurantLogData.getThisWeekRate(), restaurantLogData.getThisWeekTotalPpl(), restaurantLogData.getThisWeekComments()));
-            AllRestaurantLogs.put(restaurant.getAccountUserName(), restaurantLogs);
-        }
+    public void generateAccountLog(Account ac) {
+        generateAccountLogData();
+        ac.generateRestaurantLog();
     }
 
-    public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
-        Map<String, RestaurantLog> logs = AllRestaurantLogs.get(restaurant.getAccountUserName());
-        if (logs != null) {
-            return logs.get(period);
-        }
-        return null;
-    }
-
-    public void generateWeeklyReport(Restaurant restaurant) {
-        RestaurantLog lastWeekLog = getRestaurantLog(restaurant, "lastWeek");
-        RestaurantLog thisWeekLog = getRestaurantLog(restaurant, "thisWeek");
-
-        StringBuilder report = new StringBuilder();
-
-        report.append("Last week:\n");
-        report.append("Rank: ").append(lastWeekLog.getRank()).append("\n");
-        report.append("Rate: ").append(lastWeekLog.getRate()).append("\n");
-        report.append("Total ppl: ").append(lastWeekLog.getTotalPpl()).append("\n");
-        report.append("Comment:\n");
-        for (Comment comment : lastWeekLog.getComments()) {
-            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
-        }
-
-        report.append("\nThis week:\n");
-        report.append("Rank: ").append(thisWeekLog.getRank()).append("\n");
-        report.append("Rate: ").append(thisWeekLog.getRate()).append("\n");
-        report.append("Total ppl: ").append(thisWeekLog.getTotalPpl()).append("\n");
-        report.append("Comment:\n");
-        for (Comment comment : thisWeekLog.getComments()) {
-            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
-        }
-
-        report.append("\nRank decrease/increase ").append(thisWeekLog.getRank() - lastWeekLog.getRank()).append("\n");
-        report.append("Rate decrease/increase ").append(thisWeekLog.getRate() - lastWeekLog.getRate()).append("\n");
-        report.append("Total ppl decrease/increase ").append(thisWeekLog.getTotalPpl() - lastWeekLog.getTotalPpl()).append("\n");
-
-        System.out.println(report.toString());
+    public void generateAccountWeeklyReport(Account restaurant) {
+        restaurant.generateRestaurantWeeklyReport();
     }
 }

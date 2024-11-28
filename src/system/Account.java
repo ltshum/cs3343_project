@@ -91,4 +91,40 @@ public abstract class Account {
     public abstract int getBookingRecord(LocalDate date);
 
     //protected abstract void updateSeatNo(int tableID, int seatNum);
+
+    public void generateRestaurantLogDataWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate ) {
+       ((Restaurant)this).generateLogDataWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+    }
+
+    public float getRestaurantLastWeekRate() {
+        return ((Restaurant)this).getLastWeekRate();
+    }
+
+    public float getRestaurantThisWeekRate() {
+        return ((Restaurant)this).getThisWeekRate();
+    }
+
+    public void setRestaurantLastWeekRank(int rank) {
+        ((Restaurant)this).setLastWeekRank(rank);
+    }
+
+    public void setRestaurantThisWeekRank(int rank) {
+        ((Restaurant)this).setThisWeekRank(rank);
+    }
+
+    public int getRestaurantThisWeekRank() {
+        return ((Restaurant)this).getThisWeekRank();
+    }
+
+    public int getRestaurantLastWeekRank() {
+        return ((Restaurant)this).getLastWeekRank();
+    }
+
+    public void generateRestaurantLog() {
+        ((Restaurant)this).generateLog();
+    }
+
+    public void generateRestaurantWeeklyReport() {
+        ((Restaurant)this).generateWeeklyReport();
+    }
 }

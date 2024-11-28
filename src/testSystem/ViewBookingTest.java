@@ -7,11 +7,9 @@ import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import View.ViewBooking;
-import system.Booking;
 import system.Customer;
 import system.Restaurant;
 import system.Server;
