@@ -48,7 +48,9 @@ public final class SearchCriteria {
     // not using String.compareTo because no normal human would think "eat" is closer to "bibliography" than "seat"
     // return {a, b}: a = score, b = weight
     // precondition: both name and keyword are not null
-    public float[] getWordScore(String name, String keyword) {
+    public float[] getWordScore(String s1, String s2) {
+        String name = s1.toLowerCase();
+        String keyword = s2.toLowerCase();
         if (keyword.length() <= 1) {
             float[] result = {name.contains(keyword) ? 1 : 0, 1};
             return result;
