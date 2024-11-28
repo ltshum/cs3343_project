@@ -1,5 +1,6 @@
 package system;
 
+import acm.Role;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,9 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-
-// Other imports as needed
-import acm.Role;
 
 public class Restaurant extends Account {
 
@@ -506,12 +504,12 @@ public class Restaurant extends Account {
     }
 
     public int getThisWeekRank() {
-        return thisWeekLog.getRank();
+        return thisWeekLog.getLogRank();
 
     }
 
     public int getLastWeekRank() {
-        return lastWeekLog.getRank();
+        return lastWeekLog.getLogRank();
 
     }
 
