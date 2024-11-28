@@ -350,6 +350,40 @@ public class ServerTest {
         assertNull("Account should be null for null username.", account4);
     }
 	
+	@Test 
+	public void testgetRestaurantBookingDetail2() {
+        Restaurant temp = new Restaurant("Test ", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+		server.addRestaurantAccount(restaurant);
+		server.getRestaurantBookingDetail(restaurant);
+		server.getRestaurantBookingDetail(temp);
+	}
+		@Test 
+	public void testmakeBooking() {
+        Restaurant temp = new Restaurant("", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+        server.addRestaurantAccount(temp);
+        Restaurant account2 = (Restaurant)server.getRestaurantAccountByUserName("NonExistentUser");
+        server.makeBooking(LocalDate.now(),1,"12:00 - 13:00 ",restaurant,customer,customer.getCustomerContact(),1);
+        server.makeBooking(LocalDate.now(),1,"12:00 - 13:00" ,temp,customer,customer.getCustomerContact(),1);
+		
+	}
+		
+
+	    @Test
+	    public void testMakeBooking_RestaurantNotFound() {
+	        Restaurant tempRestaurant = new Restaurant("NonExistentUser", "testPass", "Nonexistent",
+	                                                   "Cuisine", "District", "Address",
+	                                                   "Contact", LocalTime.parse("09:00"),
+	                                                   LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+	       
+	        String result = server.makeBooking(LocalDate.now(), 1, "12:00 - 13:00", tempRestaurant, customer, customer.getCustomerContact(), 1);
+	        assertEquals("Restaurant not found.", result);
+	    }
+	@Test
+	public void testgetalltableinfo() {
+		server.addRestaurantAccount(restaurant);
+		server.getAllTableInfo(restaurant);
+	}
+	
 //	@Test
 //	public void testGetBookingToBeCommentSuccess() {
 //	LocalDate differentDate = LocalDate.of(2023, 11, 26);
