@@ -1,7 +1,5 @@
 package system;
 
-// Other imports as needed
-import acm.Role;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,20 +11,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+// Other imports as needed
+import acm.Role;
+
 public class Restaurant extends Account {
 
-    private String restaurantName;
     private String type;
     private String district;
     private String address;
-    private String restaurantContact;
     private float rate;
     private LocalTime openTime;
     private LocalTime closeTime;
     private Duration sessionDuration;
     private ArrayList<Table> allTables = new ArrayList<>();
     private final ArrayList<Comment> allComments = new ArrayList<>();
-    private ArrayList<Booking> allBookings = new ArrayList<>();
     private RestaurantLog lastWeekLog;
     private RestaurantLog thisWeekLog;
 
@@ -36,18 +34,15 @@ public class Restaurant extends Account {
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
     public Restaurant(String userName, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
-        super(Arrays.asList(Role.RESTAURANT), userName, password);
+        super(Arrays.asList(Role.RESTAURANT), userName, password, name, contact);
         this.rate = 0;
-        this.restaurantName = name;
         this.type = type;
         this.district = district;
         this.address = address;
-        this.restaurantContact = contact;
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.sessionDuration = sessionDuration;
         this.allTables = new ArrayList<>();
-        this.allBookings = new ArrayList<>();
         initializeTables(tableNum);
         generateTimeslots();
         this.allComments.add(cm1);
@@ -79,6 +74,15 @@ public class Restaurant extends Account {
         }
     }
 
+    public void addComment(Comment cm) {
+        allComments.add(cm);
+        float newRate = 0;
+        for (Comment comment : allComments) {
+            newRate += comment.getCommentRate();
+        }
+        this.rate = newRate;
+    }
+
     // public void updateSeatNo(int tableID, int seatNum) {
     //     Table table = allTables.get(tableID - 1);
     //     table.setSeatNum(seatNum);
@@ -105,7 +109,7 @@ public class Restaurant extends Account {
     }
 
     public StringBuilder getAllTableInfo() {
-        StringBuilder result= new StringBuilder();
+        StringBuilder result = new StringBuilder();
         StringBuilder tableID = new StringBuilder("                ");
         StringBuilder seat = new StringBuilder("                ");
         for (Table table : allTables) {
@@ -140,12 +144,6 @@ public class Restaurant extends Account {
         }
     }
 
-    @Override
-    public String getRestaurantName() {
-        return restaurantName;
-    }
-
-    @Override
     public String getType() {
         return type;
     }
@@ -154,11 +152,11 @@ public class Restaurant extends Account {
         return address;
     }
 
-    public String getRestaurantContact() {
-        return restaurantContact;
+    public float getRate() {
+        return rate;
     }
 
-    public float getRate() {
+    public float getLogRate() {
         return rate;
     }
 
@@ -178,13 +176,8 @@ public class Restaurant extends Account {
         return allTables;
     }
 
-    @Override
     public String getDistrict() {
         return district;
-    }
-
-    public ArrayList<Booking> getAllBookings() {
-        return allBookings;
     }
 
     public ArrayList<Comment> getAllCommentsList() {
@@ -199,10 +192,6 @@ public class Restaurant extends Account {
         return result;
     }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -213,10 +202,6 @@ public class Restaurant extends Account {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setRestaurantContact(String restaurantContact) {
-        this.restaurantContact = restaurantContact;
     }
 
     public void setRate(float rate) {
@@ -252,11 +237,11 @@ public class Restaurant extends Account {
     @Override
     public String getProfileDetail() {
         return "Rate: " + this.getRate()
-                + "\nRestaurant Name: " + restaurantName
+                + "\nRestaurant Name: " + getName()
                 + "\nType: " + type
                 + "\nDistrict: " + district
                 + "\nAddress: " + address
-                + "\nPhone: " + restaurantContact
+                + "\nPhone: " + getContact()
                 + "\nOpen Time: " + openTime
                 + "\nClose Time: " + closeTime
                 + "\nSession Duration: " + sessionDuration.toMinutes() + "mins"
@@ -294,8 +279,8 @@ public class Restaurant extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Restaurant Name: ");
-                                setRestaurantName(in.nextLine());
-                                System.out.println("\nRestaurant Name has been changed to " + getRestaurantName() + "\n");
+                                setName(in.nextLine());
+                                System.out.println("\nRestaurant Name has been changed to " + getName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
@@ -318,8 +303,8 @@ public class Restaurant extends Account {
                             }
                             case 5 -> {
                                 System.out.print("Please input new Phone: ");
-                                setRestaurantContact(in.nextLine());
-                                System.out.println("\nPhone has been changed to " + getRestaurantContact() + "\n");
+                                setContact(in.nextLine());
+                                System.out.println("\nPhone has been changed to " + getContact() + "\n");
                                 isValidOption = true;
                             }
                             case 6 -> {
@@ -419,10 +404,10 @@ public class Restaurant extends Account {
 
     @Override
     public int getBookingRecord(LocalDate date) {
-        Collections.sort(allBookings, Comparator.comparing(Booking::getBookingTimeslot));
+        Collections.sort(getAllBookings(), Comparator.comparing(Booking::getBookingTimeslot));
         int totalBookings = 0;
         ArrayList<Booking> requiredBookings = new ArrayList<>();
-        for (Booking booking : allBookings) {
+        for (Booking booking : getAllBookings()) {
             if (booking.getBookingDate().equals(date)) {
                 totalBookings++;
                 requiredBookings.add(booking);
@@ -454,7 +439,7 @@ public class Restaurant extends Account {
             StringBuilder arrived = new StringBuilder("            ");
             for (Booking booking : group) {
                 tableID.append(String.format("| Table ID: %-13d ", booking.getBookingTableID()));
-                booker.append(String.format("| Booker: %-13s ", booking.getBookingCustomer().getCustomerName()));
+                booker.append(String.format("| Booker: %-13s ", booking.getCustomerName()));
                 ppl.append(String.format("| Ppl No: %-13s ", booking.getBookingPpl()));
                 contact.append(String.format("| Contact: %-13s ", booking.getBookingCustomerContact()));
                 arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
@@ -468,13 +453,9 @@ public class Restaurant extends Account {
         return totalBookings;
     }
 
-    public void addBooking(Booking bk) {
-        this.allBookings.add(bk);
-    }
-
-    public ArrayList<Booking> getPeriodBookings(LocalDate startDate, LocalDate endDate){
+    public ArrayList<Booking> getPeriodBookings(LocalDate startDate, LocalDate endDate) {
         ArrayList<Booking> periodBookings = new ArrayList<>();
-        for (Booking bk : allBookings) {
+        for (Booking bk : getAllBookings()) {
             if ((bk.getBookingDate().isEqual(startDate) || bk.getBookingDate().isAfter(startDate)) && (bk.getBookingDate().isEqual(endDate) || bk.getBookingDate().isBefore(endDate))) {
                 periodBookings.add(bk);
             }
@@ -482,7 +463,7 @@ public class Restaurant extends Account {
         return periodBookings;
     }
 
-    public ArrayList<Comment> getPeriodComments(LocalDate startDate, LocalDate endDate){
+    public ArrayList<Comment> getPeriodComments(LocalDate startDate, LocalDate endDate) {
         ArrayList<Comment> periodComments = new ArrayList<>();
         for (Comment cm : allComments) {
             if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
@@ -493,18 +474,19 @@ public class Restaurant extends Account {
     }
 
     public void generateLogWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate) {
-            ArrayList<Booking> lastWeekBookings = getPeriodBookings(lastWeekStartDate, lastWeekEndDate);
-            ArrayList<Comment> lastWeekComments = getPeriodComments(lastWeekStartDate, lastWeekEndDate);
-            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
-            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
+        ArrayList<Booking> lastWeekBookings = getPeriodBookings(lastWeekStartDate, lastWeekEndDate);
+        ArrayList<Comment> lastWeekComments = getPeriodComments(lastWeekStartDate, lastWeekEndDate);
+        int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+        float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
 
-            //this week data
-            ArrayList<Booking> thisWeekBookings = getPeriodBookings(thisWeekStartDate, thisWeekEndDate);
-            ArrayList<Comment> thisWeekComments = getPeriodComments(thisWeekStartDate, thisWeekEndDate);
-            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
-            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-            thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
-            lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
+        //this week data
+        ArrayList<Booking> thisWeekBookings = getPeriodBookings(thisWeekStartDate, thisWeekEndDate);
+        ArrayList<Comment> thisWeekComments = getPeriodComments(thisWeekStartDate, thisWeekEndDate);
+        int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+        float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
+        thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
+        lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
+
     }
 
     public float getLastWeekRate() {
@@ -524,11 +506,13 @@ public class Restaurant extends Account {
     }
 
     public int getThisWeekRank() {
-        return thisWeekLog.getLogRank();
+        return thisWeekLog.getRank();
+
     }
 
     public int getLastWeekRank() {
-        return lastWeekLog.getLogRank();
+        return lastWeekLog.getRank();
+
     }
 
     public void generateWeeklyReport() {
@@ -561,30 +545,13 @@ public class Restaurant extends Account {
     }
 
     public boolean takeAttendanceInRestaurant(LocalDate date, String inputSession, int tableID) {
-        for (Booking booking : allBookings) {
+        for (Booking booking : getAllBookings()) {
             if (booking.getBookingDate().equals(date) && booking.getBookingTableID() == tableID && booking.getBookingTimeslot().equals(inputSession)) {
                 booking.takeAttendance();
                 return true;
             }
         }
-        return false;    
+        return false;
     }
 
-    public void makeCommentInRestaurant(String customerName, LocalDate date, int rate, String commentString) {
-        Comment comment = new Comment(customerName, commentString, rate, date);
-        allComments.add(comment);
-        float recal_rate = 0;
-        for (Comment cm : allComments) {
-            recal_rate += cm.getCommentRate();
-        }
-        setRate(recal_rate / allComments.size());
-    }
-
-    public Booking makeBookingInRestaurant(LocalDate date, int tableID, String bookSession, Customer ac, String contact, int ppl) {
-        Booking bk = new Booking(date, tableID, bookSession, this, ac, contact, ppl);
-        this.addBooking(bk);
-        return bk;
-    }
-
-    
 }

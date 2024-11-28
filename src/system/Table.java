@@ -27,9 +27,8 @@ public class Table {
             LocalTime time2 = LocalTime.parse(t2.getTimeslotSession().split(" - ")[0]);
             return time1.compareTo(time2);
         });
-        
-    }
 
+    }
 
     public int getTableID() {
         return tableID;
@@ -65,7 +64,7 @@ public class Table {
     public boolean canbook(int customernumber, Duration timeMins) {
         if (customernumber > this.getSeatNum()) {
             return false;
-        } 
+        }
 
         long durationMinutes = (timeMins == null) ? 0 : timeMins.toMinutes();
 
@@ -75,31 +74,31 @@ public class Table {
             if (bookedTimeSlot.contains(timeSlot)) {
                 continue;
             }
-    
+
             // Parse start and end times
             LocalTime startTime = LocalTime.parse(timeSlot.getTimeslotSession().split(" - ")[0]);
             LocalTime endTime = LocalTime.parse(timeSlot.getTimeslotSession().split(" - ")[1]);
-    
+
             // Calculate available time in minutes
             long availableMinutes = Duration.between(startTime, endTime).toMinutes();
-    
+
             // If the available time is enough, return true
             if (availableMinutes >= durationMinutes) {
                 return true;
             }
-    
+
             // Check consecutive time slots if not enough time
             for (int i = allTimeslots.indexOf(timeSlot) + 1; i < allTimeslots.size(); i++) {
                 Timeslot nextTimeSlot = allTimeslots.get(i);
-    
+
                 // Skip booked time slots
                 if (bookedTimeSlot.contains(nextTimeSlot)) {
                     continue;
                 }
-    
+
                 endTime = LocalTime.parse(nextTimeSlot.getTimeslotSession().split(" - ")[1]);
                 availableMinutes = Duration.between(startTime, endTime).toMinutes();
-    
+
                 // If the available time is enough, return true
                 if (availableMinutes >= durationMinutes) {
                     return true;

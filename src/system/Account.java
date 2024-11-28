@@ -1,12 +1,13 @@
 package system;
 
-import acm.Permission;
-import acm.PermissionRegistry;
-import acm.Role;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import acm.Permission;
+import acm.PermissionRegistry;
+import acm.Role;
 
 public abstract class Account {
 
@@ -15,12 +16,41 @@ public abstract class Account {
     private List<Role> roles;
     private String userName;
     private String password;
+    private String name;
+    private String contact;
+    private ArrayList<Booking> allBookings = new ArrayList<>();
 
-    public Account(List<Role> r, String n, String p) {
+    public Account(List<Role> r, String userName, String password, String name, String contact) {
         this.id = idCounter++;
         this.roles = r;
-        this.userName = n;
-        this.password = p;
+        this.userName = userName;
+        this.password = password;
+        this.name = name;
+        this.contact = contact;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public ArrayList<Booking> getAllBookings() {
+        return allBookings;
+    }
+
+    public void addBooking(Booking booking) {
+        allBookings.add(booking);
     }
 
     // public boolean hasPermission(Resource resource, Privilege privilege) {
@@ -72,7 +102,7 @@ public abstract class Account {
     }
 
     public void setRoles(List<Role> roles) {
-    
+
         this.roles = roles;
     }
 
@@ -91,64 +121,60 @@ public abstract class Account {
     public abstract int getBookingRecord(LocalDate date);
 
     //protected abstract void updateSeatNo(int tableID, int seatNum);
-
-    public void generateRestaurantLogWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate ) {
-       ((Restaurant)this).generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+    public void generateRestaurantLogWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate) {
+        ((Restaurant) this).generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
     }
 
     public float getRestaurantLastWeekRate() {
-        return ((Restaurant)this).getLastWeekRate();
+        return ((Restaurant) this).getLastWeekRate();
     }
 
     public float getRestaurantThisWeekRate() {
-        return ((Restaurant)this).getThisWeekRate();
+        return ((Restaurant) this).getThisWeekRate();
     }
 
     public void setRestaurantLastWeekRank(int rank) {
-        ((Restaurant)this).setLastWeekRank(rank);
+        ((Restaurant) this).setLastWeekRank(rank);
     }
 
     public void setRestaurantThisWeekRank(int rank) {
-        ((Restaurant)this).setThisWeekRank(rank);
+        ((Restaurant) this).setThisWeekRank(rank);
     }
 
     public int getRestaurantThisWeekRank() {
-        return ((Restaurant)this).getThisWeekRank();
+        return ((Restaurant) this).getThisWeekRank();
     }
 
     public int getRestaurantLastWeekRank() {
-        return ((Restaurant)this).getLastWeekRank();
+        return ((Restaurant) this).getLastWeekRank();
     }
 
     public void generateRestaurantWeeklyReport() {
-        ((Restaurant)this).generateWeeklyReport();
+        ((Restaurant) this).generateWeeklyReport();
     }
 
     public boolean takeAttenanceInAccount(LocalDate date, String inputSession, int tableID) {
-        return ((Restaurant)this).takeAttendanceInRestaurant(date, inputSession, tableID);
+        return ((Restaurant) this).takeAttendanceInRestaurant(date, inputSession, tableID);
     }
 
     public boolean checkHasAttendInAccount(int inputNumber, LocalDate date) {
-        return ((Customer)this).checkHasAttendInCustomer(inputNumber, date);
+        return ((Customer) this).checkHasAttendInCustomer(inputNumber, date);
     }
 
-    public void makeCommentInAccount(int inputNumber, LocalDate date, int rate, String commentString) {
-        try {
-            Restaurant restaurant = ((Customer) this).getRestaurantToBeComment(inputNumber, date);
-            restaurant.makeCommentInRestaurant(((Customer) this).getCustomerName(), date, rate, commentString);
-            System.out.println("\nComment added!");
-        } catch (Exception e) {
-            System.out.println("Restaurant not found.");
+    public int getCommentRestaurantId(int inputNumber, LocalDate date) {
+
+        ArrayList<Booking> requiredbookings = new ArrayList<>();
+        for (Booking booking : allBookings) {
+            if (booking.getBookingDate().equals(date)) {
+                requiredbookings.add(booking);
+            }
         }
+        return requiredbookings.get(inputNumber - 1).getRestaurantId();
 
     }
 
     public int availableTableIDInAccount(int ppl, String timeslotSession, LocalDate date) {
-        return ((Restaurant)this).availableTableIDInRestaurant(ppl, timeslotSession, date);
-    }
-
-    public void makeBookingInAccount(LocalDate date, int tableID, String bookSession, Customer ac, String contact, int ppl) {
-        ac.addBooking(((Restaurant)this).makeBookingInRestaurant(date, tableID, bookSession, ac, contact, ppl));
+        return ((Restaurant) this).availableTableIDInRestaurant(ppl, timeslotSession, date);
     }
 
     public int getAccountPermissionNumber() {
@@ -165,43 +191,43 @@ public abstract class Account {
     }
 
     public String getAccountName() {
-        return ((Restaurant)this).getRestaurantName();
+        return ((Restaurant) this).getRestaurantName();
     }
 
     public String getAccountDistrict() {
-        return ((Restaurant)this).getDistrict();
+        return ((Restaurant) this).getDistrict();
     }
 
     public float getAccountRate() {
-        return ((Restaurant)this).getRate();
+        return ((Restaurant) this).getRate();
     }
 
     public String getAccountType() {
-        return ((Restaurant)this).getType();
+        return ((Restaurant) this).getType();
     }
 
     public ArrayList<Table> getAccountAllTables() {
-        return ((Restaurant)this).getAllTables();
+        return ((Restaurant) this).getAllTables();
     }
 
     public String getRestaurantName() {
-        return ((Restaurant)this).getRestaurantName();
+        return ((Restaurant) this).getRestaurantName();
     }
 
     public float getRate() {
-        return ((Restaurant)this).getRate();
+        return ((Restaurant) this).getRate();
     }
 
     public String getDistrict() {
-        return ((Restaurant)this).getDistrict();
+        return ((Restaurant) this).getDistrict();
     }
 
     public String getType() {
-        return ((Restaurant)this).getType();
+        return ((Restaurant) this).getType();
     }
 
     public String getTimeslots() {
-        return ((Restaurant)this).getTimeslots();
+        return ((Restaurant) this).getTimeslots();
     }
 
 }
