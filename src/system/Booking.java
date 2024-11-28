@@ -8,23 +8,25 @@ public class Booking {
     private final int tableID;
     private final String timeslot;
     private final String restaurantName;
-    private final int restaurantId;
+    private final String restaurantUserName;
     private String customerName;
-    private int customerId;
     private final String customerContact;
     private final int ppl;
     private boolean arrive = false;
 
-    public Booking(LocalDate date, int tableID, String timeslot, String restaurantName, int restaurantId, String customerName, int customerId, String customerContact, int ppl) {
+    public Booking(LocalDate date, int tableID, String timeslot, String restaurantName, String restaurantUserName, String customerName, String customerContact, int ppl) {
         this.date = date;
         this.tableID = tableID;
         this.timeslot = timeslot;
         this.restaurantName = restaurantName;
-        this.restaurantId = restaurantId;
+        this.restaurantUserName = restaurantUserName;
         this.customerName = customerName;
-        this.customerId = customerId;
         this.customerContact = customerContact;
         this.ppl = ppl;
+    }
+
+    public String getRestaurantUserName() {
+        return restaurantUserName;
     }
 
     public String getCustomerBookingData() {
@@ -46,10 +48,6 @@ public class Booking {
 
     public String getBookingTimeslot() {
         return timeslot;
-    }
-
-    public int getRestaurantId() {
-        return restaurantId;
     }
 
     public String getBookingCustomerContact() {

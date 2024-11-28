@@ -161,7 +161,7 @@ public abstract class Account {
         return ((Customer) this).checkHasAttendInCustomer(inputNumber, date);
     }
 
-    public int getCommentRestaurantId(int inputNumber, LocalDate date) {
+    public String getCommentRestaurantUserName(int inputNumber, LocalDate date) {
 
         ArrayList<Booking> requiredbookings = new ArrayList<>();
         for (Booking booking : allBookings) {
@@ -169,7 +169,7 @@ public abstract class Account {
                 requiredbookings.add(booking);
             }
         }
-        return requiredbookings.get(inputNumber - 1).getRestaurantId();
+        return requiredbookings.get(inputNumber - 1).getRestaurantUserName();
 
     }
 
