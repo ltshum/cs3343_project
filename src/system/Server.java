@@ -325,7 +325,7 @@ public class Server {
 
     }
 
-    private void generateAccountLogData() {
+    public void generateAccountLog() {
         LocalDate thisWeekStartDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisWeekEndDate = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
         LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
@@ -343,14 +343,10 @@ public class Server {
         for (Account restaurantAc : (RestaurantAccounts.values())) {
             System.out.println( restaurantAc.getName() + ":" + restaurantAc.getRestaurantThisWeekRank() + "     " + restaurantAc.getRestaurantLastWeekRank());
         }
-
     }
 
-    public void generateAccountLog(Account ac) {
-        generateAccountLogData();
-    }
-
-    public void generateAccountWeeklyReport(Account restaurant) {
+    public void generateAccountWeeklyReport(String restaurantUsername) {
+        Account restaurant = getRestaurantAccountByUserName(restaurantUsername);
         restaurant.generateRestaurantWeeklyReport();
     }
 
