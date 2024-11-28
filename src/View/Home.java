@@ -2,7 +2,6 @@ package View;
 
 import java.util.Scanner;
 
-import acm.Resource;
 import system.Account;
 import system.Server;
 
@@ -28,40 +27,37 @@ public class Home {
                 System.out.print("What action do you want to do?: ");
                 try {
                     int op = Integer.parseInt(in.nextLine());
-                    if (op >= 1 && op <= server.getPermissionSize(account)) {
                         isValidOption = true;
-                        Resource selectedResource = server.getPermissionResource(account, op);
+                        String selectedResource = server.getPermissionResource(account, op);
                         //System.out.println("Selected resource: " + selectedResource);
                         switch (selectedResource) {
-                            case PROFILE -> {
+                            case "PROFILE" -> {
                                 Profile profilePage = new Profile(account);
                                 profilePage.displayProfile(in);
                             }
-                            case TABLE_MANAGEMENT -> {
+                            case "TABLE_MANAGEMENT" -> {
                                 TableManagement tableManagementPage = new TableManagement(account);
                                 tableManagementPage.displayTableManagement(in);
                             }
-                            case VIEW_BOOKING -> {
+                            case "VIEW_BOOKING" -> {
                                 ViewBooking viewBooking = new ViewBooking(account);
                                 viewBooking.displayViewBooking(in);
                             }
-                            case SEARCH_RESTAURANT -> {
+                            case "SEARCH_RESTAURANT" -> {
                                 SearchRestaurant searchRestaurantPage = new SearchRestaurant(account);
                                 searchRestaurantPage.displaySearchRestaurnt(in);
                             }
-                            case WEEKLY_REPORT -> {
+                            case "WEEKLY_REPORT" -> {
                                 WeeklyReport weeklyReport = new WeeklyReport(account);
                                 weeklyReport.displayWeeklyReport(in);
+                            }
+                            case "LOGOUT" -> {
+                                System.out.println("Logging out...");
+                                return;
                             }
                             default ->
                                 System.out.println("Invalid selection.");
                         }
-                    } else if (op == server.getPermissionSize(account) + 1) {
-                        System.out.println("Logging out...");
-                        return;
-                    } else {
-                        System.out.println("\nInvalid input. Please input again.");
-                    }
                 } catch (NumberFormatException inputTypeException) {
                     System.out.println("\nInvalid input. Please input again.");
                 }
