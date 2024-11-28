@@ -396,4 +396,10 @@ public class Server {
 
         System.out.println(report.toString());
     }
+    public void reset() {
+        AccountList.clear();
+        RestaurantAccounts.clear();
+        AllRestaurantLogs.clear();
+        restaurantLogDataMap.clear();
+    }
 }

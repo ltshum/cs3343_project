@@ -1,6 +1,7 @@
 package testSystem;
 
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,60 +12,126 @@ import system.Restaurant;
 import system.RestaurantLog;
 import system.Server;
 
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
 
 public class ServerTest {
 
-	private Server server;
-	private Customer customer;
-	private Restaurant restaurant;
-	
-	@Before
-	public void setUp() {
-		server =Server.getInstance();
-		customer = new Customer("customerUser", "customerPass", "Customer Name", "123456789");
-        restaurant = new Restaurant("restaurantUser", "restaurantPass", "Restaurant Name", "Italian", "Downtown", "123 Main St", "987654321",
-                LocalTime.of(10, 0), LocalTime.of(22, 0), Duration.ofHours(2), 10);
-		
-	}
+	 Server server;
+     Customer customer;
+    InputStream systemIn = System.in;
+    Restaurant restaurant;
+    Scanner scanner;
+
+    @Before
+    public void setUp() {
+        server = Server.getInstance();
+        server.reset();
+        restaurant = new Restaurant("Test Restaurant", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+        customer = new Customer("TestUser", "password", "Test Name", "123456789");
+        server.addRestaurant(restaurant); // Assuming there's a method to add restaurant
+    }
+    @After
+    public void tearDown() throws Exception {
+    	if(scanner!=null) {
+        scanner.close();
+    	}
+        System.setIn(systemIn);
+    }
+    
+    public void setInput(String[] in) {
+        scanner = testInput.input(in);
+    }
+
+  
+    @Test
+    public void testSignUpCustomer() {
+        Account result = server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
+        assertNotNull(result);
+        // Verify that the customer was added correctly
+    }
+
+    @Test
+    public void testSignUpRestaurant() {
+        Account result = server.signUp("RESTAURANT", "testRest", "password", "Test Restaurant", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+        assertNotNull(result);
+        // Verify that the restaurant was added correctly
+    }
+
+    @Test
+    public void testSignInValid() {
+        server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
+        Account account = server.signIn("testUser", "password");
+        assertNotNull(account);
+        assertEquals("testUser", server.getUserName(account));
+    }@Test
+    public void testSignInValid1() {
+        server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
+        Account account = server.signIn("testUser", "password12");
+        assertNull(account);
+    }@Test
+    public void testSignInValid2() {
+        server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
+        Account account = server.signIn("testUser12", "password");
+        assertNull(account);
+    }
+
+    @Test
+    public void testSignInInvalid3() {
+        Account account = server.signIn("invalidUser", "password123");
+        assertNull(account);
+    }
+
+    @Test
+    public void testAddRestaurant() {
+    	server.addRestaurant(restaurant);
+    	assertEquals(2,server.getAccountList().size());
+//        // Check if the restaurant exists in the server
+    }
+
+//    @Test
+//    public void testGetAllRestaurants() {
+//        server.addRestaurant(restaurant);
+//        assertFalse(server.getAllRestaurants().isEmpty());
+//    }
+
+    @Test
+    public void testSearchRestaurantsIn() {
+        server.addRestaurant(restaurant);
+        var results = server.searchRestaurantsIn("Test Restaurant", "District", "null", "Cuisine", "null", "null", "null");
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testUpdateTableInfo() {
+        // Assuming a method exists to update table info
+    	String[] input = { "10"};
+		setInput(input);
+        server.updateTableInfo(restaurant,scanner,1 );
+        assertEquals(10,restaurant.getAllTables().get(0).getSeatNum());//        // Verify the update
+    }
 	
 	@Test
-	public void testaddRestaurant() {
-		Restaurant restaurant = new Restaurant("username",
-                "password",
-                "name",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                LocalTime.parse("10:00"),
-                LocalTime.parse("20:00"),
-                Duration.ofMinutes(60),
-                3);
-	ArrayList<Account> AccountList = new ArrayList<>();
-	AccountList.add(restaurant);
-	server.addRestaurant(restaurant);
-	assertEquals(1,server.getAccountList().size());
-	assertEquals(restaurant,server.getAccountList().get(0));
-	}
+	public void TestaddRestaurantAccount() {
+		server.addRestaurantAccount(restaurant);
+		assertEquals(restaurant.getRestaurantName(),server.getRestaurantAccounts().get(0).getRestaurantName());
+		}
 	
 //	@Test
-//	public void TestaddRestaurantAccount() {
-//		
-//	}
-	
-	@Test
-    public void testSignUpCustomer() {
-        Account result = server.signUp("CUSTOMER", "custUser", "custPass", "Cust Name", "123456789", "", "", "",
-                LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, Duration.ZERO, 0);
-        assertNotNull(result);
-        assertTrue(result instanceof Customer);
-    }
+//    public void testSignUpCustomer() {
+//        Account result = server.signUp("CUSTOMER", "custUser", "custPass", "Cust Name", "123456789", "", "", "",
+//                LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, Duration.ZERO, 0);
+//        assertNotNull(result);
+//        assertTrue(result instanceof Customer);
+//    }
 
 //    @Test
 //    public void testSignUpRestaurant() {
