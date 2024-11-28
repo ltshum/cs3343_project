@@ -448,7 +448,7 @@ public class RestaurantTest {
         restaurant.setAllTables(new ArrayList<>());
 
         // When: Checking for available table ID
-        int availableTableID = restaurant.availableTableID(requiredPeople, timeslot, bookingDate);
+        int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return 0 (indicating no available table)
         assertEquals(0, availableTableID);
@@ -466,7 +466,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
-        int availableTableID = restaurant.availableTableID(requiredPeople, timeslot, bookingDate);
+        int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return the ID of the available table
         assertEquals(1, availableTableID);
@@ -484,7 +484,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
-        int availableTableID = restaurant.availableTableID(requiredPeople, timeslot, bookingDate);
+        int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return 0 (indicating no available table)
         assertEquals(0, availableTableID);
@@ -502,7 +502,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
-        int availableTableID = restaurant.availableTableID(requiredPeople, timeslot, bookingDate);
+        int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return 0 (indicating no available table)
         assertEquals(1, availableTableID);
@@ -521,7 +521,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
-        int availableTableID = restaurant.availableTableID(requiredPeople, timeslot, bookingDate);
+        int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return 0 (indicating no available table)
         assertEquals(0, availableTableID);
@@ -545,7 +545,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table2);
 
         // When: Checking for available table ID
-        int availableTableID = restaurant.availableTableID(requiredPeople, timeslot, bookingDate);
+        int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return the ID of the suitable table
         assertEquals(2, availableTableID);
@@ -676,7 +676,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table);
 
         // When: Validating table ID 1
-        boolean result = restaurant.tableValidation(1);
+        boolean result = restaurant.tableValidationInRestaurant(1);
 
         // Then: Should return true
         assertTrue(result);
@@ -690,7 +690,7 @@ public class RestaurantTest {
         restaurant.getAllTables().add(table);
 
         // When: Validating a non-existent table ID 2
-        boolean result = restaurant.tableValidation(2);
+        boolean result = restaurant.tableValidationInRestaurant(2);
 
         // Then: Should return false
         assertFalse(result);
@@ -702,7 +702,7 @@ public class RestaurantTest {
         restaurant.setAllTables(new ArrayList<>());
 
         // When: Validating any table ID
-        boolean result = restaurant.tableValidation(1);
+        boolean result = restaurant.tableValidationInRestaurant(1);
 
         // Then: Should return false
         assertFalse(result);
