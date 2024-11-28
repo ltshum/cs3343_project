@@ -140,6 +140,7 @@ public class ViewBooking {
                                         if (comment.equals("X")) {
                                             System.out.println("\nExiting commenting session...");
                                             isValidOption = false;
+                                            break;
                                         }
                                         server.makeComment(account, inputNumber, date, rate, comment);
                                     }

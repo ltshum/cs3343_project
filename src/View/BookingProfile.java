@@ -2,7 +2,6 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-
 import system.Account;
 import system.Customer;
 import system.Server;
@@ -109,6 +108,7 @@ public class BookingProfile {
                                             tableID = server.availableTableID(restaurant, ppl, bookSession, bookingDate);
                                             if (tableID == 0) {
                                                 System.out.println("\nThe restaurant is full at this timeslot or have not enough seats for you.");
+                                                break outerloop;
                                             } else {
                                                 isValidPpl = true;
                                             }

@@ -282,14 +282,13 @@ public class Server {
 
     public void calAndSetRestaurantRank(ArrayList<Account> accounts, String sortBy) {
         mergeSort(accounts, sortBy);
-        int rank = 1;
         for (int i = 0; i < accounts.size(); i++) {
             Account current = accounts.get(i);
             if (i == 0) {
                 if (sortBy.equals("lastWeekRate")) {
-                    current.setRestaurantLastWeekRank(rank);
+                    current.setRestaurantLastWeekRank(1);
                 } else {
-                    current.setRestaurantThisWeekRank(rank);
+                    current.setRestaurantThisWeekRank(1);
                 }
             } else {
                 Account previous = accounts.get(i - 1);
@@ -297,13 +296,13 @@ public class Server {
                     if (current.getRestaurantLastWeekRate() == previous.getRestaurantLastWeekRate()) {
                         current.setRestaurantLastWeekRank(previous.getRestaurantLastWeekRank());
                     } else {
-                        current.setRestaurantLastWeekRank(++rank);
+                        current.setRestaurantLastWeekRank(i+1);
                     }
                 } else {
                     if (current.getRestaurantThisWeekRate() == previous.getRestaurantThisWeekRate()) {
                         current.setRestaurantThisWeekRank(previous.getRestaurantThisWeekRank());
                     } else {
-                        current.setRestaurantThisWeekRank(++rank);
+                        current.setRestaurantThisWeekRank(i+1);
                     }
                 }
             }
@@ -325,6 +324,10 @@ public class Server {
 
         ArrayList<Account> thisWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
         calAndSetRestaurantRank(thisWeekRankedRestaurantAccounts, "thisWeekRate");
+
+        for (Account restaurantAc : (RestaurantAccounts.values())) {
+            System.out.println( restaurantAc.getName() + ":" + restaurantAc.getRestaurantThisWeekRank() + "     " + restaurantAc.getRestaurantLastWeekRank());
+        }
 
     }
 
