@@ -226,6 +226,38 @@ public class RestaurantTest {
         assertEquals(6, restaurant.getRestaurantAllTables().size());
     }
 
+    @Test
+    public void testgetRestaurantLogRate(){
+        float temp=0.0f;
+        assertEquals(temp,restaurant.getRestaurantLogRate(),0.01);;
+    }
+
+    @Test
+    public void testgetRestaurantAllCommentsList(){
+        ArrayList<Comment> temp=new  ArrayList<Comment>();
+        Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
+        Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
+        temp.add(cm1);
+        temp.add(cm2);
+        assertEquals(temp.size(),restaurant.getRestaurantAllCommentsList().size());
+        assertEquals(temp.get(0).getCommentCustomerName(),restaurant.getRestaurantAllCommentsList().get(0).getCommentCustomerName());
+    }
+
+    @Test
+    public void testsetRestaurantSessionDuration(){
+        Duration temp=Duration.ofMinutes(30);
+        restaurant.setRestaurantSessionDuration(temp);
+        assertEquals(30,restaurant.getRestaurantSessionDuration());
+        temp=Duration.ofMinutes(0);
+        restaurant.setRestaurantSessionDuration(temp);
+        assertNotEquals(0,restaurant.getRestaurantSessionDuration());
+        temp=Duration.ofMinutes(-1);
+        restaurant.setRestaurantSessionDuration(temp);
+        assertNotEquals(-1,restaurant.getRestaurantSessionDuration());
+    }
+    @Test
+    public void testsetRestaurantAllTables(){}
+
 //    @Test
 //    public void test_edit_deafult() {
 //        String[] input = {"10", "X"};
@@ -287,16 +319,14 @@ public class RestaurantTest {
            setInput(input);
            restaurant.updateRestaurantTableInfo(scanner,1);
            assertEquals(8,restaurant.getRestaurantAllTables().get(0).getSeatNum());
-           String[] input2 = {"-1", "X"};
+           String[] input2 = {"-1","10", "X"};
            setInput(input2);
            restaurant.updateRestaurantTableInfo(scanner,1);
-           assertEquals(0,restaurant.getRestaurantAllTables().get(0).getSeatNum());
-           String[] input3 = {"Hi", "X"};
+           assertEquals(10,restaurant.getRestaurantAllTables().get(0).getSeatNum());
+           String[] input3 = {"Hi","10", "X"};
            setInput(input3);
            restaurant.updateRestaurantTableInfo(scanner,1);
-           assertEquals(0,restaurant.getRestaurantAllTables().get(0).getSeatNum());
-           
-
+           assertEquals(10,restaurant.getRestaurantAllTables().get(0).getSeatNum());
     }
 
 //    @Test
@@ -334,12 +364,17 @@ public class RestaurantTest {
     }
     
     @Test
-    public void testgetRestaurantAllComments() {
-        
-        StringBuilder res=new StringBuilder("                | Table ID: 1             ");
-        res.append("               | Table ID: 1             | Table ID: 2             | Table ID: 3             | Table ID: 1             | Table ID: 2             \n| Seat: 0                 | Seat: 0                 | Seat: 0                 | Seat: 2                 | Seat: 4                                  ");
-        assertEquals(res,restaurant.getRestaurantAllTableInfo());
-   
+    public void testGetRestaurantAllTableInfo() {
+        // Expected output string
+        StringBuilder expected = new StringBuilder();
+        expected.append("                | Table ID: 1             | Table ID: 2             | Table ID: 3             \n");
+        expected.append("                | Seat: 0                 | Seat: 0                 | Seat: 0                 \n");
+
+        // Get actual output from the method
+        StringBuilder actual = restaurant.getRestaurantAllTableInfo();
+
+        // Assert that the expected output matches the actual output
+        assertEquals(expected.toString(), actual.toString());
     }
     
     
@@ -432,10 +467,10 @@ public class RestaurantTest {
     @Test
     public void testGetAllTableInfo_NoTables() {
         // Given: No tables in the restaurant
-        restaurant.setAllTables(new ArrayList<>());
+        restaurant.setRestaurantAllTables(new ArrayList<>());
 
         // When: Calling getAllTableInfo
-        StringBuilder result = restaurant.getAllTableInfo();
+        StringBuilder result = restaurant.getRestaurantAllTableInfo();
 
         // Then: Should return empty table info
         assertEquals( "                \n                \n", result.toString());
@@ -452,12 +487,12 @@ public class RestaurantTest {
         table2.setSeatNum(2);
 //        table2.setStatus(false); // Not Available
 
-        restaurant.setAllTables(new ArrayList<>());
-        restaurant.getAllTables().add(table1);
-        restaurant.getAllTables().add(table2);
+        restaurant.setRestaurantAllTables(new ArrayList<>());
+        restaurant.getRestaurantAllTables().add(table1);
+        restaurant.getRestaurantAllTables().add(table2);
 
         // When: Calling getAllTableInfo
-        StringBuilder result = restaurant.getAllTableInfo();
+        StringBuilder result = restaurant.getRestaurantAllTableInfo();
 
         // Then: Should return correct table information
       
@@ -598,7 +633,7 @@ public class RestaurantTest {
     @Test
     public void test_getTimeslots_ZeroDuration() {
     	
-        restaurant.setSessionDuration(Duration.ZERO);
+        restaurant.setRestaurantSessionDuration(Duration.ZERO);
         String expected = "10:00 - 11:00 \n" +
                 "11:00 - 12:00 \n" +
                 "12:00 - 13:00 \n" +
@@ -609,13 +644,13 @@ public class RestaurantTest {
                 "17:00 - 18:00 \n" +
                 "18:00 - 19:00 \n" +
                 "19:00 - 20:00 \n";; // No valid time slots with zero session duration
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
     
 
     @Test
     public void test_getTimeslots_NegativeDuration() {
-        restaurant.setSessionDuration(Duration.ofMinutes(-30)); // Set duration to zero
+        restaurant.setRestaurantSessionDuration(Duration.ofMinutes(-30)); // Set duration to zero
         String expected = "10:00 - 11:00 \n" +
                 "11:00 - 12:00 \n" +
                 "12:00 - 13:00 \n" +
@@ -626,77 +661,77 @@ public class RestaurantTest {
                 "17:00 - 18:00 \n" +
                 "18:00 - 19:00 \n" +
                 "19:00 - 20:00 \n";; // No valid time slots with zero session duration
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_OpeningEqualsClosing() {
-        restaurant.setOpenTime(LocalTime.parse("10:00"));
-        restaurant.setCloseTime(LocalTime.parse("10:00")); // Same opening and closing time
+        restaurant.setRestaurantOpenTime(LocalTime.parse("10:00"));
+        restaurant.setRestaurantCloseTime(LocalTime.parse("10:00")); // Same opening and closing time
         String expected = ""; // No time slots because opening and closing times are the same
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getAccountTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_SingleSession() {
-        restaurant.setCloseTime(LocalTime.parse("11:00")); // Adjust closing time for a single session
+        restaurant.setRestaurantCloseTime(LocalTime.parse("11:00")); // Adjust closing time for a single session
         String expected = "10:00 - 11:00 \n"; // Only one valid time slot
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getAccountTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_MultipleSessions() {
-        restaurant.setOpenTime(LocalTime.parse("09:00")); // Change opening time
-        restaurant.setCloseTime(LocalTime.parse("12:00")); // Change closing time
-        restaurant.setSessionDuration(Duration.ofMinutes(30)); // Change session duration
+        restaurant.setRestaurantOpenTime(LocalTime.parse("09:00")); // Change opening time
+        restaurant.setRestaurantCloseTime(LocalTime.parse("12:00")); // Change closing time
+        restaurant.setRestaurantSessionDuration(Duration.ofMinutes(30)); // Change session duration
         String expected = "09:00 - 09:30 \n" +
                           "09:30 - 10:00 \n" +
                           "10:00 - 10:30 \n" +
                           "10:30 - 11:00 \n" +
                           "11:00 - 11:30 \n" +
                           "11:30 - 12:00 \n"; // Multiple 30-minute slots
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_EndsExactlyAtClosing() {
-        restaurant.setSessionDuration(Duration.ofMinutes(120)); // One slot that ends at closing
+        restaurant.getRestaurantSessionDuration(Duration.ofMinutes(120)); // One slot that ends at closing
         String expected = "10:00 - 12:00 \n" +
                 "12:00 - 14:00 \n" +
                 "14:00 - 16:00 \n" +
                 "16:00 - 18:00 \n" +
                 "18:00 - 20:00 \n" ; // One slot that ends exactly at closing time
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_NoValidSlots() {
-        restaurant.setSessionDuration(Duration.ofMinutes(90)); // Too long for the available time
+        restaurant.setRestaurantSessionDuration(Duration.ofMinutes(90)); // Too long for the available time
         String expected = "10:00 - 11:30 \n" +
                 "11:30 - 13:00 \n" +
                 "13:00 - 14:30 \n" +
                 "14:30 - 16:00 \n" +
                 "16:00 - 17:30 \n" +
                 "17:30 - 19:00 \n";// No valid slots because a single session exceeds closing time
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getAccountTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_SessionExceedsTime() {
-        restaurant.setOpenTime(LocalTime.parse("09:00")); // Opening time
-        restaurant.setCloseTime(LocalTime.parse("09:30")); // Closing time
-        restaurant.setSessionDuration(Duration.ofMinutes(60)); // Session too long
+        restaurant.setRestaurantOpenTime(LocalTime.parse("09:00")); // Opening time
+        restaurant.setRestaurantCloseTime(LocalTime.parse("09:30")); // Closing time
+        restaurant.setRestaurantSessionDuration(Duration.ofMinutes(60)); // Session too long
         String expected = ""; // No valid slots because session exceeds available time
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
 //
     @Test
     public void test_getTimeslots_SessionStartsAtCloseTime() {
-        restaurant.setOpenTime(LocalTime.parse("10:00")); // Opening time
-        restaurant.setCloseTime(LocalTime.parse("11:00")); // Closing time
-        restaurant.setSessionDuration(Duration.ofMinutes(60)); // One session that starts at opening
+        restaurant.setRestaurantOpenTime(LocalTime.parse("10:00")); // Opening time
+        restaurant.setRestaurantCloseTime(LocalTime.parse("11:00")); // Closing time
+        restaurant.setRestaurantSessionDuration(Duration.ofMinutes(60)); // One session that starts at opening
         String expected = "10:00 - 11:00 \n"; // Only one valid time slot
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
     @Test
     public void test_getTimeslots_StandardTimes() {
@@ -710,15 +745,15 @@ public class RestaurantTest {
                           "17:00 - 18:00 \n" +
                           "18:00 - 19:00 \n" +
                           "19:00 - 20:00 \n";
-        assertEquals(expected, restaurant.getTimeslots());
+        assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
     
     @Test
     public void testTableValidation_TableExists() {
         // Given: Adding a table with ID 1
         Table table = new Table(1);
-        restaurant.setAllTables(new ArrayList<>());
-        restaurant.getAllTables().add(table);
+        restaurant.setRestaurantAllTables(new ArrayList<>());
+        restaurant.getAccountAllTables().add(table);
 
         // When: Validating table ID 1
         boolean result = restaurant.tableValidationInRestaurant(1);
@@ -731,8 +766,8 @@ public class RestaurantTest {
     public void testTableValidation_TableDoesNotExist() {
         // Given: Adding a table with ID 1
         Table table = new Table(1);
-        restaurant.setAllTables(new ArrayList<>());
-        restaurant.getAllTables().add(table);
+        restaurant.setRestaurantAllTables(new ArrayList<>());
+        restaurant.getAccountAllTables().add(table);
 
         // When: Validating a non-existent table ID 2
         boolean result = restaurant.tableValidationInRestaurant(2);
@@ -744,7 +779,7 @@ public class RestaurantTest {
     @Test
     public void testTableValidation_NoTables() {
         // Given: No tables in the restaurant
-        restaurant.setAllTables(new ArrayList<>());
+        restaurant.setRestaurantAllTables(new ArrayList<>());
 
         // When: Validating any table ID
         boolean result = restaurant.tableValidationInRestaurant(1);
@@ -827,9 +862,9 @@ public class RestaurantTest {
         // Test when there are multiple comments
         Comment comment1 = new Comment("Alice", "Loved it!", 4,LocalDate.now());
         Comment comment2 = new Comment("Bob", "Not bad.", 3,LocalDate.now());
-        restaurant.getAllCommentsList().add(comment1);
-        restaurant.getAllCommentsList().add(comment2);
-        String result = restaurant.getAllComments();
+        restaurant.getRestaurantAllCommentsList().add(comment1);
+        restaurant.getRestaurantAllCommentsList().add(comment2);
+        String result = restaurant.getRestaurantAllComments();
         String expected = "User1: Great 3.0\nUser2: Good 4.0\nAlice: Loved it! 4.0\nBob: Not bad. 3.0\n";
         assertEquals(expected, result);
     }
@@ -838,8 +873,8 @@ public class RestaurantTest {
     public void testGetAllComments_CommentWithEmptyContent() {
         // Test when there is a comment with empty content
         Comment comment = new Comment("Charlie", "", 2,LocalDate.now());
-        restaurant.getAllCommentsList().add(comment);
-        String result = restaurant.getAllComments();
+        restaurant.getRestaurantAllCommentsList().add(comment);
+        String result = restaurant.getRestaurantAllComments();
         String expected = "User1: Great 3.0\nUser2: Good 4.0\nCharlie:  2.0\n"; // Expecting the string to handle empty content
         assertEquals(expected, result);
     }
@@ -848,9 +883,9 @@ public class RestaurantTest {
     public void testGetAllComments_CommentWithZeroRate() {
         // Test when there is a comment with a rate of zero
         Comment comment = new Comment("Diana", "Okay.", 0,LocalDate.now());
-        restaurant.getAllCommentsList().add(comment);
+        restaurant.getRestaurantAllCommentsList().add(comment);
 
-        String result = restaurant.getAllComments();
+        String result = restaurant.getRestaurantAllComments();
         String expected = "User1: Great 3.0\nUser2: Good 4.0\nDiana: Okay. 0.0\n"; // Expecting the string to handle zero rating
         assertEquals(expected, result);
     }
@@ -905,7 +940,7 @@ public class RestaurantTest {
             "19:00 - 20:00 \n"
             + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\nChris: Awful 1.0\n";
     	Comment comment = new Comment("Chris", "Awful", 1,LocalDate.now());
-        restaurant.getAllCommentsList().add(comment);
+        restaurant.getRestaurantAllCommentsList().add(comment);
     	assertEquals(res,restaurant.getProfileDetail());
     }
     @Test
@@ -922,7 +957,7 @@ public class RestaurantTest {
         LocalDate differentDate = LocalDate.of(2023, 11, 26);
     	LocalDate bookingDate=LocalDate.now();
         Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
-        Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+        Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant.getAccountName,restaurant.getres,customer,customer.getAccountContact(),2);
         restaurant.addBooking(booking); // Assuming this method exists
         int totalBookings = restaurant.getBookingRecord(bookingDate);
         assertEquals( 0, totalBookings);
