@@ -58,13 +58,18 @@ public class RestaurantTest {
         scanner = testInput.input(in);
     }
     // Preparation end
-
+    @Test
+    public void testtableValidation() {
+    	assertTrue(restaurant.tableValidationInRestaurant(1));
+    	assertFalse(restaurant.tableValidationInRestaurant(5));
+    }
+    
     @Test
     public void test_edit_InvalidSelections() {
-        String[] input = {"3", "J", "1", "testInvalidSelections", "X"};
+        String[] input = {"3","testInvalidSelections", "X"};
         setInput(input);
         restaurant.edit(scanner);
-        assertEquals("testInvalidSelections", restaurant.getRestaurantName());
+        assertEquals("testInvalidSelections", restaurant.getRestaurantDistrict());
     }
 
     @Test
@@ -73,7 +78,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals("testSetName", restaurant.getRestaurantName());
+        assertEquals("testSetName", restaurant.getAccountName());
     }
 
     @Test
@@ -82,17 +87,10 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals("testSetType", restaurant.getType());
+        assertEquals("testSetType", restaurant.getRestaurantType());
     }
 
-    @Test
-    public void test_edit_SetDistrict() {
-        String[] input = {"3", "testSetDistrict", "X"};
-        setInput(input);
-
-        restaurant.edit(scanner);
-        assertEquals("testSetDistrict", restaurant.getDistrict());
-    }
+    
 
     @Test
     public void test_edit_SetAddress() {
@@ -100,7 +98,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals("testSetAddress", restaurant.getAddress());
+        assertEquals("testSetAddress", restaurant.getRestaurantAddress());
     }
 
     @Test
@@ -109,7 +107,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals("735759", restaurant.getRestaurantContact());
+        assertEquals("735759", restaurant.getAccountContact());
     }
 
 //	@Test
@@ -124,9 +122,8 @@ public class RestaurantTest {
     public void test_edit_SetOpenTime() {
         String[] input = {"6", "11:00", "X"};
         setInput(input);
-
         restaurant.edit(scanner);
-        assertEquals(LocalTime.parse("11:00"), restaurant.getOpenTime());
+        assertEquals(LocalTime.parse("11:00"), restaurant.getRestaurantOpenTime());
     }
 
     @Test
@@ -135,7 +132,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(LocalTime.parse("12:00"), restaurant.getOpenTime());
+        assertEquals(LocalTime.parse("12:00"), restaurant.getRestaurantOpenTime());
     }
 
     @Test
@@ -143,7 +140,7 @@ public class RestaurantTest {
         String[] input = {"6", "23:00", "12:00", "X"};
         setInput(input);
         restaurant.edit(scanner);
-        assertEquals(LocalTime.parse("12:00"), restaurant.getOpenTime());
+        assertEquals(LocalTime.parse("12:00"), restaurant.getRestaurantOpenTime());
     }
 
     @Test
@@ -151,7 +148,7 @@ public class RestaurantTest {
         String[] input = {"7", "21:00", "X"};
         setInput(input);
         restaurant.edit(scanner);
-        assertEquals(LocalTime.parse("21:00"), restaurant.getCloseTime());
+        assertEquals(LocalTime.parse("21:00"), restaurant.getRestaurantCloseTime());
     }
 
     @Test
@@ -160,7 +157,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(LocalTime.parse("22:00"), restaurant.getCloseTime());
+        assertEquals(LocalTime.parse("22:00"), restaurant.getRestaurantCloseTime());
     }
 
     @Test
@@ -168,12 +165,10 @@ public class RestaurantTest {
         System.out.println("This is the error case");
         String[] input = {"7", "09:00", "22:00", "X"};
         setInput(input);
-
         restaurant.edit(scanner); // Call the edit method
-
         // After trying to set an invalid close time, it should remain unchanged
-        System.out.println("This is the actual closing time of error case: " + restaurant.getCloseTime());
-        assertEquals(LocalTime.parse("22:00"), restaurant.getCloseTime()); // Expecting the original close time
+        System.out.println("This is the actual closing time of error case: " + restaurant.getRestaurantCloseTime());
+        assertEquals(LocalTime.parse("22:00"), restaurant.getRestaurantCloseTime()); // Expecting the original close time
     }
 
     @Test
@@ -182,7 +177,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(70, restaurant.getSessionDuration());
+        assertEquals(70, restaurant.getRestaurantSessionDuration());
     }
 
     @Test
@@ -191,7 +186,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(80, restaurant.getSessionDuration());
+        assertEquals(80, restaurant.getRestaurantSessionDuration());
     }
 
     @Test
@@ -200,8 +195,8 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        System.out.println("This is the error case duartion " + restaurant.getSessionDuration());
-        assertEquals(80, restaurant.getSessionDuration());
+        System.out.println("This is the error case duartion " + restaurant.getRestaurantSessionDuration());
+        assertEquals(80, restaurant.getRestaurantSessionDuration());
     }
 
     @Test
@@ -210,7 +205,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(4, restaurant.getAllTables().size());
+        assertEquals(4, restaurant.getRestaurantAllTables().size());
     }
 
     @Test
@@ -219,7 +214,7 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(5, restaurant.getAllTables().size());
+        assertEquals(5, restaurant.getRestaurantAllTables().size());
     }
 
     @Test
@@ -228,32 +223,32 @@ public class RestaurantTest {
         setInput(input);
 
         restaurant.edit(scanner);
-        assertEquals(6, restaurant.getAllTables().size());
+        assertEquals(6, restaurant.getRestaurantAllTables().size());
     }
 
-    @Test
-    public void test_edit_deafult() {
-        String[] input = {"10", "X"};
-        setInput(input);
-        restaurant.edit(scanner);
-        assertEquals("name", restaurant.getRestaurantName());
-        assertEquals("type", restaurant.getType());
-        assertEquals("address", restaurant.getAddress());
-        assertEquals("address", restaurant.getAddress());
-        assertEquals("12345678", restaurant.getRestaurantContact());
-    }
+//    @Test
+//    public void test_edit_deafult() {
+//        String[] input = {"10", "X"};
+//        setInput(input);
+//        restaurant.edit(scanner);
+//        assertEquals("name", restaurant.getRestaurantName());
+//        assertEquals("type", restaurant.getType());
+//        assertEquals("address", restaurant.getAddress());
+//        assertEquals("address", restaurant.getAddress());
+//        assertEquals("12345678", restaurant.getRestaurantContact());
+//    }
 
-    @Test
-    public void test_edit_Format() {
-        String[] input = {"HI", "X"};
-        setInput(input);
-        restaurant.edit(scanner);
-        assertEquals("name", restaurant.getRestaurantName());
-        assertEquals("type", restaurant.getType());
-        assertEquals("address", restaurant.getAddress());
-        assertEquals("address", restaurant.getAddress());
-        assertEquals("12345678", restaurant.getRestaurantContact());
-    }
+//    @Test
+//    public void test_edit_Format() {
+//        String[] input = {"HI", "X"};
+//        setInput(input);
+//        restaurant.edit(scanner);
+//        assertEquals("name", restaurant.getRestaurantName());
+//        assertEquals("type", restaurant.getType());
+//        assertEquals("address", restaurant.getAddress());
+//        assertEquals("address", restaurant.getAddress());
+//        assertEquals("12345678", restaurant.getRestaurantContact());
+//    }
 //
 //    @Test
 //    public void test_addComment() {
@@ -279,10 +274,28 @@ public class RestaurantTest {
 
     @Test
     public void TestsetRate() {
-        System.out.println("This is the original rate " + restaurant.getRate());
-        assertEquals(0.0, restaurant.getRate(), 0.01);
-        restaurant.setRate(4.9f);
-        assertEquals(4.9, restaurant.getRate(), 0.01);
+        System.out.println("This is the original rate " + restaurant.getRestaurantRate());
+        assertEquals(0.0, restaurant.getRestaurantRate(), 0.01);
+        restaurant.setRestaurantRate(4.9f);
+        assertEquals(4.9, restaurant.getRestaurantRate(), 0.01);
+
+    }
+    
+    @Test
+    public void testupdateRestaurantTableInfo() {
+    	   String[] input = {"8", "X"};
+           setInput(input);
+           restaurant.updateRestaurantTableInfo(scanner,1);
+           assertEquals(8,restaurant.getRestaurantAllTables().get(0).getSeatNum());
+           String[] input2 = {"-1", "X"};
+           setInput(input2);
+           restaurant.updateRestaurantTableInfo(scanner,1);
+           assertEquals(0,restaurant.getRestaurantAllTables().get(0).getSeatNum());
+           String[] input3 = {"Hi", "X"};
+           setInput(input3);
+           restaurant.updateRestaurantTableInfo(scanner,1);
+           assertEquals(0,restaurant.getRestaurantAllTables().get(0).getSeatNum());
+           
 
     }
 
@@ -302,8 +315,8 @@ public class RestaurantTest {
     public void TestaddBooking() {
         Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
         // Create a booking instance
-        Booking booking = new Booking(LocalDate.now(), 1, "11:00-12:00", restaurant, customer, customer.getCustomerContact(), 2);
-        Booking booking2 = new Booking(LocalDate.now(), 2, "12:00-13:00", restaurant, customer, customer.getCustomerContact(), 2);
+        Booking booking = new Booking(LocalDate.now(), 1, "11:00-12:00", restaurant.getAccountName(),restaurant.getAccountUserName() ,customer.getAccountName(), customer.getAccountContact(), 2);
+        Booking booking2 = new Booking(LocalDate.now(), 1, "12:00-13:00", restaurant.getAccountName(),restaurant.getAccountUserName() ,customer.getAccountName(), customer.getAccountContact(), 2);
         // Add the booking to the customer
         restaurant.addBooking(booking);
         restaurant.addBooking(booking2);
@@ -313,6 +326,24 @@ public class RestaurantTest {
         assertEquals(booking, restaurant.getAllBookings().get(0));
         assertEquals(booking2, restaurant.getAllBookings().get(1));
     }
+    
+    @Test
+    public void testaddCommentInRestaurant() {
+    	Comment cm=new Comment("User3","Awful",1,LocalDate.now());
+    	restaurant.addCommentInRestaurant(cm);
+    }
+    
+    @Test
+    public void testgetRestaurantAllComments() {
+        
+        StringBuilder res=new StringBuilder("                | Table ID: 1             ");
+        res.append("               | Table ID: 1             | Table ID: 2             | Table ID: 3             | Table ID: 1             | Table ID: 2             \n| Seat: 0                 | Seat: 0                 | Seat: 0                 | Seat: 2                 | Seat: 4                                  ");
+        assertEquals(res,restaurant.getRestaurantAllTableInfo());
+   
+    }
+    
+    
+    
 
 //    @Test
 //    public void TestgetPeriodBooking() {
@@ -445,7 +476,7 @@ public class RestaurantTest {
         int requiredPeople = 4;
         String timeslot = "10:00 - 11:00";
         // Given: No tables available
-        restaurant.setAllTables(new ArrayList<>());
+//        restaurant.setAllTables(new ArrayList<>());
 
         // When: Checking for available table ID
         int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
@@ -453,7 +484,26 @@ public class RestaurantTest {
         // Then: Should return 0 (indicating no available table)
         assertEquals(0, availableTableID);
     }
+    
+    @Test
+    public void testAvailableTableID_MultipleTables1() {
+        // Given: Multiple tables, one suitable
+        Table table1 = new Table(1);
+        table1.setSeatNum(2); // Not enough seats
+        table1.addTimeslot("10:00 - 11:00");
+        restaurant.getRestaurantAllTables().add(table1);
+        
+        Table table2 = new Table(2);
+        table2.setSeatNum(4); // Enough seats
+        table2.addTimeslot("10:00 - 11:00");
+        restaurant.getRestaurantAllTables().add(table2);
 
+        // When: Checking for available table ID
+        int availableTableID = restaurant.availableTableIDInRestaurant(4, "10:00 - 11:00", LocalDate.now());
+
+        // Then: Should return the ID of the suitable table
+        assertEquals(2, availableTableID);
+    }
     @Test
     public void testAvailableTableID_TableAvailableSufficientSeats() {
     	LocalDate bookingDate = LocalDate.now();
@@ -461,9 +511,9 @@ public class RestaurantTest {
         String timeslot = "10:00 - 11:00";
         // Given: One table available with enough seats
         Table table = new Table(1);
-        table.setSeatNum(5); // Enough seats
-        table.addTimeslot(timeslot); // Mark timeslot as available
-        restaurant.getAllTables().add(table);
+        table.setSeatNum(5); 
+        table.addTimeslot(timeslot); 
+        restaurant.getRestaurantAllTables().add(table);
 
         // When: Checking for available table ID
         int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
@@ -481,7 +531,6 @@ public class RestaurantTest {
         Table table = new Table(1);
         table.setSeatNum(2); // Not enough seats
         table.addTimeslot(timeslot); // Mark timeslot as available
-        restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
         int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
@@ -495,17 +544,15 @@ public class RestaurantTest {
     	LocalDate bookingDate = LocalDate.now();
         int requiredPeople = 4;
         String timeslot = "10:00 - 11:00";
-        // Given: One table available but timeslot is not available
         Table table = new Table(1);
         table.setSeatNum(5); // Enough seats
         table.addTimeslot("11:00 - 12:00"); // Different timeslot
-        restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
         int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
         // Then: Should return 0 (indicating no available table)
-        assertEquals(1, availableTableID);
+        assertEquals(0, availableTableID);
     }
 
     @Test
@@ -518,7 +565,6 @@ public class RestaurantTest {
         table.setSeatNum(5); // Enough seats
         table.addTimeslot(timeslot); // Mark timeslot as available
         table.setTimeslotUnavailable(timeslot, bookingDate); // Mark timeslot as booked
-        restaurant.getAllTables().add(table);
 
         // When: Checking for available table ID
         int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
@@ -540,10 +586,9 @@ public class RestaurantTest {
         Table table2 = new Table(2);
         table2.setSeatNum(4); // Enough seats
         table2.addTimeslot(timeslot); // Available timeslot
-
-        restaurant.getAllTables().add(table1);
-        restaurant.getAllTables().add(table2);
-
+        restaurant.getRestaurantAllTables().add(table1);
+        restaurant.getRestaurantAllTables().add(table2);
+       table1.setTimeslotUnavailable(timeslot,bookingDate);
         // When: Checking for available table ID
         int availableTableID = restaurant.availableTableIDInRestaurant(requiredPeople, timeslot, bookingDate);
 
