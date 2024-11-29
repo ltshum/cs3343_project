@@ -221,9 +221,64 @@ public class RestaurantTest {
     public void test_edit_InvalidTableLogic() {
         String[] input = {"9", "-1", "6", "X"};
         setInput(input);
-
         restaurant.edit(scanner);
         assertEquals(6, restaurant.getRestaurantAllTables().size());
+    }
+    @Test
+    public void test_edit_Invalidformat() {
+        String[] input = {"hi", "X"};
+        setInput(input);
+        restaurant.edit(scanner);
+        String res="Rate: " + "0.0"
+            + "\nRestaurant Name: " + "name"
+            + "\nType: " + "type"
+            + "\nDistrict: " + "district"
+            + "\nAddress: " + "address"
+            + "\nPhone: " + "12345678"
+            + "\nOpen Time: " + "10:00"
+            + "\nClose Time: " + "20:00"
+            + "\nSession Duration: " +   "60mins"
+            + "\nTable Amount: 3" + 
+            "\n\nTimeslot: \n" + "10:00 - 11:00 \n" +
+            "11:00 - 12:00 \n" +
+            "12:00 - 13:00 \n" +
+            "13:00 - 14:00 \n" +
+            "14:00 - 15:00 \n" +
+            "15:00 - 16:00 \n" +
+            "16:00 - 17:00 \n" +
+            "17:00 - 18:00 \n" +
+            "18:00 - 19:00 \n" +
+            "19:00 - 20:00 \n"
+            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+        assertEquals(res, restaurant.getProfileDetail());
+    }
+    @Test
+    public void test_edit_Invalid() {
+        String[] input = {"10", "X"};
+        setInput(input);
+        restaurant.edit(scanner);
+        String res="Rate: " + "0.0"
+            + "\nRestaurant Name: " + "name"
+            + "\nType: " + "type"
+            + "\nDistrict: " + "district"
+            + "\nAddress: " + "address"
+            + "\nPhone: " + "12345678"
+            + "\nOpen Time: " + "10:00"
+            + "\nClose Time: " + "20:00"
+            + "\nSession Duration: " +   "60mins"
+            + "\nTable Amount: 3" + 
+            "\n\nTimeslot: \n" + "10:00 - 11:00 \n" +
+            "11:00 - 12:00 \n" +
+            "12:00 - 13:00 \n" +
+            "13:00 - 14:00 \n" +
+            "14:00 - 15:00 \n" +
+            "15:00 - 16:00 \n" +
+            "16:00 - 17:00 \n" +
+            "17:00 - 18:00 \n" +
+            "18:00 - 19:00 \n" +
+            "19:00 - 20:00 \n"
+            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+        assertEquals(res, restaurant.getProfileDetail());
     }
 
     @Test
@@ -695,12 +750,17 @@ public class RestaurantTest {
 //
     @Test
     public void test_getTimeslots_EndsExactlyAtClosing() {
-        restaurant.getRestaurantSessionDuration(Duration.ofMinutes(120)); // One slot that ends at closing
-        String expected = "10:00 - 12:00 \n" +
-                "12:00 - 14:00 \n" +
-                "14:00 - 16:00 \n" +
-                "16:00 - 18:00 \n" +
-                "18:00 - 20:00 \n" ; // One slot that ends exactly at closing time
+        restaurant.getRestaurantSessionDuration(); // One slot that ends at closing
+        String expected = "10:00 - 11:00 \n"+
+       "11:00 - 12:00 \n"+
+         "12:00 - 13:00 \n"+
+         "13:00 - 14:00 \n"+
+         "14:00 - 15:00 \n"+
+        "15:00 - 16:00 \n"+
+        "16:00 - 17:00 \n"+
+        "17:00 - 18:00 \n"+
+         "18:00 - 19:00 \n"+
+        "19:00 - 20:00 \n";// One slot that ends exactly at closing time
         assertEquals(expected, restaurant.getRestaurantTimeslots());
     }
 //
@@ -791,9 +851,9 @@ public class RestaurantTest {
     public void TestValidupdateTableInfo() {
     	String[] input = { "10"};
 		setInput(input);
-		restaurant.updateTableInfo(scanner,1);
-		assertEquals(10, restaurant.getAllTables().get(0).getSeatNum());
-		assertEquals(0, restaurant.getAllTables().get(1).getSeatNum());
+		restaurant.updateRestaurantTableInfo(scanner,1);
+		assertEquals(10, restaurant.getAccountAllTables().get(0).getSeatNum());
+		assertEquals(0, restaurant.getAccountAllTables().get(1).getSeatNum());
 
     }
     
@@ -801,10 +861,10 @@ public class RestaurantTest {
     public void TestInvalidupdateTableInfo1() {
     	String[] input = { "-1","23","X"};
 		setInput(input);
-		System.out.println("THis is the part for the updating setaNum and this the old setNUm "+restaurant.getAllTables().get(0).getSeatNum());
-		restaurant.updateTableInfo(scanner,1);
-		assertEquals(23, restaurant.getAllTables().get(0).getSeatNum());
-		assertEquals(0, restaurant.getAllTables().get(1).getSeatNum());
+		System.out.println("THis is the part for the updating setaNum and this the old setNUm "+restaurant.getRestaurantAllTables().get(0).getSeatNum());
+		restaurant.updateRestaurantTableInfo(scanner,1);
+		assertEquals(23, restaurant.getAccountAllTables().get(0).getSeatNum());
+		assertEquals(0, restaurant.getRestaurantAllTables().get(1).getSeatNum());
 
     }
     
@@ -812,9 +872,9 @@ public class RestaurantTest {
     public void TestInvalidupdateTableInfo2() {
     	String[] input = { "HI","10"};
 		setInput(input);
-		restaurant.updateTableInfo(scanner,1);
-		assertEquals(10, restaurant.getAllTables().get(0).getSeatNum());
-		assertEquals(0, restaurant.getAllTables().get(1).getSeatNum());
+		restaurant.updateRestaurantTableInfo(scanner,1);
+		assertEquals(10, restaurant.getRestaurantAllTables().get(0).getSeatNum());
+		assertEquals(0, restaurant.getRestaurantAllTables().get(1).getSeatNum());
 
     }
     @Test
@@ -825,24 +885,24 @@ public class RestaurantTest {
 	    Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
 	    Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
 	    Comment cm3=new Comment(customerName, content, rate, LocalDate.now().plusDays(2));	
-	    restaurant.getAllCommentsList().add(cm3);
+	    restaurant.getRestaurantAllCommentsList().add(cm3);
 	    ArrayList<Comment> cmList=new ArrayList<Comment>();
 	    cmList.add(cm1);
 	    cmList.add(cm2);
 	    cmList.add(cm3);
-	    assertEquals(3, restaurant.getAllCommentsList().size());
-	    for(int i=0;i<restaurant.getAllCommentsList().size();i++) {
-		    assertEquals(cmList.get(i).getCommentCustomerName(),restaurant.getAllCommentsList().get(i).getCommentCustomerName());
-		    assertEquals(cmList.get(i).getCommentContent(),restaurant.getAllCommentsList().get(i).getCommentContent());
-		    assertEquals(cmList.get(i).getCommentRate(),restaurant.getAllCommentsList().get(i).getCommentRate(),0.01);
-		    assertEquals(cmList.get(i).getCommentDate(),restaurant.getAllCommentsList().get(i).getCommentDate());
+	    assertEquals(3, restaurant.getRestaurantAllCommentsList().size());
+	    for(int i=0;i<restaurant.getRestaurantAllCommentsList().size();i++) {
+		    assertEquals(cmList.get(i).getCommentCustomerName(),restaurant.getRestaurantAllCommentsList().get(i).getCommentCustomerName());
+		    assertEquals(cmList.get(i).getCommentContent(),restaurant.getRestaurantAllCommentsList().get(i).getCommentContent());
+		    assertEquals(cmList.get(i).getCommentRate(),restaurant.getRestaurantAllCommentsList().get(i).getCommentRate(),0.01);
+		    assertEquals(cmList.get(i).getCommentDate(),restaurant.getRestaurantAllCommentsList().get(i).getCommentDate());
 
 		    }
     }
     @Test
     public void testGetAllComments_Empty() {
         // Test when there are no comments
-        String result = restaurant.getAllComments();
+        String result = restaurant.getRestaurantAllComments();
         assertEquals("User1: Great 3.0\nUser2: Good 4.0\n", result);
     }
 
@@ -850,9 +910,9 @@ public class RestaurantTest {
     public void testGetAllComments_SingleComment() {
         // Test when there is a single comment
         Comment comment = new Comment("John", "Great food!", 5,LocalDate.now());
-        restaurant.getAllCommentsList().add(comment);
+        restaurant.getRestaurantAllCommentsList().add(comment);
 
-        String result = restaurant.getAllComments();
+        String result = restaurant.getRestaurantAllComments();
         String expected = "User1: Great 3.0\nUser2: Good 4.0\nJohn: Great food! 5.0\n";
         assertEquals(expected, result);
     }
@@ -957,7 +1017,7 @@ public class RestaurantTest {
         LocalDate differentDate = LocalDate.of(2023, 11, 26);
     	LocalDate bookingDate=LocalDate.now();
         Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
-        Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant.getAccountName,restaurant.getres,customer,customer.getAccountContact(),2);
+        Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer.getAccountUserName(),customer.getAccountContact(),2);
         restaurant.addBooking(booking); // Assuming this method exists
         int totalBookings = restaurant.getBookingRecord(bookingDate);
         assertEquals( 0, totalBookings);
@@ -968,7 +1028,7 @@ public class RestaurantTest {
         // Test when there is a single booking for the given date
     	LocalDate bookingDate=LocalDate.now();
         Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
-        Booking booking = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+        Booking booking = new Booking(bookingDate,1,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer.getAccountUserName(),customer.getAccountContact(),2);
         restaurant.addBooking(booking);
 
         int totalBookings = restaurant.getBookingRecord(bookingDate);
@@ -981,8 +1041,9 @@ public class RestaurantTest {
         Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
         Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
 
-        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer1,customer1.getCustomerContact(),2);
-        Booking booking2 = new Booking(bookingDate,1,"13:00-14:00",restaurant,customer2,customer2.getCustomerContact(),2);
+        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer1.getAccountUserName(),customer1.getAccountContact(),2);
+
+        Booking booking2 = new Booking(bookingDate,1,"13:00-14:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer2.getAccountUserName(),customer2.getAccountContact(),2);
         // Test when there are multiple bookings for the same time slot on the given date
       
         restaurant.addBooking(booking1);
@@ -998,8 +1059,7 @@ public class RestaurantTest {
     	LocalDate bookingDate=LocalDate.now();
 
     	Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
-
-        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer1,customer1.getCustomerContact(),2);
+        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer1.getAccountUserName(),customer1.getAccountContact(),2);
         booking1.takeAttendance();
         restaurant.addBooking(booking1);
 
@@ -1013,8 +1073,10 @@ public class RestaurantTest {
         Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
         Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
 
-        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant, customer1, customer1.getCustomerContact(), 2);
-        Booking booking2 = new Booking(bookingDate, 2, "13:00-14:00", restaurant, customer2, customer2.getCustomerContact(), 4); // Different time slot
+        
+        Booking booking1 = new Booking(bookingDate,1,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer1.getAccountUserName(),customer1.getAccountContact(),2);
+        
+        Booking booking2 = new Booking(bookingDate,2,"13:00-14:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer2.getAccountUserName(),customer2.getAccountContact(),4);
         restaurant.addBooking(booking1);
         restaurant.addBooking(booking2);
         
@@ -1027,7 +1089,8 @@ public class RestaurantTest {
         // Test when a booking has an empty time slot
         LocalDate bookingDate = LocalDate.now();
         Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
-        Booking booking = new Booking(bookingDate, 1, "", restaurant, customer, customer.getCustomerContact(), 2); // Empty time slot
+        Booking booking = new Booking(bookingDate,1,"",restaurant.getAccountUserName(),restaurant.getAccountName(),customer.getAccountUserName(),customer.getAccountContact(),4);
+
         restaurant.addBooking(booking);
         
         int totalBookings = restaurant.getBookingRecord(bookingDate);
@@ -1040,9 +1103,8 @@ public class RestaurantTest {
         LocalDate bookingDate = LocalDate.now();
         Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
         Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
-
-        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant, customer1, customer1.getCustomerContact(), 2);
-        Booking booking2 = new Booking(bookingDate, 1, "12:00-13:00", restaurant, customer2, customer2.getCustomerContact(), 4); // Same time slot
+        Booking booking1 = new Booking(bookingDate,2,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer1.getAccountUserName(),customer1.getAccountContact(),2);
+        Booking booking2 = new Booking(bookingDate,2,"12:00-13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer2.getAccountUserName(),customer2.getAccountContact(),4);
         restaurant.addBooking(booking1);
         restaurant.addBooking(booking2);
         
@@ -1051,6 +1113,261 @@ public class RestaurantTest {
         assertEquals(2, totalBookings);
         
         // Additional checks can be added if needed to validate printed output
+    }
+    @Test
+    public void testGetBookingRecord_BookingWithNullTimeSlot() {
+        // Test when a booking has a null time slot
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(bookingDate, 1, null, restaurant.getAccountUserName(), restaurant.getAccountName(), customer.getAccountUserName(), customer.getAccountContact(), 4);
+        
+        restaurant.addBooking(booking);
+        
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(1, totalBookings); // Should still count the booking
+    }
+
+    @Test
+    public void testGetBookingRecord_BookingWithFutureDate() {
+        // Test when a booking is made for a future date
+        LocalDate futureDate = LocalDate.now().plusDays(5);
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(futureDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), customer.getAccountUserName(), customer.getAccountContact(), 2);
+        restaurant.addBooking(booking);
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(0, totalBookings); // Should not count bookings for future dates
+    }
+    @Test
+    public void testGetPeriodBookings_NoBookings() {
+        // Test when there are no bookings in the restaurant
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        ArrayList<Booking> bookings = restaurant.getPeriodBookings(startDate, endDate);
+        
+        // Expecting an empty list
+        assertTrue(bookings.isEmpty());
+    }
+
+    @Test
+    public void testGetPeriodBookings_BookingsOutsideRange() {
+        // Test when bookings exist but are outside the specified date range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate bookingDate1 = startDate.minusDays(1); // Before range
+        LocalDate bookingDate2 = endDate.plusDays(1); // After range
+
+        Booking booking1 = new Booking(bookingDate1, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+        Booking booking2 = new Booking(bookingDate2, 2, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer2", "987654321", 4);
+
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+
+        ArrayList<Booking> bookings = restaurant.getPeriodBookings(startDate, endDate);
+        
+        // Expecting an empty list
+        assertTrue(bookings.isEmpty());
+    }
+
+    @Test
+    public void testGetPeriodBookings_SingleBookingInRange() {
+        // Test when there is a single booking within the specified date range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate bookingDate = startDate.plusDays(2); // Within range
+
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+        restaurant.addBooking(booking);
+
+        ArrayList<Booking> bookings = restaurant.getPeriodBookings(startDate, endDate);
+        
+        // Expecting one booking in the result
+        assertEquals(1, bookings.size());
+        assertEquals(booking, bookings.get(0));
+    }
+
+    @Test
+    public void testGetPeriodBookings_MultipleBookingsInRange() {
+        // Test when there are multiple bookings within the specified date range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate bookingDate1 = startDate.plusDays(2); // Within range
+        LocalDate bookingDate2 = startDate.plusDays(4); // Within range
+
+        Booking booking1 = new Booking(bookingDate1, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+        Booking booking2 = new Booking(bookingDate2, 2, "13:00-14:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer2", "987654321", 4);
+
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+
+        ArrayList<Booking> bookings = restaurant.getPeriodBookings(startDate, endDate);
+        
+        // Expecting two bookings in the result
+        assertEquals(2, bookings.size());
+        assertTrue(bookings.contains(booking1));
+        assertTrue(bookings.contains(booking2));
+    }
+
+    @Test
+    public void testGetPeriodBookings_BookingsOnStartAndEndDate() {
+        // Test when bookings are on the start and end date
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate bookingDateStart = startDate; // On start date
+        LocalDate bookingDateEnd = endDate; // On end date
+
+        Booking bookingStart = new Booking(bookingDateStart, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customerStart", "123456789", 2);
+        Booking bookingEnd = new Booking(bookingDateEnd, 2, "13:00-14:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customerEnd", "987654321", 4);
+
+        restaurant.addBooking(bookingStart);
+        restaurant.addBooking(bookingEnd);
+
+        ArrayList<Booking> bookings = restaurant.getPeriodBookings(startDate, endDate);
+        
+        // Expecting two bookings in the result
+        assertEquals(2, bookings.size());
+        assertTrue(bookings.contains(bookingStart));
+        assertTrue(bookings.contains(bookingEnd));
+    }
+
+    @Test
+    public void testGetPeriodBookings_BookingsWithMixedDates() {
+        // Test when there are mixed bookings, some in range and some out of range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate bookingDateInRange = startDate.plusDays(2); // Within range
+        LocalDate bookingDateOutOfRange = startDate.minusDays(1); // Out of range
+
+        Booking bookingInRange = new Booking(bookingDateInRange, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customerInRange", "123456789", 2);
+        Booking bookingOutOfRange = new Booking(bookingDateOutOfRange, 2, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customerOutOfRange", "987654321", 4);
+
+        restaurant.addBooking(bookingInRange);
+        restaurant.addBooking(bookingOutOfRange);
+
+        ArrayList<Booking> bookings = restaurant.getPeriodBookings(startDate, endDate);
+        
+        // Expecting one booking in the result
+        assertEquals(1, bookings.size());
+        assertTrue(bookings.contains(bookingInRange));
+    }
+
+
+
+    @Test
+    public void testGetPeriodComments_NoComments() {
+        // Test when there are no comments
+        LocalDate startDate = LocalDate.now().plusDays(2);
+        LocalDate endDate = startDate.plusDays(5);
+        ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
+        
+        // Expecting an empty list
+        assertTrue(comments.isEmpty());
+    }
+
+    @Test
+    public void testGetPeriodComments_CommentsOutsideRange() {
+        // Test when comments exist but are outside the specified date range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate commentDate1 = startDate.minusDays(1); // Before range
+        LocalDate commentDate2 = endDate.plusDays(1); // After range
+
+        Comment comment1 = new Comment("User1", "Great food!", 5, commentDate1);
+        Comment comment2 = new Comment("User2", "Not bad!", 3, commentDate2);
+
+        restaurant.addCommentInRestaurant(comment1);
+        restaurant.addCommentInRestaurant(comment2);
+
+        ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
+        
+        // Expecting an empty list
+        assertFalse(comments.isEmpty());
+    }
+
+    @Test
+    public void testGetPeriodComments_SingleCommentInRange() {
+        // Test when there is a single comment within the specified date range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate commentDate = startDate.plusDays(2); // Within range
+
+        Comment comment = new Comment("User1", "Great food!", 5, commentDate);
+        restaurant.addCommentInRestaurant(comment);
+
+        ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
+        
+        // Expecting one comment in the result
+        assertEquals(3, comments.size());
+        assertEquals(comment.getCommentContent(), comments.get(2).getCommentContent());
+        assertEquals(comment.getCommentCustomerName(), comments.get(2).getCommentCustomerName());
+        assertEquals(comment.getCommentDate(), comments.get(2).getCommentDate());
+        assertEquals(comment.getCommentRate(), comments.get(2).getCommentRate(),0.01);
+
+    }
+
+    @Test
+    public void testGetPeriodComments_MultipleCommentsInRange() {
+        // Test when there are multiple comments within the specified date range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate commentDate1 = startDate.plusDays(2); // Within range
+        LocalDate commentDate2 = startDate.plusDays(4); // Within range
+
+        Comment comment1 = new Comment("User1", "Great food!", 5, commentDate1);
+        Comment comment2 = new Comment("User2", "Not bad!", 3, commentDate2);
+
+        restaurant.addCommentInRestaurant(comment1);
+        restaurant.addCommentInRestaurant(comment2);
+
+        ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
+        
+        // Expecting two comments in the result
+        assertEquals(4, comments.size());
+        assertTrue(comments.contains(comment1));
+        assertTrue(comments.contains(comment2));
+    }
+
+    @Test
+    public void testGetPeriodComments_CommentsOnStartAndEndDate() {
+        // Test when comments are on the start and end date
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate commentDateStart = startDate; // On start date
+        LocalDate commentDateEnd = endDate; // On end date
+
+        Comment commentStart = new Comment("User1", "Great food!", 5, commentDateStart);
+        Comment commentEnd = new Comment("User2", "Not bad!", 3, commentDateEnd);
+
+        restaurant.addCommentInRestaurant(commentStart);
+        restaurant.addCommentInRestaurant(commentEnd);
+
+        ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
+        
+        // Expecting two comments in the result
+        assertEquals(4, comments.size());
+        assertTrue(comments.contains(commentStart));
+        assertTrue(comments.contains(commentEnd));
+    }
+
+    @Test
+    public void testGetPeriodComments_CommentsWithMixedDates() {
+        // Test when there are mixed comments, some in range and some out of range
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(5);
+        LocalDate commentDateInRange = startDate.plusDays(2); // Within range
+        LocalDate commentDateOutOfRange = startDate.minusDays(1); // Out of range
+
+        Comment commentInRange = new Comment("User1", "Great food!", 5, commentDateInRange);
+        Comment commentOutOfRange = new Comment("User2", "Not bad!", 3, commentDateOutOfRange);
+
+        restaurant.addCommentInRestaurant(commentInRange);
+        restaurant.addCommentInRestaurant(commentOutOfRange);
+
+        ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
+        
+        // Expecting one comment in the result
+        assertEquals(3, comments.size());
+        assertTrue(comments.contains(commentInRange));
     }
 }
 
