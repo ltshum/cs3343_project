@@ -277,7 +277,6 @@ public class Server {
         int left = leftStart;
         int right = rightStart;
         int index = leftStart;
-
         while (left <= leftEnd && right <= rightEnd) {
             if (comparator.compare(accounts.get(left), accounts.get(right)) >= 0) { // Sort in descending order
                 temp.set(index, accounts.get(left));
@@ -288,19 +287,16 @@ public class Server {
             }
             index++;
         }
-
         while (left <= leftEnd) {
             temp.set(index, accounts.get(left));
             left++;
             index++;
         }
-
         while (right <= rightEnd) {
             temp.set(index, accounts.get(right));
             right++;
             index++;
         }
-
         for (int i = leftStart; i <= rightEnd; i++) {
             accounts.set(i, temp.get(i));
         }

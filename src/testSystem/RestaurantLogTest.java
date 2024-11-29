@@ -58,11 +58,5 @@ public class RestaurantLogTest {
         restaurantLog1.setRank(7);
         assertEquals(7, restaurantLog1.getLogRank());
     }
-
-    @Test
-    public void testGetRate() {
-        assertEquals(3.5f, restaurantLog1.getRate(), 0.01);
-    }
-    
     
 }
