@@ -1683,6 +1683,152 @@ public void testGenerateWeeklyReport() {
         // Verify that attendance was not marked
         assertFalse(attendanceMarked);
     }
+    @Test
+    public void testTakeAttendanceInRestaurant_AlreadyMarkedAttendance() {
+        LocalDate date = LocalDate.now();
+        
+        // Add a booking
+        Booking booking = new Booking(date, 1, "12:00-13:00", 
+                                      restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 4);
+        restaurant.addBooking(booking);
+        
+        // First time marking attendance
+        boolean firstAttendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+        assertTrue(firstAttendanceMarked);
+        assertTrue(booking.hasArrived()); // Assuming this method checks if attendance is marked
+
+        // Try to mark attendance again
+        boolean secondAttendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+    }
+
+    @Test
+    public void testTakeAttendanceInRestaurant_CorrectTableID() {
+        LocalDate date = LocalDate.now();
+        
+        // Add two bookings for the same time
+        Booking booking1 = new Booking(date, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+        Booking booking2 = new Booking(date, 2, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer2", "987654321", 2);
+        
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+        
+        // Mark attendance for the first booking
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+        assertTrue(attendanceMarked);
+        assertTrue(booking1.hasArrived());
+        assertFalse(booking2.hasArrived()); // Ensure the second booking is unaffected
+    }
+
+    @Test
+    public void testTakeAttendanceInRestaurant_DifferentDate() {
+        LocalDate date = LocalDate.now();
+        LocalDate differentDate = LocalDate.now().plusDays(1);
+        
+        // Add a booking for a different date
+        Booking booking = new Booking(date, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 4);
+        restaurant.addBooking(booking);
+        
+        // Try marking attendance for the same time but on a different date
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(differentDate, "12:00-13:00", 1);
+        assertFalse(attendanceMarked); // Attendance should not be marked for a different date
+    }
+    @Test
+    public void testTakeAttendanceInRestaurant_DifferentTimeSlot() {
+        LocalDate date = LocalDate.now();
+        
+        // Add a booking
+        Booking booking = new Booking(date, 1, "12:00-13:00", 
+                                      restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 4);
+        restaurant.addBooking(booking);
+
+        // Try to mark attendance with a different time slot
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(date, "13:00-14:00", 1);
+        assertFalse(attendanceMarked); // Should not mark attendance for a different time slot
+    }
+
+    @Test
+    public void testTakeAttendanceInRestaurant_SameTimeDifferentCustomer() {
+        LocalDate date = LocalDate.now();
+        
+        // Add a booking for a different customer
+        Booking booking1 = new Booking(date, 1, "12:00-13:00", 
+                                       restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 4);
+        Booking booking2 = new Booking(date, 1, "12:00-13:00", 
+                                       restaurant.getAccountUserName(), restaurant.getAccountName(), "customer2", "987654321", 4);
+        
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+        
+        // Mark attendance for the first booking
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+        assertTrue(attendanceMarked);
+        assertTrue(booking1.hasArrived());
+        assertFalse(booking2.hasArrived()); // Ensure the second booking is unaffected
+    }
+
+    @Test
+    public void testTakeAttendanceInRestaurant_ValidBookingDifferentTableID() {
+        LocalDate date = LocalDate.now();
+        
+        // Add a booking with a different table ID
+        Booking booking = new Booking(date, 2, "12:00-13:00", 
+                                      restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 4);
+        restaurant.addBooking(booking);
+        
+        // Try to mark attendance for a different table ID
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+        assertFalse(attendanceMarked); // Should not mark attendance for a different table ID
+    }
+    @Test
+    public void testGetBookingRecord_SameTimeDifferentTableIDs() {
+        // Test when multiple bookings exist for the same time slot but different table IDs
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer1 = new Customer("testUser1", "password123", "Doe", "123459");
+        Customer customer2 = new Customer("testUser2", "password123", "John", "56789");
+
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", 
+                                       restaurant.getAccountUserName(), restaurant.getAccountName(), 
+                                       customer1.getAccountUserName(), customer1.getAccountContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 2, "12:00-13:00", 
+                                       restaurant.getAccountUserName(), restaurant.getAccountName(), 
+                                       customer2.getAccountUserName(), customer2.getAccountContact(), 4);
+        
+        restaurant.addBooking(booking1);
+        restaurant.addBooking(booking2);
+        
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(2, totalBookings); // Both bookings should be counted
+    }
+
+    @Test
+    public void testGetBookingRecord_SpecialCharacterInTimeslot() {
+        // Test when a booking has special characters in the timeslot
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(bookingDate, 1, "12:00@13:00", 
+                                      restaurant.getAccountUserName(), restaurant.getAccountName(), 
+                                      customer.getAccountUserName(), customer.getAccountContact(), 4);
+
+        restaurant.addBooking(booking);
+        
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(1, totalBookings); // Should count the booking with special characters
+    }
+
+    @Test
+    public void testGetBookingRecord_BookingWithZeroPeople() {
+        // Test when a booking is made with zero people
+        LocalDate bookingDate = LocalDate.now();
+        Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00", 
+                                      restaurant.getAccountUserName(), restaurant.getAccountName(), 
+                                      customer.getAccountUserName(), customer.getAccountContact(), 0);
+
+        restaurant.addBooking(booking);
+        
+        int totalBookings = restaurant.getBookingRecord(bookingDate);
+        assertEquals(1, totalBookings); // Should still count the booking
+    }
 }
 
 
