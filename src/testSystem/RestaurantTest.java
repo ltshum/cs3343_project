@@ -1237,7 +1237,6 @@ public class RestaurantTest {
         LocalDate endDate = startDate.plusDays(5);
         LocalDate bookingDateInRange = startDate.plusDays(2); // Within range
         LocalDate bookingDateOutOfRange = startDate.minusDays(1); // Out of range
-
         Booking bookingInRange = new Booking(bookingDateInRange, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customerInRange", "123456789", 2);
         Booking bookingOutOfRange = new Booking(bookingDateOutOfRange, 2, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customerOutOfRange", "987654321", 4);
 
@@ -1368,6 +1367,314 @@ public class RestaurantTest {
         // Expecting one comment in the result
         assertEquals(3, comments.size());
         assertTrue(comments.contains(commentInRange));
+    }
+
+    @Test
+    public void testgenerateLogWithoutRank(){
+
+        LocalDate thisWeekStartDate =LocalDate.now();
+         LocalDate thisWeekEndDate=thisWeekStartDate.plusDays(7); 
+         LocalDate lastWeekStartDate=thisWeekStartDate.minusDays(14);
+         LocalDate lastWeekEndDate=thisWeekStartDate.minusDays(7);
+         restaurant.generateLogWithoutRank(thisWeekStartDate,thisWeekEndDate,lastWeekStartDate,lastWeekEndDate);
+         Comment commentInRange = new Comment("User1", "Great food!", 5, thisWeekStartDate);
+         Comment commentOutOfRange = new Comment("User2", "Not bad!", 3, lastWeekEndDate.minusDays(1));
+         Comment comment3 = new Comment("User3", "No!",0, lastWeekStartDate.plusDays(1));
+         Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
+        Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
+        Comment cm3 = new Comment("User1", "Great", 3, LocalDate.now());
+        Comment cm4 = new Comment("User2", "Good", 4, LocalDate.now());
+        restaurant.addCommentInRestaurant(commentInRange);
+        restaurant.addCommentInRestaurant(commentOutOfRange);
+        restaurant.addCommentInRestaurant(comment3);
+        restaurant.addCommentInRestaurant(cm1);
+        restaurant.addCommentInRestaurant(cm2);
+        restaurant.addCommentInRestaurant(cm3);
+        restaurant.addCommentInRestaurant(cm4);
+        assertEquals(0.0f,restaurant.getRestaurantLastWeekRate(),0.01);
+        assertEquals(3.5f,restaurant.getThisWeekRate(),0.01);
+
+    }
+ 
+
+    @Test
+    public void testGenerateLogWithoutRank_NoBookings_NoComments() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(0.0f, restaurant.getLastWeekRate(), 0.01);
+        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_BookingsOnly_LastWeek() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add a booking for last week
+        restaurant.addBooking(new Booking(lastWeekStartDate.plusDays(1), 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(0.0f, restaurant.getLastWeekRate(), 0.01);
+        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_CommentsOnly_LastWeek() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add a comment for last week
+        restaurant.addCommentInRestaurant(new Comment("User1", "Great food!", 5, lastWeekStartDate.plusDays(1)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(5.0f, restaurant.getLastWeekRate(), 0.01);
+        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_MixedData_LastWeek() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add a booking and a comment for last week
+        restaurant.addBooking(new Booking(lastWeekStartDate.plusDays(1), 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+        restaurant.addCommentInRestaurant(new Comment("User1", "Great food!", 5, lastWeekStartDate.plusDays(1)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(5.0f, restaurant.getLastWeekRate(), 0.01); // Average of 5 for last week
+        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_MixedData_ThisWeek() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add a booking and comments for this week
+        restaurant.addBooking(new Booking(thisWeekStartDate.plusDays(1), 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+        restaurant.addCommentInRestaurant(new Comment("User1", "Great food!", 5, thisWeekStartDate.plusDays(2)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Good", 4, thisWeekStartDate.plusDays(3)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(0.0f, restaurant.getLastWeekRate(), 0.01);
+        assertEquals(4.0f, restaurant.getThisWeekRate(), 0.01); // Average of 5 and 4
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_EdgeCaseOnDates() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add a booking for this week and comment for last week
+        restaurant.addBooking(new Booking(thisWeekStartDate, 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+        restaurant.addCommentInRestaurant(new Comment("User1", "Great food!", 5, lastWeekEndDate));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(5.0f, restaurant.getLastWeekRate(), 0.01);
+        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_BothWeeksWithComments() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add comments for both weeks
+        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
+        restaurant.addCommentInRestaurant(new Comment("User3", "Amazing!", 4, thisWeekStartDate.plusDays(1)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(4.0f, restaurant.getLastWeekRate(), 0.01); // Average (5 + 3) / 2
+        assertEquals(3.67f, restaurant.getThisWeekRate(), 0.01); // Only one comment with rate 4
+    }
+
+    @Test
+    public void testGenerateLogWithoutRank_BothWeeksWithComments2() {
+        LocalDate thisWeekStartDate = LocalDate.now().plusDays(7);
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(14);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add comments for both weeks
+        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+        assertEquals(3.75f, restaurant.getLastWeekRate(), 0.01); // Average (5 + 3) / 2
+        assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01); // Only one comment with rate 4
+    }
+    @Test
+    public void testsetLastWeekRank(){
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add comments for both weeks
+        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
+        restaurant.addCommentInRestaurant(new Comment("User3", "Amazing!", 4, thisWeekStartDate.plusDays(1)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        assertEquals(0.0f, restaurant.getLastWeekRank(), 0.01); 
+        restaurant.setLastWeekRank(1);
+        assertEquals(1.0f, restaurant.getLastWeekRank(), 0.01); 
+    }
+    @Test
+    public void testSetAndGetLastWeekRank() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add comments for both weeks
+        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
+        restaurant.addCommentInRestaurant(new Comment("User3", "Amazing!", 4, thisWeekStartDate.plusDays(1)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        // Set the last week rank
+        restaurant.setLastWeekRank(3);
+        // Verify the rank is set correctly
+        assertEquals(3, restaurant.getLastWeekRank());
+    }
+
+    @Test
+    public void testSetAndGetThisWeekRank() {
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+
+        // Add comments for both weeks
+        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
+        restaurant.addCommentInRestaurant(new Comment("User3", "Amazing!", 4, thisWeekStartDate.plusDays(1)));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        // Set the this week rank
+        restaurant.setThisWeekRank(1);
+        // Verify the rank is set correctly
+        assertEquals(1, restaurant.getThisWeekRank());
+    }
+
+    @Test
+    public void testGenerateWeeklyReport() {
+      
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+    
+        // Create a new instance of Restaurant
+        Restaurant restaurant = new Restaurant("user", "password", "Test Restaurant", "Italian",
+                                                "Downtown", "123 Main St", "555-1234",
+                                                LocalTime.parse("10:00"), LocalTime.parse("22:00"),
+                                                Duration.ofMinutes(60), 5);
+    
+        // Add comments for last week
+        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
+        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
+    
+        // Add comments for this week
+        restaurant.addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+        restaurant.addCommentInRestaurant(new Comment("User4", "Good", 4, thisWeekEndDate));
+    
+        // Generate logs without rank
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+    
+        // Set the ranks
+        restaurant.setLastWeekRank(2);
+        restaurant.setThisWeekRank(5);
+    
+        // Generate the report
+        StringBuilder expectedReport = new StringBuilder();
+        expectedReport.append("Last week:\n");
+        expectedReport.append("Rank: ").append(0).append("\n");
+        expectedReport.append("Rate: ").append(4.0f).append("\n"); // Average of (5 + 3) / 2
+        expectedReport.append("Total ppl: ").append(2).append("\n"); // Total comments for last week
+        expectedReport.append("Comment:\n");
+        expectedReport.append("User1: Excellent! 5.0\n");
+        expectedReport.append("User2: Not bad 3.0\n");
+        
+        expectedReport.append("\nThis week:\n");
+        expectedReport.append("Rank: ").append(5).append("\n");
+        expectedReport.append("Rate: ").append(3.75f).append("\n"); // Average of (4 + 4) / 2
+        expectedReport.append("Total ppl: ").append(0).append("\n"); // Total comments for this week
+        expectedReport.append("Comment:\n");
+        expectedReport.append("User3: Great 4\n");
+        expectedReport.append("User4: Good 4\n");
+        
+        expectedReport.append("\nRank decrease/increase ").append(~(5 - 2) + 1).append("\n");
+        expectedReport.append("Rate decrease/increase ").append(4.0 - 4.0).append("\n");
+        expectedReport.append("Total ppl decrease/increase ").append(2 - 2).append("\n");
+    
+        // Capture the output
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+    
+        // Call the method to generate the report
+        restaurant.generateWeeklyReport();
+    
+        // Verify the output
+        assertEquals(expectedReport.toString(), outContent.toString());
+    
+        // Reset the output
+        System.setOut(System.out);
+    }
+
+    @Test
+    public void testTakeAttendanceInRestaurant() {
+        LocalDate date = LocalDate.now();
+        // Add a booking
+        restaurant.addBooking(new Booking(date, 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+
+        // Mark attendance
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+
+        // Verify attendance was marked correctly
+        assertTrue(attendanceMarked);
+        assertTrue(restaurant.getAllBookings().get(0).hasArrived());
+    }
+
+    @Test
+    public void testTakeAttendanceInRestaurant_BookingNotFound() {
+        LocalDate date = LocalDate.now();
+        // Try to mark attendance for a booking that does not exist
+        boolean attendanceMarked = restaurant.takeAttendanceInRestaurant(date, "12:00-13:00", 1);
+
+        // Verify that attendance was not marked
+        assertFalse(attendanceMarked);
     }
 }
 
