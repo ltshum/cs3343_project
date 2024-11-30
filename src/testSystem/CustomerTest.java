@@ -1,44 +1,44 @@
 package testSystem;
 
-import org.junit.After;
 
-import system.Account;
 import system.Booking;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import View.Home;
-import acm.Permission;
-import acm.Privilege;
-import acm.Resource;
-import acm.Role;
-import system.Comment;
 
-import static org.junit.Assert.*;
-import testSystem.testInput;
-import java.io.InputStream;
+import static org.junit.Assert.*;import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
-import java.util.Set;
 
 import system.Customer;
 import system.Restaurant;
-import system.Server;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 public class CustomerTest {
 
     private Customer customer;
-
+    InputStream systemIn = System.in;
+    Scanner scanner;
     @Before
     public void setUp() {
         customer = new Customer("testUser", "password123", "John Doe", "123456789");
+    }
+     @After
+    public void tearDown() throws Exception {
+    	if(scanner!=null) {
+        scanner.close();
+    	}
+        System.setIn(systemIn);
+    }
+
+    public void setInput(String[] in) {
+        scanner = testInput.input(in);
     }
 
     @Test

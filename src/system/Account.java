@@ -209,19 +209,19 @@ public abstract class Account {
         return ((Restaurant) this).getRestaurantTimeslots();
     }
 
-    boolean tableValidationInAccount(int tableID) {
+    public boolean tableValidationInAccount(int tableID) {
         return ((Restaurant) this).tableValidationInRestaurant(tableID);
     }
 
-    void addCommentInAccount(Comment cm) {
+    public void addCommentInAccount(Comment cm) {
         ((Restaurant) this).addCommentInRestaurant(cm);
     }
 
-    StringBuilder getAccountAllTableInfo() {
+    public StringBuilder getAccountAllTableInfo() {
         return ((Restaurant) this).getRestaurantAllTableInfo();
     }
 
-    void updateAccountTableInfo(Scanner in, int tableID) {
+    public void updateAccountTableInfo(Scanner in, int tableID) {
         ((Restaurant) this).updateRestaurantTableInfo(in, tableID);
     }
 

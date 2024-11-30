@@ -78,7 +78,6 @@ public class RestaurantTest {
     public void test_edit_SetName() {
         String[] input = {"1", "testSetName", "X"};
         setInput(input);
-
         restaurant.edit(scanner);
         assertEquals("testSetName", restaurant.getAccountName());
     }
