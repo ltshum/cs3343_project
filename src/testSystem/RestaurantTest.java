@@ -3,7 +3,9 @@ package testSystem;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -1588,69 +1590,74 @@ public class RestaurantTest {
     }
 
     @Test
-    public void testGenerateWeeklyReport() {
-      
-        LocalDate thisWeekStartDate = LocalDate.now();
-        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
-        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
-        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+public void testGenerateWeeklyReport() {
+    // Set up dates
+    LocalDate thisWeekStartDate = LocalDate.now();
+    LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+    LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+    LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+    Booking booking = new Booking(thisWeekStartDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+    restaurant.addBooking(booking);
+    restaurant.addBooking(new Booking(thisWeekStartDate, 1, "12:00-13:00", 
+    "Test Restaurant", "user", "customer1", "123456789", 4));
+    restaurant.addBooking(new Booking(thisWeekEndDate, 1, "12:00-13:00", 
+    "Test Restaurant", "user", "customer1", "123456789", 4));
+    restaurant.addBooking(new Booking(lastWeekEndDate, 1, "12:00-13:00", 
+    "Test Restaurant", "user", "customer1", "123456789", 3));
+
+    // Create a new instance of Restaurant (if needed)
     
-        // Create a new instance of Restaurant
-        Restaurant restaurant = new Restaurant("user", "password", "Test Restaurant", "Italian",
-                                                "Downtown", "123 Main St", "555-1234",
-                                                LocalTime.parse("10:00"), LocalTime.parse("22:00"),
-                                                Duration.ofMinutes(60), 5);
+
+    // Add comments for last week
+    restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+    restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate));
+
+    // Add comments for this week
+    restaurant.addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+    restaurant.addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate)); // Use start date if today is not the end date
+    restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+
+    // Set ranks
+    restaurant.setLastWeekRank(2);
+    restaurant.setThisWeekRank(5);
     
-        // Add comments for last week
-        restaurant.addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate.plusDays(1)));
-        restaurant.addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate.plusDays(2)));
-    
-        // Add comments for this week
-        restaurant.addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
-        restaurant.addCommentInRestaurant(new Comment("User4", "Good", 4, thisWeekEndDate));
-    
-        // Generate logs without rank
-        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
-    
-        // Set the ranks
-        restaurant.setLastWeekRank(2);
-        restaurant.setThisWeekRank(5);
-    
-        // Generate the report
-        StringBuilder expectedReport = new StringBuilder();
-        expectedReport.append("Last week:\n");
-        expectedReport.append("Rank: ").append(0).append("\n");
-        expectedReport.append("Rate: ").append(4.0f).append("\n"); // Average of (5 + 3) / 2
-        expectedReport.append("Total ppl: ").append(2).append("\n"); // Total comments for last week
-        expectedReport.append("Comment:\n");
-        expectedReport.append("User1: Excellent! 5.0\n");
-        expectedReport.append("User2: Not bad 3.0\n");
-        
-        expectedReport.append("\nThis week:\n");
-        expectedReport.append("Rank: ").append(5).append("\n");
-        expectedReport.append("Rate: ").append(3.75f).append("\n"); // Average of (4 + 4) / 2
-        expectedReport.append("Total ppl: ").append(0).append("\n"); // Total comments for this week
-        expectedReport.append("Comment:\n");
-        expectedReport.append("User3: Great 4\n");
-        expectedReport.append("User4: Good 4\n");
-        
-        expectedReport.append("\nRank decrease/increase ").append(~(5 - 2) + 1).append("\n");
-        expectedReport.append("Rate decrease/increase ").append(4.0 - 4.0).append("\n");
-        expectedReport.append("Total ppl decrease/increase ").append(2 - 2).append("\n");
-    
-        // Capture the output
-        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(outContent));
-    
-        // Call the method to generate the report
-        restaurant.generateWeeklyReport();
-    
-        // Verify the output
-        assertEquals(expectedReport.toString(), outContent.toString());
-    
-        // Reset the output
-        System.setOut(System.out);
-    }
+    // Generate the report
+    StringBuilder expectedReport = new StringBuilder();
+    expectedReport.append("Last week:\n")
+                  .append("Rank: ").append(2).append("\n")
+                  .append("Rate: ").append(4.0f).append("\n") // Average of (5 + 3) / 2
+                  .append("Total ppl: ").append(3).append("\n") // Total comments for last week
+                  .append("Comment:\n")
+                  .append("User1: Excellent! 5.0\n")
+                  .append("User2: Not bad 3.0\n");
+
+    expectedReport.append("\nThis week:\n")
+                  .append("Rank: ").append(5).append("\n")
+                  .append("Rate: ").append(2.75f).append("\n") // Average of (4 + 4) / 2
+                  .append("Total ppl: ").append(10).append("\n") // Total comments for this week
+                  .append("Comment:\n")
+                  .append("User1: Great 3.0\n")
+                  .append("User2: Good 4.0\n")
+                  .append("User3: Great 4.0\n")
+                  .append("User4: Good 0.0\n");
+
+    expectedReport.append("\nRank decrease/increase: ").append(-3).append("\n")
+                  .append("Rate decrease/increase: ").append(-1.25).append("\n")
+                  .append("Total ppl decrease/increase: ").append(7).append("\n");
+
+    // Capture the output
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+
+    // Call the method to generate the report
+    restaurant.generateWeeklyReport();
+
+    // Verify the output
+    assertEquals(expectedReport.toString(), outContent.toString());
+
+    // Reset the output
+    System.setOut(System.out);
+}
 
     @Test
     public void testTakeAttendanceInRestaurant() {
