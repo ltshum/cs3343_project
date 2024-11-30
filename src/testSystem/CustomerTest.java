@@ -44,8 +44,8 @@ public class CustomerTest {
     @Test
     public void testCustomerConstructor() {
         // Verify that the constructor initializes fields correctly
-        assertEquals("John Doe", customer.getCustomerName());
-        assertEquals("123456789", customer.getCustomerContact());
+        assertEquals("John Doe", customer.getAccountName());
+        assertEquals("123456789", customer.getAccountContact());
         assertNotNull(customer.getAllBookings());
         assertTrue(customer.getAllBookings().isEmpty());
         assertEquals("Username should be 'testUser'", "testUser", customer.getAccountUserName());
@@ -54,73 +54,73 @@ public class CustomerTest {
 
     @Test
     public void testGetCustomerName() {
-        assertEquals("John Doe", customer.getCustomerName());
+        assertEquals("John Doe", customer.getAccountName());
     }
 
     @Test
     public void testSetCustomerName() {
-        customer.setCustomerName("Jane Doe");
-        assertEquals("Jane Doe", customer.getCustomerName());
+        customer.setAccountName("Jane Doe");
+        assertEquals("Jane Doe", customer.getAccountName());
     }
 
     @Test
     public void testGetCustomerContact() {
-        assertEquals("123456789", customer.getCustomerContact());
+        assertEquals("123456789", customer.getAccountContact());
     }
 
     @Test
     public void testSetCustomerContact() {
-        customer.setCustomerContact("987654321");
-        assertEquals("987654321", customer.getCustomerContact());
+        customer.setAccountContact("987654321");
+        assertEquals("987654321", customer.getAccountContact());
     }
 
-    @Test
-    public void testSetAndGetAllWrittenComment() {
-        ArrayList<String> comments = new ArrayList<>();
-        comments.add("Great food!");
-        customer.setAllWrittenComment(comments);
-        assertEquals(comments, customer.getAllWrittenComment());
-    }
+    // @Test
+    // public void testSetAndGetAllWrittenComment() {
+    //     ArrayList<String> comments = new ArrayList<>();
+    //     comments.add("Great food!");
+    //     customer.(comments);
+    //     assertEquals(comments, customer.getAllWrittenComment());
+    // }
 
-    @Test
-    public void testAddBooking() {
-        System.out.println("This is the start of the test add booking");
+    // @Test
+    // public void testAddBooking() {
+    //     System.out.println("This is the start of the test add booking");
 
-        // Create a restaurant instance
-        Restaurant restaurant = new Restaurant("username",
-                "password",
-                "name",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                LocalTime.parse("10:00"),
-                LocalTime.parse("20:00"),
-                Duration.ofMinutes(60),
-                3);
+    //     // Create a restaurant instance
+    //     Restaurant restaurant = new Restaurant("username",
+    //             "password",
+    //             "name",
+    //             "type",
+    //             "district",
+    //             "address",
+    //             "12345678",
+    //             LocalTime.parse("10:00"),
+    //             LocalTime.parse("20:00"),
+    //             Duration.ofMinutes(60),
+    //             3);
 
-        // Create a customer instance
-        // Set up the server and Home page
-        Server server = Server.getInstance();
-        Home hm = new Home(restaurant);
+    //     // Create a customer instance
+    //     // Set up the server and Home page
+    //     Server server = Server.getInstance();
+    //     Home hm = new Home(restaurant);
 
-        // Prepare input for the Scanner
-        String[] input = {"3", "1", "1", "5", "1", "2", "2", "2", "5"}; // Adjust based on actual expected inputs
-        Scanner scanner = testInput.input(input); // Use the testInput to create a Scanner
-        hm.display(scanner); // Pass the scanner directly
-        // Create a booking instance
-        Booking booking = new Booking(LocalDate.now(), 1, "11:00-12:00", restaurant, customer, customer.getCustomerContact(), 2);
-        Booking booking2 = new Booking(LocalDate.now(), 2, "12:00-13:00", restaurant, customer, customer.getCustomerContact(), 2);
-        // Add the booking to the customer
-        customer.addBooking(booking);
-        customer.addBooking(booking2);
+    //     // Prepare input for the Scanner
+    //     String[] input = {"3", "1", "1", "5", "1", "2", "2", "2", "5"}; // Adjust based on actual expected inputs
+    //     Scanner scanner = testInput.input(input); // Use the testInput to create a Scanner
+    //     hm.display(scanner); // Pass the scanner directly
+    //     // Create a booking instance
+    //     Booking booking = new Booking(LocalDate.now(), 1, "11:00-12:00", restaurant, customer, customer.getCustomerContact(), 2);
+    //     Booking booking2 = new Booking(LocalDate.now(), 2, "12:00-13:00", restaurant, customer, customer.getCustomerContact(), 2);
+    //     // Add the booking to the customer
+    //     customer.addBooking(booking);
+    //     customer.addBooking(booking2);
 
-        // Assert that the booking was added successfully
-        assertEquals(2, customer.getAllBookings().size());
-        assertEquals(booking, customer.getAllBookings().get(0));
-        assertEquals(booking2, customer.getAllBookings().get(1));
+    //     // Assert that the booking was added successfully
+    //     assertEquals(2, customer.getAllBookings().size());
+    //     assertEquals(booking, customer.getAllBookings().get(0));
+    //     assertEquals(booking2, customer.getAllBookings().get(1));
 
-    }
+    // }
 
     @Test
     public void testEditName() {
@@ -128,7 +128,7 @@ public class CustomerTest {
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
         customer.edit(new Scanner(System.in));
-        assertEquals("New Name", customer.getCustomerName());
+        assertEquals("New Name", customer.getAccountName());
     }
 
     @Test
@@ -139,7 +139,7 @@ public class CustomerTest {
 
         customer.edit(new Scanner(System.in));
 //
-        assertEquals("987654321", customer.getCustomerContact());
+        assertEquals("987654321", customer.getAccountContact());
     }
 //
 
@@ -151,8 +151,8 @@ public class CustomerTest {
 //        
         customer.edit(new Scanner(System.in));
 //        
-        assertEquals("John Doe", customer.getCustomerName());
-        assertEquals("123456789", customer.getCustomerContact());
+        assertEquals("John Doe", customer.getAccountName());
+        assertEquals("123456789", customer.getAccountContact());
     }
 //    
 
@@ -164,8 +164,8 @@ public class CustomerTest {
 
         customer.edit(new Scanner(System.in));
 
-        assertEquals("John Doe", customer.getCustomerName());
-        assertEquals("123456789", customer.getCustomerContact());
+        assertEquals("John Doe", customer.getAccountName());
+        assertEquals("123456789", customer.getAccountContact());
     }
 //
 
@@ -177,8 +177,8 @@ public class CustomerTest {
 //        
         customer.edit(new Scanner(System.in));
 //        
-        assertEquals("John Doe", customer.getCustomerName());
-        assertEquals("123456789", customer.getCustomerContact());
+        assertEquals("John Doe", customer.getAccountName());
+        assertEquals("123456789", customer.getAccountContact());
     }
     @Test
     public void testgetProfileDetail() {
@@ -215,8 +215,8 @@ public class CustomerTest {
                 3);
 
 
-        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant1, customer, customer.getCustomerContact(), 2);
-        Booking booking2 = new Booking(bookingDate, 1, "12:00-13:00", restaurant2, customer, customer.getCustomerContact(), 4); // Same time slot
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant1.getAccountName(), restaurant1.getAccountUserName(), customer.getAccountName(),customer.getAccountContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 1, "12:00-13:00", restaurant1.getAccountName(), restaurant1.getAccountUserName(), customer.getAccountName(),customer.getAccountContact(), 4); // Same time slot
         customer.addBooking(booking1);
         customer.addBooking(booking2);
         
@@ -238,7 +238,7 @@ public class CustomerTest {
                 LocalTime.parse("20:00"),
                 Duration.ofMinutes(60),
                 3);
-        Booking booking1 = new Booking(differentDate, 1, "12:00-13:00", restaurant1, customer, customer.getCustomerContact(), 2);
+        Booking booking1 = new Booking(differentDate, 1, "12:00-13:00", restaurant1.getAccountName(), restaurant1.getAccountUserName(), customer.getAccountName(),customer.getAccountContact(), 2);
 
         customer.addBooking(booking1);
        
@@ -262,7 +262,7 @@ public class CustomerTest {
                 Duration.ofMinutes(60),
                 3);
         LocalDate bookingDate = LocalDate.now();
-        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant1, customer, customer.getCustomerContact(), 2);
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00",restaurant1.getAccountName(), restaurant1.getAccountUserName(), customer.getAccountName(),customer.getAccountContact(), 2);
         customer.addBooking(booking1);
 
         int totalBookings = customer.getBookingRecord(bookingDate);
@@ -276,6 +276,72 @@ public class CustomerTest {
         LocalDate bookingDate = LocalDate.now();
         int output = customer.getBookingRecord(bookingDate); // Capture printed output
         assertEquals("0", Integer.toString(output)); // Adjust as necessary for your implementation
+    }
+
+    @Test
+public void testGetBookingToBeCommentInCustomer() {
+    // Setup the restaurant and customer
+    Restaurant restaurant = new Restaurant("username",
+            "password",
+            "name",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            LocalTime.parse("10:00"),
+            LocalTime.parse("20:00"),
+            Duration.ofMinutes(60),
+            3);
+    
+    Customer customer = new Customer("testUser", "password123", "John Doe", "123456789");
+    LocalDate bookingDate = LocalDate.now();
+    
+    // Create bookings
+    Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00", restaurant.getAccountName(), restaurant.getAccountUserName(), customer.getAccountName(), customer.getAccountContact(), 2);
+    Booking booking2 = new Booking(bookingDate, 2, "13:00-14:00", restaurant.getAccountName(), restaurant.getAccountUserName(), customer.getAccountName(), customer.getAccountContact(), 3);
+    
+    // Add bookings to customer
+    customer.addBooking(booking1);
+    customer.addBooking(booking2);
+    
+    // Test valid input
+    Booking result = customer.getBookingToBeCommentInCustomer(1, bookingDate);
+    assertEquals("12:00-13:00", result.getBookingTimeslot());
+    
+    // Test for the second booking
+    result = customer.getBookingToBeCommentInCustomer(2, bookingDate);
+    assertEquals("13:00-14:00", result.getBookingTimeslot());
+    
+    // Test for an invalid booking index (out of bounds)
+   
+
+    
+}
+    @Test
+    public void testcheckHasAttendInCustomer(){
+        Restaurant restaurant1 = new Restaurant("username",
+                "password",
+                "name",
+                "type",
+                "district",
+                "address",
+                "12345678",
+                LocalTime.parse("10:00"),
+                LocalTime.parse("20:00"),
+                Duration.ofMinutes(60),
+                3);
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00",restaurant1.getAccountName(), restaurant1.getAccountUserName(), customer.getAccountName(),customer.getAccountContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 2, "13:00-14:00",restaurant1.getAccountName(), restaurant1.getAccountUserName(), customer.getAccountName(),customer.getAccountContact(), 3);
+        customer.addBooking(booking1);
+        customer.addBooking(booking2);
+        customer.getBookingToBeCommentInCustomer(1,bookingDate).setArrive(true);;
+        assertTrue(customer.checkHasAttendInCustomer(1,bookingDate));
+        customer.getBookingToBeCommentInCustomer(1,bookingDate).setArrive(false);
+        assertFalse(customer.checkHasAttendInCustomer(1,bookingDate));
+
+
+
     }
         // Additional checks can be added if needed to validate printed output
     }

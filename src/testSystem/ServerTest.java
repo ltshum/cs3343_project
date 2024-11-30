@@ -192,7 +192,7 @@ public class ServerTest {
                 "19:00 - 20:00 \n"+
                 "20:00 - 21:00 \n"
                 + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
-        String details = server.getUserDetail(restaurant);
+        String details = server.getUserDetail(restaurant.getAccountName());
         assertEquals(res,details);
     }
 //
@@ -201,8 +201,8 @@ public class ServerTest {
 	   String[] input = { "5", "735759", "X"};
 		setInput(input);
         server.addRestaurantAccount(restaurant);
-        server.updateUserDetail(restaurant, scanner);
-        assertEquals("735759", restaurant.getRestaurantContact());
+        server.updateUserDetail(restaurant.getAccountName(), scanner);
+        assertEquals("735759", restaurant.getAccountContact());
     }
    
    @Test
@@ -210,8 +210,8 @@ public class ServerTest {
 	   String[] input = { "5", "735759", "X"};
 		setInput(input);
        server.addRestaurantAccount(restaurant);
-       server.updateUserDetail(restaurant, scanner);
-       assertEquals("735759", restaurant.getRestaurantContact());
+       server.updateUserDetail(restaurant.getAccountName(), scanner);
+       assertEquals("735759", restaurant.getAccountContact());
    }
    @Test
    public void testgetPermissionNumber1() {
