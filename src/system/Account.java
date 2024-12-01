@@ -161,15 +161,17 @@ public abstract class Account {
     }
 
     public String getCommentRestaurantUserName(int inputNumber, LocalDate date) {
-
-        ArrayList<Booking> requiredbookings = new ArrayList<>();
+        ArrayList<Booking> requiredBookings = new ArrayList<>();
         for (Booking booking : allBookings) {
             if (booking.getBookingDate().equals(date)) {
-                requiredbookings.add(booking);
+                requiredBookings.add(booking);
             }
         }
-        return requiredbookings.get(inputNumber - 1).getRestaurantUserName();
-
+        // Check if the list is empty or if the input number is out of bounds
+        if (requiredBookings.isEmpty() || inputNumber <= 0 || inputNumber > requiredBookings.size()) {
+            return null; // or throw an exception if you prefer
+        }
+        return requiredBookings.get(inputNumber - 1).getRestaurantUserName();
     }
 
     public int availableTableIDInAccount(int ppl, String timeslotSession, LocalDate date) {
@@ -224,5 +226,7 @@ public abstract class Account {
     public void updateAccountTableInfo(Scanner in, int tableID) {
         ((Restaurant) this).updateRestaurantTableInfo(in, tableID);
     }
+
+    
 
 }

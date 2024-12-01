@@ -8,6 +8,7 @@ import acm.Role;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
@@ -29,19 +30,17 @@ import system.Booking;
 import system.Comment;
 import system.Customer;
 import system.Restaurant;
+import system.Table;
 
 public class AccountTest {
     InputStream systemIn = System.in;
     private Account accountCustomer;
-    private Permission permission;
     private Account accountRestaurant;
     Scanner scanner;
 
     @Before
     public void setUp() {
         // Set up roles and permissions
-        Role role = Role.CUSTOMER;
-        permission = new Permission(role, Resource.PROFILE, Collections.singleton(Privilege.READ));
 
         // Create an instance of Account (using a concrete subclass, e.g., Customer)
         accountCustomer = new Customer("user", "password", "John Doe", "123456789");
@@ -60,7 +59,7 @@ public class AccountTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
     	if(scanner!=null) {
         scanner.close();
     	}
@@ -69,6 +68,7 @@ public class AccountTest {
 
     public void setInput(String[] in) {
         scanner = testInput.input(in);
+
     }
 
 //    @Test
@@ -106,7 +106,6 @@ public class AccountTest {
         assertEquals(per.getRole(), permissions.get(0).getRole());
         assertEquals(per.getResource(), permissions.get(0).getResource());
         assertEquals(per.getPrivileges(), permissions.get(0).getPrivileges());
-
     }
     @Test
     public void testgetAccountContact(){
@@ -277,6 +276,28 @@ public class AccountTest {
         assertEquals(1, accountCustomer.getAllBookings().size());
     }
 
+    
+
+    @Test
+public void testGetCommentRestaurantUserNameWithNoBookings() {
+    LocalDate bookingDate = LocalDate.now();
+    assertNull(accountCustomer.getCommentRestaurantUserName(1, bookingDate)); // Should return null if no bookings exist
+}
+
+    @Test
+    public void testGetCommentRestaurantUserNameWithInvalidInputNumber() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        accountCustomer.addBooking(booking);
+
+        String restaurantUserName = accountCustomer.getCommentRestaurantUserName(1, bookingDate);
+        assertEquals("username",restaurantUserName);
+    }
+
+   
+
     @Test
     public void testAddBooking() {
         LocalDate bookingDate = LocalDate.now();
@@ -286,5 +307,252 @@ public class AccountTest {
         accountCustomer.addBooking(booking);
         assertEquals(1, accountCustomer.getAllBookings().size());
     }
+    @Test
+    public void setRestaurantLastWeekRank(){
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+        Restaurant restaurant = (Restaurant) accountRestaurant;
 
+        // Add a booking for last week
+        accountRestaurant.addBooking(new Booking(lastWeekStartDate.plusDays(1), 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        accountRestaurant.setRestaurantLastWeekRank(9);
+        assertEquals(9,accountRestaurant.getRestaurantLastWeekRank());
+    }
+
+    @Test
+    public void setRestaurantThisWeekRank(){
+
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+        Restaurant restaurant = (Restaurant) accountRestaurant;
+
+        // Add a booking for last week
+        accountRestaurant.addBooking(new Booking(lastWeekStartDate.plusDays(1), 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        accountRestaurant.setRestaurantThisWeekRank(9);
+        assertEquals(9,accountRestaurant.getRestaurantThisWeekRank());
+    }
+
+    @Test
+    public void testgenerateRestaurantWeeklyReport(){
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+        Restaurant restaurant = (Restaurant) accountRestaurant;
+
+        // Add a booking for last week
+        accountRestaurant.addBooking(new Booking(lastWeekStartDate.plusDays(1), 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+
+        restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        accountRestaurant.generateRestaurantWeeklyReport();
+    }
+
+    @Test
+    public void testtakeAttenanceInAccount(){
+    
+    LocalDate date = LocalDate.now();
+        // Add a booking
+        accountRestaurant.addBooking(new Booking(date, 1, "12:00-13:00", 
+                                           "Test Restaurant", "user", "customer1", "123456789", 4));
+        accountCustomer.addBooking(new Booking(date, 1, "12:00-13:00", 
+        "Test Restaurant", "user", "customer1", "123456789", 4));        // Mark attendance
+        boolean attendanceMarked = accountRestaurant.takeAttenanceInAccount(date, "12:00-13:00", 1);        assertEquals(true,attendanceMarked);
+        assertFalse(accountCustomer.checkHasAttendInAccount(1,date));
+
+    }
+
+    @Test
+    public void testAvailableTableID_NoTablesAvailable() {
+    	LocalDate bookingDate = LocalDate.now();
+        int requiredPeople = 4;
+        String timeslot = "10:00 - 11:00";
+        // Given: No tables available
+//        restaurant.setAllTables(new ArrayList<>());
+
+        // When: Checking for available table ID
+        int availableTableID = accountRestaurant.availableTableIDInAccount(requiredPeople, timeslot, bookingDate);
+
+        // Then: Should return 0 (indicating no available table)
+        assertEquals(0, availableTableID);
+    }
+    
+    @Test
+    public void testAvailableTableID_MultipleTables1() {
+        // Given: Multiple tables, one suitable
+        Table table1 = new Table(1);
+        table1.setSeatNum(2); // Not enough seats
+        table1.addTimeslot("10:00 - 11:00");
+        accountRestaurant.getAccountAllTables().add(table1);
+        
+        Table table2 = new Table(2);
+        table2.setSeatNum(4); // Enough seats
+        table2.addTimeslot("10:00 - 11:00");
+        accountRestaurant.getAccountAllTables().add(table2);
+
+        // When: Checking for available table ID
+        int availableTableID = accountRestaurant.availableTableIDInAccount(4, "10:00 - 11:00", LocalDate.now());
+
+        // Then: Should return the ID of the suitable table
+        assertEquals(2, availableTableID);
+    }
+
+    @Test
+    public void testgetAccountPermissionsString(){
+        assertEquals("PROFILE",
+        accountRestaurant.getAccountPermissionsString(1));
+        assertEquals( "PROFILE",
+        accountCustomer.getAccountPermissionsString(1));
+    }
+    @Test
+    public void testgetAccountDistrict(){
+        assertEquals("district",accountRestaurant.getAccountDistrict());
+    }
+
+    @Test
+    public void testgetAccountRate(){
+        assertEquals(0.0f,accountRestaurant.getAccountRate(),0.01);
+    }
+    @Test
+    public void testgetAccountType(){
+        assertEquals("type",accountRestaurant.getAccountType());
+    }
+    @Test
+    public void testtableValidation() {
+    	assertTrue(accountRestaurant.tableValidationInAccount(1));
+    	assertFalse(accountRestaurant.tableValidationInAccount(5));
+    }
+    
+    @Test
+    public void testGetRestaurantAllTableInfo() {
+        // Expected output string
+        StringBuilder expected = new StringBuilder();
+        expected.append("                | Table ID: 1             | Table ID: 2             | Table ID: 3             \n");
+        expected.append("                | Seat: 0                 | Seat: 0                 | Seat: 0                 \n");
+
+        // Get actual output from the method
+        StringBuilder actual = accountRestaurant.getAccountAllTableInfo();
+
+        // Assert that the expected output matches the actual output
+        assertEquals(expected.toString(), actual.toString());
+    }
+
+    @Test
+    public void testupdateRestaurantTableInfo() {
+    	   String[] input = {"8", "X"};
+           setInput(input);
+           accountRestaurant.updateAccountTableInfo(scanner,1);
+           assertEquals(8,accountRestaurant.getAccountAllTables().get(0).getSeatNum());
+           String[] input2 = {"-1","10", "X"};
+           setInput(input2);
+           accountRestaurant.updateAccountTableInfo(scanner,1);
+           assertEquals(10,accountRestaurant.getAccountAllTables().get(0).getSeatNum());
+           String[] input3 = {"Hi","10", "X"};
+           setInput(input3);
+           accountRestaurant.updateAccountTableInfo(scanner,1);
+           assertEquals(10,accountRestaurant.getAccountAllTables().get(0).getSeatNum());
+    }
+
+
+    @Test
+    public void testGetCommentRestaurantUserName_ValidInput() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        accountCustomer.addBooking(booking);
+
+        String restaurantUserName = accountCustomer.getCommentRestaurantUserName(1, bookingDate);
+        assertEquals(accountRestaurant.getAccountUserName(), restaurantUserName);
+    }
+
+    @Test
+    public void testGetCommentRestaurantUserName_NoBookings() {
+        LocalDate bookingDate = LocalDate.now();
+        assertNull(accountCustomer.getCommentRestaurantUserName(1, bookingDate));
+    }
+
+    @Test
+    public void testGetCommentRestaurantUserName_InvalidInputNumber_Zero() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        accountCustomer.addBooking(booking);
+
+        assertNull(accountCustomer.getCommentRestaurantUserName(0, bookingDate));
+    }
+
+    @Test
+    public void testGetCommentRestaurantUserName_InvalidInputNumber_Negative() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        accountCustomer.addBooking(booking);
+
+        assertNull(accountCustomer.getCommentRestaurantUserName(-1, bookingDate));
+    }
+
+    @Test
+    public void testGetCommentRestaurantUserName_InputNumberGreaterThanBookings() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        accountCustomer.addBooking(booking);
+
+        assertNull(accountCustomer.getCommentRestaurantUserName(2, bookingDate)); // Exceeds the number of bookings
+    }
+
+    @Test
+    public void testGetCommentRestaurantUserName_InputNumberEqualToBookings() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        accountCustomer.addBooking(booking);
+
+        assertNull(accountCustomer.getCommentRestaurantUserName(2, bookingDate)); // Exceeds the number of bookings
+    }
+
+    @Test
+    public void testGetCommentRestaurantUserName_MultipleBookings() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        Booking booking2 = new Booking(bookingDate, 2, "13:00-14:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 3);
+        accountCustomer.addBooking(booking1);
+        accountCustomer.addBooking(booking2);
+
+        String restaurantUserName = accountCustomer.getCommentRestaurantUserName(2, bookingDate);
+        assertEquals(accountRestaurant.getAccountUserName(), restaurantUserName);
+    }
+    @Test
+    public void testGetCommentRestaurantUserNamenotequal() {
+        LocalDate bookingDate = LocalDate.now();
+        Booking booking1 = new Booking(bookingDate, 1, "12:00-13:00",
+                accountRestaurant.getAccountName(), accountRestaurant.getAccountUserName(),
+                accountCustomer.getAccountName(), accountCustomer.getAccountContact(), 2);
+        
+        accountCustomer.addBooking(booking1);
+        LocalDate bookingDate2 = LocalDate.now().plusDays(2);
+
+
+        String restaurantUserName = accountCustomer.getCommentRestaurantUserName(2, bookingDate2);
+        assertNull(restaurantUserName);
+    }
 }
