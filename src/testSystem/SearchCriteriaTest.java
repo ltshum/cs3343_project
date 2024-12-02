@@ -30,6 +30,18 @@ import system.SearchCriteria;
 public class SearchCriteriaTest {
     String n = "null";
     SearchCriteria sc = new SearchCriteria(n,n,n,n,n,n,n);
+    Restaurant restaurant1 = new Restaurant(
+        "timeat",
+        "password",
+        "Tim Eat",
+        "type",
+        "district",
+        "address",
+        "12345678",
+        (LocalTime.parse("10:00")),
+        (LocalTime.parse("20:00")),
+        Duration.ofMinutes(60),
+        3);
     // public boolean isEqualArray(float[] a, float[] b){
     //     if (a.length != b.length){
     //         return false;
@@ -56,8 +68,32 @@ public class SearchCriteriaTest {
         assertEquals(true, sc.isAllNull());
     }
     @Test
-    public void test_isNotAllNull(){
-        assertEquals(false, (new SearchCriteria("a", "a", "0-5", "a", "0", "00:00", "0")).isAllNull());
+    public void test_isNotAllNull1(){
+        assertEquals(false, (new SearchCriteria("a", "a", "0-5", "a", "1", "00:00", "1")).isAllNull());
+    }
+    @Test
+    public void test_isNotAllNull2(){
+        assertEquals(false, (new SearchCriteria(n, "a", "0-5", "a", "1", "00:00", "1")).isAllNull());
+    }
+    @Test
+    public void test_isNotAllNull3(){
+        assertEquals(false, (new SearchCriteria(n, n, "0-5", "a", "1", "00:00", "1")).isAllNull());
+    }
+    @Test
+    public void test_isNotAllNull4(){
+        assertEquals(false, (new SearchCriteria(n, n, n, "a", "1", "00:00", "1")).isAllNull());
+    }
+    @Test
+    public void test_isNotAllNull5(){
+        assertEquals(false, (new SearchCriteria(n, n, n, n, "1", "00:00", "1")).isAllNull());
+    }
+    @Test
+    public void test_isNotAllNull6(){
+        assertEquals(false, (new SearchCriteria(n, n, n, n, n, "00:00", "1")).isAllNull());
+    }
+    @Test
+    public void test_isNotAllNull7(){
+        assertEquals(false, (new SearchCriteria(n, n, n, n, n, n, "1")).isAllNull());
     }
 
     @Test
@@ -66,15 +102,15 @@ public class SearchCriteriaTest {
         String keyword = "";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {1,1};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreDigit1(){
         String name = "a";
         String keyword = "b";
         float[] result = sc.getWordScore(name,keyword);
-        float[] expected = {1,1};
-        assertEquals(false, Arrays.equals(result, expected));
+        float[] expected = {0,1};
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreDigit2(){
@@ -82,7 +118,7 @@ public class SearchCriteriaTest {
         String keyword = "a";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {1,1};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreDigit3(){
@@ -90,7 +126,7 @@ public class SearchCriteriaTest {
         String keyword = "A";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {1,1};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreKeyword1(){
@@ -98,7 +134,7 @@ public class SearchCriteriaTest {
         String keyword = "aa";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {3,3};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreKeyword2(){
@@ -106,7 +142,7 @@ public class SearchCriteriaTest {
         String keyword = "aaa";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {5,5};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreKeyword3(){
@@ -115,7 +151,7 @@ public class SearchCriteriaTest {
         float[] result = sc.getWordScore(name,keyword);
         System.out.print(result[1]);
         float[] expected = {2,3};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreKeyword4(){
@@ -123,7 +159,7 @@ public class SearchCriteriaTest {
         String keyword = "na";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {3,3};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreKeyword5(){
@@ -131,7 +167,7 @@ public class SearchCriteriaTest {
         String keyword = "67890AB";
         float[] result = sc.getWordScore(name,keyword);
         float[] expected = {2,keyword.length() *2-1};
-        assertEquals(true, Arrays.equals(result, expected));
+        assertArrayEquals(expected, result, 0);
     }
     @Test
     public void test_wordScoreKeyword6(){
@@ -143,7 +179,8 @@ public class SearchCriteriaTest {
     }
 
     @Test
-    public void allNullScore(){
-        
+    public void allNullScore1(){
+        assertEquals(1, sc.getSearchScore(restaurant1));
     }
+    
 }
