@@ -1,24 +1,21 @@
 package View;
 
 import java.util.Scanner;
-
-import system.Account;
-import system.Restaurant;
 import system.Server;
 
 public class WeeklyReport {
 
     Server server = Server.getInstance();
-    private final Restaurant restaurant;
+    String accountUsername;
 
-    public WeeklyReport(Account account) {
-        this.restaurant = (Restaurant) account;
+    public WeeklyReport(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
     public void displayWeeklyReport(Scanner in) {
         System.out.println("# Here is your weekly report #\n");
-        server.generateRestaurantLog();
-        server.generateWeeklyReport(restaurant);
+        server.generateAccountLog();
+        server.generateAccountWeeklyReport(accountUsername);
         System.out.println("1. Exit\n");
 
         boolean isValidOption = false;

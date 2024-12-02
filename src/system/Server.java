@@ -6,24 +6,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-
-import acm.Permission;
-import acm.Resource;
 
 public class Server {
 
     private static final Server instance = new Server();
     private static final ArrayList<Account> AccountList = new ArrayList<>();
     private final Map<String, Account> RestaurantAccounts = new HashMap<>();
-    private final Map<String, Map<String, RestaurantLog>> AllRestaurantLogs = new HashMap<>();
-    private final Map<String, RestaurantLogData> restaurantLogDataMap = new HashMap<>();
 
     private Server() {
     }
@@ -36,8 +28,21 @@ public class Server {
         RestaurantAccounts.put(restaurant.getAccountUserName(), restaurant);
     }
 
-    public void addRestaurant(Restaurant ac) {
+    public void addAccount(Account ac) {
         AccountList.add(ac);
+    }
+
+    public ArrayList<Account> getAccountList() {
+        return AccountList;
+    }
+
+    public Account getAccountByUserName(String username) {
+        for (Account account : AccountList) {
+            if (account.getAccountUserName().equals(username)) {
+                return account;
+            }
+        }
+        return null;
     }
 
     // public void updateSeatNo(Account ac, int tableID, int seatNum) {
@@ -55,28 +60,33 @@ public class Server {
             String type, String district, String address,
             LocalTime openTime, LocalTime closeTime,
             Duration sessionDuration, int tableNum) {
-        if (role.equals("CUSTOMER")) {
-            // Create a Customer account
-            Customer customer = new Customer(userName, password, name, contact);
-            System.out.println("\n# Customer signed up successfully! #");
-            AccountList.add(customer);
-            return customer;
-        } else if (role.equals("RESTAURANT")) {
-            // Create a Restaurant account
-            Restaurant restaurant = new Restaurant(userName, password, name, type, district, address, contact,
-                    openTime, closeTime, sessionDuration, tableNum);
-            System.out.println("\n# Restaurant signed up successfully! #");
-            AccountList.add(restaurant);
-            return restaurant;
-        } else {
-            return null;
+        switch (role) {
+            case "CUSTOMER" -> {
+                // Create a Customer account
+                Account customer = new Customer(userName, password, name, contact);
+                System.out.println("\n# Customer signed up successfully! #");
+                AccountList.add(customer);
+                return customer;
+            }
+            case "RESTAURANT" -> {
+                // Create a Restaurant account
+                Account restaurant = new Restaurant(userName, password, name, type, district, address, contact,
+                        openTime, closeTime, sessionDuration, tableNum);
+                System.out.println("\n# Restaurant signed up successfully! #");
+                AccountList.add(restaurant);
+                RestaurantAccounts.put(restaurant.getAccountUserName(), restaurant);
+                return restaurant;
+            }
+            default -> {
+                return null;
+            }
         }
     }
 
-    public Account signIn(String username, String password) {
+    public String signIn(String username, String password) {
         for (Account account : AccountList) {
             if (account.getAccountUserName().equals(username) && account.getAccountPassword().equals(password)) {
-                return account; // Return the account if credentials match
+                return account.getAccountUserName(); // Return the account if credentials match
             }
         }
         return null; // Return null if no match found
@@ -86,38 +96,45 @@ public class Server {
         return account.getAccountUserName();
     }
 
-    public int getPermissionNumber(Account ac) {
-        int count = 1;
-        for (Permission permission : ac.getAccountPermissions()) {
-            System.out.println("\n" + count + ". " + permission.getResource());
-            count++;
-        }
-        return count;
+    public int getPermissionNumber(String acUsername) {
+        Account ac = getAccountByUserName(acUsername);
+        return ac.getAccountPermissionNumber();
     }
 
     public int getPermissionSize(Account ac) {
         return ac.getAccountPermissions().size();
     }
 
-    public Resource getPermissionResource(Account ac, int inputNumber) {
-        return ac.getAccountPermissions().get(inputNumber - 1).getResource();
+    public String getPermissionResource(String acUsername, int inputNumber) {
+        Account ac = getAccountByUserName(acUsername);
+        if (getPermissionSize(ac) + 1 == inputNumber) {
+            return "LOGOUT";
+        } else if (inputNumber >= 1 && inputNumber <= getPermissionSize(ac)) {
+            return ac.getAccountPermissions().get(inputNumber - 1).getResource().toString();
+        } else {
+            return "invalid";
+        }
     }
 
-    public String getUserDetail(Account ac) {
+    public String getUserDetail(String userName) {
+        Account ac = getAccountByUserName(userName);
         System.out.println("\nUsername: " + ac.getAccountUserName() + "\nPassword: " + ac.getAccountPassword());
         return ac.getProfileDetail();
     }
 
-    public void updateUserDetail(Account ac, Scanner in) {
+    public void updateUserDetail(String userName, Scanner in) {
+        Account ac = getAccountByUserName(userName);
         ac.edit(in);
     }
 
-    public int getViewBookingRecord(Account ac, LocalDate date) {
+    public int getViewBookingRecord(String userName, LocalDate date) {
+        Account ac = getAccountByUserName(userName);
         return ac.getBookingRecord(date);
     }
 
-    public boolean timeslotValidation(Restaurant ac, String bookTimeslot) {
-        String[] allTimeslots = ac.getTimeslots().split(" \n");
+    public boolean timeslotValidation(String userName, String bookTimeslot) {
+        Account restaurantAc = getAccountByUserName(userName);
+        String[] allTimeslots = restaurantAc.getAccountTimeslots().split(" \n");
         for (String timeslot : allTimeslots) {
             if (timeslot.equals(bookTimeslot)) {
                 return true;
@@ -126,274 +143,233 @@ public class Server {
         return false;
     }
 
-    public boolean tableValidation(Restaurant ac, int tableID) {
-        if (ac.tableValidation(tableID)) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean tableValidation(String userName, int tableID) {
+        Account restaurantAc = getAccountByUserName(userName);
+        return restaurantAc.tableValidationInAccount(tableID);
     }
 
-    public boolean takeAttendance(Account ac, LocalDate date, String inputSession, int tableID) {
-        Restaurant restaurant = (Restaurant) ac;
-        ArrayList<Booking> allbookings = restaurant.getAllBookings();
-        for (Booking booking : allbookings) {
-            if (booking.getBookingDate().equals(date) && booking.getBookingTableID() == tableID && booking.getBookingTimeslot().equals(inputSession)) {
-                booking.takeAttendance();
-                return true;
-            }
-        }
-        return false;
+    public boolean takeAttendance(String userName, LocalDate date, String inputSession, int tableID) {
+        Account ac = getAccountByUserName(userName);
+        return ac.takeAttenanceInAccount(date, inputSession, tableID);
     }
 
-    public Booking getBookingToBeComment(Account ac, int inputNumber, LocalDate date) {
-        Customer customer = (Customer) ac;
-        ArrayList<Booking> allbookings = customer.getAllBookings();
-        ArrayList<Booking> bookings = new ArrayList<>();
-        for (Booking booking : allbookings) {
-            if (booking.getBookingDate().equals(date)) {
-                bookings.add(booking);
-            }
-        }
-        return bookings.get(inputNumber - 1);
+    public boolean checkHasAttend(String userName, int inputNumber, LocalDate date) {
+        Account ac = getAccountByUserName(userName);
+        return ac.checkHasAttendInAccount(inputNumber, date);
     }
 
-    public boolean checkHasAttend(Account ac, int inputNumber, LocalDate date) {
-        if (!getBookingToBeComment(ac, inputNumber, date).hasArrived()) {
-            System.out.println("\nYou can only make comment after you have attended the appointment.");
-            return false;
-        }
-        return true;
+    public void makeComment(String userName, int inputNumber, LocalDate date, int rate, String commentString) {
+
+        Account restaurantAc = getAccountByUserName(userName);
+        String restaurantUserName = restaurantAc.getCommentRestaurantUserName(inputNumber, date);
+        Account commentRestaurant = getAccountByUserName(restaurantUserName);
+        Comment cm = new Comment(restaurantAc.getAccountName(), commentString, rate, date);
+        commentRestaurant.addCommentInAccount(cm);
+
     }
 
-    public void makeComment(Account ac, int inputNumber, LocalDate date, int rate, String commentString) {
-        Customer customer = (Customer) ac;
-        try {
-            Restaurant restaurant = getBookingToBeComment(ac, inputNumber, date).getRestaurant();
-            ArrayList<Comment> allComments = restaurant.getAllCommentsList();
-            Comment comment = new Comment(customer.getCustomerName(), commentString, rate, date);
-            allComments.add(comment);
-            float recal_rate = 0;
-            for (Comment cm : allComments) {
-                recal_rate += cm.getCommentRate();
-            }
-            restaurant.setRate(recal_rate / allComments.size());
-            System.out.println("\nComment added!");
-        } catch (Exception e) {
-            System.out.println("Restaurant not found.");
-        }
-    }
-
-    public ArrayList<Restaurant> getRestaurantAccounts() {
-        ArrayList<Restaurant> result = new ArrayList<>();
+    public ArrayList<Account> getRestaurantAccounts() {
+        ArrayList<Account> result = new ArrayList<>();
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            result.add((Restaurant) restaurantAc);
+            result.add(restaurantAc);
         }
         return result;
     }
 
-    public ArrayList<Restaurant> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
+    public ArrayList<String> searchRestaurantsIn(String restaurantName, String district, String rateRange, String type, String ppl, String startTime, String session) {
         SearchCriteria search = new SearchCriteria(restaurantName, district, rateRange, type, ppl, startTime, session);
-        return search.searchRestaurantsIn(getRestaurantAccounts());
+        ArrayList<String> resultList = new ArrayList<>();
+        for (Account restaurant : search.searchRestaurantsIn(getRestaurantAccounts())) {
+            resultList.add(restaurant.getAccountUserName());
+        }
+        return resultList;
     }
     public ArrayList<Table> getAllTablesOf(Restaurant restaurant) {
         return restaurant.getAllTables();
     }
 
-    public String getListInfo(Restaurant restaurant) {
-        return restaurant.getRestaurantName()
-                + "\n   Rate: " + restaurant.getRate()
-                + "\n   District: " + restaurant.getDistrict()
-                + "\n   Type: " + restaurant.getType();
+    public String getListInfo(String userName) {
+        Account restaurant = getAccountByUserName(userName);
+        return restaurant.getAccountName()
+                + "\n   Rate: " + restaurant.getAccountRate()
+                + "\n   District: " + restaurant.getAccountDistrict()
+                + "\n   Type: " + restaurant.getAccountType();
     }
 
-    public Restaurant getRestaurantAccountByUserName(String username) {
+    public Account getRestaurantAccountByUserName(String username) {
         for (Account account : RestaurantAccounts.values()) {
             if (account.getAccountUserName().equals(username)) {
-                return (Restaurant) account;
+                return account;
             }
         }
         return null;
     }
 
-    public String getRestaurantBookingDetail(Restaurant restaurant) {
-
-        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
+    public String getRestaurantBookingDetail(String userName) {
+        Account restaurant = getAccountByUserName(userName);
+        Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
         if (requiredRestaurant != null) {
             return requiredRestaurant.getProfileDetail();
         }
         return "Restaurant not found.";
     }
 
-    public int availableTableID(Restaurant ac, int ppl, String timeslotSession, LocalDate date) {
-        Restaurant restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
-        return restaurant.availableTableID(ppl, timeslotSession, date);
+    public int availableTableID(String userName, int ppl, String timeslotSession, LocalDate date) {
+        Account ac = getAccountByUserName(userName);
+        Account restaurant = getRestaurantAccountByUserName(ac.getAccountUserName());
+        return restaurant.availableTableIDInAccount(ppl, timeslotSession, date);
     }
 
-    public String makeBooking(LocalDate date, int tableID, String bookSession, Restaurant restaurant, Customer ac, String contact, int ppl) {
-        Restaurant requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
-        if (requiredRestaurant == null) {
-            return "Restaurant not found.";
-        } else {
-            Booking bk = new Booking(date, tableID, bookSession, requiredRestaurant, ac, contact, ppl);
-            requiredRestaurant.addBooking(bk);
-            ac.addBooking(bk);
-            return "\nAlready booked a seat for you";
-        }
-    }
-
-    public StringBuilder getAllTableInfo(Account ac) {
-        Restaurant restaurant = (Restaurant) ac;
-        return restaurant.getAllTableInfo();
-    }
-
-    public void updateTableInfo(Account ac, Scanner in, int tableID) {
-        Restaurant restaurant = (Restaurant) ac;
-        restaurant.updateTableInfo(in, tableID);
-    }
-
-    public ArrayList<Booking> getPeriodBookings(Restaurant restaurant, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Booking> allBookings = restaurant.getAllBookings();
-        ArrayList<Booking> periodBookings = new ArrayList<>();
-        for (Booking bk : allBookings) {
-            if ((bk.getBookingDate().isEqual(startDate) || bk.getBookingDate().isAfter(startDate)) && (bk.getBookingDate().isEqual(endDate) || bk.getBookingDate().isBefore(endDate))) {
-                periodBookings.add(bk);
+    public Account searchAccountById(int id) {
+        for (Account ac : AccountList) {
+            if (ac.getId() == id) {
+                return ac;
             }
         }
-        return periodBookings;
+        return null;
     }
 
-    public ArrayList<Comment> getPeriodComments(Restaurant restaurant, LocalDate startDate, LocalDate endDate) {
-        ArrayList<Comment> allComments = restaurant.getAllCommentsList();
-        ArrayList<Comment> periodComments = new ArrayList<>();
-        for (Comment cm : allComments) {
-            if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
-                periodComments.add(cm);
+    public String makeBooking(LocalDate date, int tableID, String bookSession, String restaurantUserName, String customerUserName, String contact, int ppl) {
+
+        Account restaurant = getAccountByUserName(restaurantUserName);
+        Account customer = getAccountByUserName(customerUserName);
+        Booking booking = new Booking(date, tableID, bookSession, restaurant.getAccountName(), restaurantUserName, customer.getAccountName(), contact, ppl);
+        restaurant.addBooking(booking);
+        customer.addBooking(booking);
+        return "\nAlready booked a seat for you";
+
+    }
+
+    public StringBuilder getAllTableInfo(String userName) {
+        Account ac = getAccountByUserName(userName);
+        return ac.getAccountAllTableInfo();
+    }
+
+    public void updateTableInfo(String userName, Scanner in, int tableID) {
+        Account ac = getAccountByUserName(userName);
+        ac.updateAccountTableInfo(in, tableID);
+    }
+
+    public static void mergeSort(ArrayList<Account> accounts, String sortBy) {
+        if (accounts == null || accounts.size() <= 1) {
+            return;
+        }
+
+        ArrayList<Account> temp = new ArrayList<>(accounts);
+        Comparator<Account> comparator = sortBy.equals("lastWeekRate")
+                ? Comparator.comparingDouble(Account::getRestaurantLastWeekRate)
+                : Comparator.comparingDouble(Account::getRestaurantThisWeekRate);
+
+        mergeSort(accounts, temp, 0, accounts.size() - 1, comparator);
+    }
+
+    private static void mergeSort(ArrayList<Account> accounts, ArrayList<Account> temp, int leftStart, int rightEnd, Comparator<Account> comparator) {
+        if (leftStart >= rightEnd) {
+            return;
+        }
+
+        int middle = (leftStart + rightEnd) / 2;
+        mergeSort(accounts, temp, leftStart, middle, comparator);
+        mergeSort(accounts, temp, middle + 1, rightEnd, comparator);
+        mergeHalves(accounts, temp, leftStart, rightEnd, middle, comparator);
+    }
+
+    private static void mergeHalves(ArrayList<Account> accounts, ArrayList<Account> temp, int leftStart, int rightEnd, int middle, Comparator<Account> comparator) {
+        int leftEnd = middle;
+        int rightStart = middle + 1;
+        int left = leftStart;
+        int right = rightStart;
+        int index = leftStart;
+        while (left <= leftEnd && right <= rightEnd) {
+            if (comparator.compare(accounts.get(left), accounts.get(right)) >= 0) { // Sort in descending order
+                temp.set(index, accounts.get(left));
+                left++;
+            } else {
+                temp.set(index, accounts.get(right));
+                right++;
+            }
+            index++;
+        }
+        while (left <= leftEnd) {
+            temp.set(index, accounts.get(left));
+            left++;
+            index++;
+        }
+        while (right <= rightEnd) {
+            temp.set(index, accounts.get(right));
+            right++;
+            index++;
+        }
+        for (int i = leftStart; i <= rightEnd; i++) {
+            accounts.set(i, temp.get(i));
+        }
+    }
+
+    public void calAndSetRestaurantRank(ArrayList<Account> accounts, String sortBy) {
+        mergeSort(accounts, sortBy);
+        for (int i = 0; i < accounts.size(); i++) {
+            Account current = accounts.get(i);
+            if (i == 0) {
+                if (sortBy.equals("lastWeekRate")) {
+                    current.setRestaurantLastWeekRank(1);
+                } else {
+                    current.setRestaurantThisWeekRank(1);
+                }
+            } else {
+                Account previous = accounts.get(i - 1);
+                if (sortBy.equals("lastWeekRate")) {
+                    if (current.getRestaurantLastWeekRate() == previous.getRestaurantLastWeekRate()) {
+                        current.setRestaurantLastWeekRank(previous.getRestaurantLastWeekRank());
+                    } else {
+                        current.setRestaurantLastWeekRank(i + 1);
+                    }
+                } else {
+                    if (current.getRestaurantThisWeekRate() == previous.getRestaurantThisWeekRate()) {
+                        current.setRestaurantThisWeekRank(previous.getRestaurantThisWeekRank());
+                    } else {
+                        current.setRestaurantThisWeekRank(i + 1);
+                    }
+                }
             }
         }
-        return periodComments;
+
     }
 
-    private void generateRestaurantLogData() {
+    public void generateAccountLog() {
         LocalDate thisWeekStartDate = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate thisWeekEndDate = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
         LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
         LocalDate lastWeekEndDate = thisWeekEndDate.minusWeeks(1);
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            Restaurant restaurant = (Restaurant) restaurantAc;
-
-            //last week data
-            ArrayList<Booking> lastWeekBookings = getPeriodBookings(restaurant, lastWeekStartDate, lastWeekEndDate);
-            ArrayList<Comment> lastWeekComments = getPeriodComments(restaurant, lastWeekStartDate, lastWeekEndDate);
-            int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
-            float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-
-            //this week data
-            ArrayList<Booking> thisWeekBookings = getPeriodBookings(restaurant, thisWeekStartDate, thisWeekEndDate);
-            ArrayList<Comment> thisWeekComments = getPeriodComments(restaurant, thisWeekStartDate, thisWeekEndDate);
-            int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
-            float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-
-            RestaurantLogData restaurantLogData = new RestaurantLogData(lastWeekComments, lastWeekTotalPpl, lastWeekRate, 0, thisWeekComments, thisWeekTotalPpl, thisWeekRate, 0);
-            restaurantLogDataMap.put(restaurant.getAccountUserName(), restaurantLogData);
-
+            restaurantAc.generateRestaurantLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
         }
 
-        // Sort the map by thisWeekRate
-        @SuppressWarnings("unused")
-        Map<String, RestaurantLogData> sortedByThisWeekRate = restaurantLogDataMap.entrySet()
-                .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getThisWeekRate))))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        ArrayList<Account> lastWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
+        calAndSetRestaurantRank(lastWeekRankedRestaurantAccounts, "lastWeekRate");
 
-        // Update thisWeekRank based on the index after sorting
-        int thisWeekRank = 1;
-        Float thisWeekPreviousRate = null;
-        int thisWeekSameRateRank = 0;
-        for (Map.Entry<String, RestaurantLogData> entry : sortedByThisWeekRate.entrySet()) {
-            Float currentRate = entry.getValue().getLastWeekRate();
-            if (thisWeekPreviousRate == null || currentRate.compareTo(thisWeekPreviousRate) != 0) {
-                thisWeekRank += thisWeekSameRateRank;
-                thisWeekSameRateRank = 1;
-                thisWeekPreviousRate = currentRate;
-            } else {
-                thisWeekSameRateRank++;
-            }
-            entry.getValue().setThisWeekRank(thisWeekRank);
-        }
+        ArrayList<Account> thisWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
+        calAndSetRestaurantRank(thisWeekRankedRestaurantAccounts, "thisWeekRate");
 
-        // Sort the map by lastWeekRate 
-        @SuppressWarnings("unused")
-        Map<String, RestaurantLogData> sortedByLastWeekRate = restaurantLogDataMap.entrySet()
-                .stream()
-                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue(Comparator.comparingDouble(RestaurantLogData::getLastWeekRate))))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-        // Update lastWeekRank based on the index after sorting
-        int lastWeekRank = 1;
-        Float lastWeekPreviousRate = null;
-        int lastWeekSameRateRank = 0;
-        for (Map.Entry<String, RestaurantLogData> entry : sortedByLastWeekRate.entrySet()) {
-            Float currentRate = entry.getValue().getLastWeekRate();
-            if (lastWeekPreviousRate == null || currentRate.compareTo(lastWeekPreviousRate) != 0) {
-                lastWeekRank += lastWeekSameRateRank;
-                lastWeekSameRateRank = 1;
-                lastWeekPreviousRate = currentRate;
-            } else {
-                lastWeekSameRateRank++;
-            }
-            entry.getValue().setLastWeekRank(lastWeekRank);
-        }
-    }
-
-    public void generateRestaurantLog() {
-        generateRestaurantLogData();
         for (Account restaurantAc : (RestaurantAccounts.values())) {
-            Restaurant restaurant = (Restaurant) restaurantAc;
-            RestaurantLogData restaurantLogData = restaurantLogDataMap.get(restaurant.getAccountUserName());
-            Map<String, RestaurantLog> restaurantLogs = new HashMap<>();
-            restaurantLogs.put("lastWeek", new RestaurantLog(restaurantLogData.getLastWeekRank(), restaurantLogData.getLastWeekRate(), restaurantLogData.getLastWeekTotalPpl(), restaurantLogData.getLastWeekComments()));
-            restaurantLogs.put("thisWeek", new RestaurantLog(restaurantLogData.getThisWeekRank(), restaurantLogData.getThisWeekRate(), restaurantLogData.getThisWeekTotalPpl(), restaurantLogData.getThisWeekComments()));
-            AllRestaurantLogs.put(restaurant.getAccountUserName(), restaurantLogs);
+            System.out.println(restaurantAc.getAccountName() + ":" + restaurantAc.getRestaurantThisWeekRank() + "     " + restaurantAc.getRestaurantLastWeekRank());
         }
     }
 
-    public RestaurantLog getRestaurantLog(Restaurant restaurant, String period) {
-        Map<String, RestaurantLog> logs = AllRestaurantLogs.get(restaurant.getAccountUserName());
-        if (logs != null) {
-            return logs.get(period);
-        }
-        return null;
+    public void generateAccountWeeklyReport(String restaurantUsername) {
+        Account restaurant = getRestaurantAccountByUserName(restaurantUsername);
+        restaurant.generateRestaurantWeeklyReport();
     }
 
-    public void generateWeeklyReport(Restaurant restaurant) {
-        RestaurantLog lastWeekLog = getRestaurantLog(restaurant, "lastWeek");
-        RestaurantLog thisWeekLog = getRestaurantLog(restaurant, "thisWeek");
+    public void reset() {
+        AccountList.clear();
+        RestaurantAccounts.clear();
+    }
 
-        StringBuilder report = new StringBuilder();
+    public boolean isRestaurantByUsername(String accountUsername) {
+        return getAccountByUserName(accountUsername) instanceof Restaurant;
+    }
 
-        report.append("Last week:\n");
-        report.append("Rank: ").append(lastWeekLog.getRank()).append("\n");
-        report.append("Rate: ").append(lastWeekLog.getRate()).append("\n");
-        report.append("Total ppl: ").append(lastWeekLog.getTotalPpl()).append("\n");
-        report.append("Comment:\n");
-        for (Comment comment : lastWeekLog.getComments()) {
-            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
-        }
-
-        report.append("\nThis week:\n");
-        report.append("Rank: ").append(thisWeekLog.getRank()).append("\n");
-        report.append("Rate: ").append(thisWeekLog.getRate()).append("\n");
-        report.append("Total ppl: ").append(thisWeekLog.getTotalPpl()).append("\n");
-        report.append("Comment:\n");
-        for (Comment comment : thisWeekLog.getComments()) {
-            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
-        }
-
-        report.append("\nRank decrease/increase ").append(thisWeekLog.getRank() - lastWeekLog.getRank()).append("\n");
-        report.append("Rate decrease/increase ").append(thisWeekLog.getRate() - lastWeekLog.getRate()).append("\n");
-        report.append("Total ppl decrease/increase ").append(thisWeekLog.getTotalPpl() - lastWeekLog.getTotalPpl()).append("\n");
-
-        System.out.println(report.toString());
+    public boolean isCustomerByUsername(String accountUsername) {
+        return getAccountByUserName(accountUsername) instanceof Customer;
     }
 }

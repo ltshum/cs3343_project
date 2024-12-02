@@ -4,7 +4,7 @@ import java.util.List;
 
 public class RestaurantLog {
 
-    private final int rank;
+    private int rank;
     private final float rate;
     private final int totalPpl;
     private final List<Comment> comments;
@@ -16,19 +16,23 @@ public class RestaurantLog {
         this.comments = comments;
     }
 
-    public int getRank() {
+    public int getLogRank() {
         return rank;
     }
 
-    public float getRate() {
+    public float getLogRate() {
         return rate;
     }
 
-    public int getTotalPpl() {
+    public int getLogTotalPpl() {
         return totalPpl;
     }
 
-    public List<Comment> getComments() {
+    public List<Comment> getLogComments() {
         return comments;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

@@ -3,21 +3,18 @@ package View;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-import system.Account;
-import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 public class ViewBooking {
 
     Server server = Server.getInstance();
-    private final Account account;
+    private final String accountUsername;
     private LocalDate date = LocalDate.now();
     private boolean isCustomer = false;
     private boolean isRestaurant = false;
 
-    public ViewBooking(Account account) {
-        this.account = account;
+    public ViewBooking(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
     public void displayViewBooking(Scanner in) {
@@ -25,10 +22,10 @@ public class ViewBooking {
         while (!exitLoop) {
             System.out.println("\n# Here is your booking record on " + date + " #");
             System.out.println("# you could leave by input X #");
-            if (account instanceof Restaurant) {
+            if (server.isRestaurantByUsername(accountUsername)) {
                 System.out.println("# Take attendence input T #");
                 isRestaurant = true;
-            } else if (account instanceof Customer) {
+            } else if (server.isCustomerByUsername(accountUsername)) {
                 System.out.println("# If you want to make comment please input restaurant number #");
                 isCustomer = true;
 
@@ -36,7 +33,7 @@ public class ViewBooking {
 
             System.out.println("\n[" + date + "]");
 
-            int bookingRecordNumber = server.getViewBookingRecord(account, date);
+            int bookingRecordNumber = server.getViewBookingRecord(accountUsername, date);
             if (bookingRecordNumber == 0) {
                 System.out.println("No booking record found.");
             }
@@ -62,7 +59,7 @@ public class ViewBooking {
                                     System.out.println("\nExiting attendance taking session...");
                                     break outerLoop;
                                 }
-                                if (server.timeslotValidation((Restaurant) account, inputSession)) {
+                                if (server.timeslotValidation(accountUsername, inputSession)) {
                                     isValidSession = true;
                                 } else {
                                     System.out.print("\nNot valid. Please enter the session again.");
@@ -84,14 +81,14 @@ public class ViewBooking {
                                     System.out.println("\nInvalid input. Please enter a valid table ID.");
                                 }
 
-                                if (server.tableValidation((Restaurant) account, tableID)) {
+                                if (server.tableValidation(accountUsername, tableID)) {
                                     isValidTable = true;
                                 } else {
                                     System.out.print("\nNot valid. Please enter the table ID again.");
                                 }
                             }
 
-                            if (server.takeAttendance(account, date, inputSession, tableID)) {
+                            if (server.takeAttendance(accountUsername, date, inputSession, tableID)) {
                                 System.out.println("\nAttendance taken successfully.");
                                 isValidOption = true;
                             } else {
@@ -111,7 +108,7 @@ public class ViewBooking {
                             if (isCustomer) {
                                 isValidOption = true;
                                 if (inputNumber >= 1 && inputNumber <= bookingRecordNumber) {
-                                    if (!server.checkHasAttend(account, inputNumber, date)) {
+                                    if (!server.checkHasAttend(accountUsername, inputNumber, date)) {
                                         isValidOption = false;
                                     } else {
                                         System.out.print("\n# Input X to exit the commenting session #\n");
@@ -140,8 +137,9 @@ public class ViewBooking {
                                         if (comment.equals("X")) {
                                             System.out.println("\nExiting commenting session...");
                                             isValidOption = false;
+                                            break;
                                         }
-                                        server.makeComment(account, inputNumber, date, rate, comment);
+                                        server.makeComment(accountUsername, inputNumber, date, rate, comment);
                                     }
                                 } else {
                                     isValidOption = false;

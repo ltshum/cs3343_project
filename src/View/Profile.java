@@ -1,18 +1,15 @@
 package View;
 
 import java.util.Scanner;
-
-import system.Account;
-import system.Restaurant;
 import system.Server;
 
 public class Profile {
 
     Server server = Server.getInstance();
-    private final Account account;
+    private final String accountUsername;
 
-    public Profile(Account account) {
-        this.account = account;
+    public Profile(String accountUsername) {
+        this.accountUsername = accountUsername;
     }
 
     public void displayProfile(Scanner in) {
@@ -20,10 +17,10 @@ public class Profile {
             System.out.println("\n# Here is your information #");
             System.out.println("\n# Username is not allowed to change #");
 
-            if (account instanceof Restaurant) {
+            if (server.isRestaurantByUsername(accountUsername)) {
                 System.out.println("# Comment is not allowed to change #");
             }
-            System.out.println(server.getUserDetail(account));
+            System.out.println(server.getUserDetail(accountUsername));
             System.out.println("\n1. Edit");
             System.out.println("\n2. Back");
 
@@ -35,7 +32,7 @@ public class Profile {
                     switch (op) {
                         case 1 -> {
                             System.out.print("\n");
-                            server.updateUserDetail(account, in);
+                            server.updateUserDetail(accountUsername, in);
                             isValidOption = true;
                         }
                         case 2 -> {

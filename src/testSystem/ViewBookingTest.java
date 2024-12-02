@@ -7,10 +7,11 @@ import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import View.ViewBooking;
 import system.Customer;
+import system.Restaurant;
 import system.Server;
 
 
@@ -22,20 +23,10 @@ public class ViewBookingTest {
 	
 	@Before
 	public void setUp() {
-		server.signUpCustomer("Customer", "customer", "password", "John Doe", "12345678");
-		server.signUpRestaurant("Restaurant", "restaurant", 
-								"password", 
-								"name", 
-								"type", 
-								"district", 
-								"address", 
-								"12345678", 
-								LocalTime.parse("10:00"), 
-								LocalTime.parse("20:00"), 
-								Duration.ofMinutes(60),
-								3);
-		customerAccount = (Customer) server.signIn("customer", "password");
-		restaurantAccount = (Restaurant) server.signIn("restaurant", "password");
+		server.signUp("CUSTOMER", "1", "1", "1", "1", null, null, null, null, null, null, 0);
+    server.signUp("RESTAURANT", "2", "2", "1", "1", "d", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
+		customerAccount = (Customer) server.signIn("1", "1");
+		restaurantAccount = (Restaurant) server.signIn("2", "2");
 		server.makeBooking(LocalDate.now(), 1, "12:00 - 13:00", restaurantAccount, customerAccount, "12345678", 3);
 	}
 
@@ -185,9 +176,6 @@ public class ViewBookingTest {
 
 	@Test
 	public void testMakeCommentWhenNotAttended() {
-		for (Booking booking : customerAccount.getAllBookings()) {
-			booking.setArrive(false);
-		}
 		String[] in = { "1\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount);

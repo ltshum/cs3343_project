@@ -2,28 +2,24 @@ package View;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import system.Account;
-import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 public class RestaurantList {
 
     Server server = Server.getInstance();
-    ArrayList<Restaurant> result = new ArrayList<>();
+    ArrayList<String> result = new ArrayList<>();
 
-    public RestaurantList(ArrayList<Restaurant> result) {
+    public RestaurantList(ArrayList<String> result) {
         this.result = result;
     }
 
-    public void displayRestaurantList(Scanner in, Account ac) {
+    public void displayRestaurantList(Scanner in, String accountUsername) {
 
         while (true) {
             int count = 1;
             System.out.println("\n# Here is the result list #");
             System.out.println("# If you want to leave please input X #\n");
-            for (Restaurant r : result) {
+            for (String r : result) {
                 System.out.println(count + ". " + server.getListInfo(r));
                 count++;
             }
@@ -38,11 +34,8 @@ public class RestaurantList {
                     try {
                         int op = Integer.parseInt(input);
                         try {
-                            if (ac instanceof Customer customer) {
-                                BookingProfile bookingProfile = new BookingProfile(result.get(op - 1), customer);
-                                bookingProfile.displayBookingProfile(in);
-                            } else {
-                                BookingProfile bookingProfile = new BookingProfile(result.get(op - 1));
+                            if (server.isCustomerByUsername(accountUsername)) {
+                                BookingProfile bookingProfile = new BookingProfile(result.get(op - 1), accountUsername);
                                 bookingProfile.displayBookingProfile(in);
                             }
                             isValidOption = true;

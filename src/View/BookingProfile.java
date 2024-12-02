@@ -2,31 +2,23 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-
-import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 public class BookingProfile {
 
     Server server = Server.getInstance();
-    private final Restaurant restaurant;
-    private final Customer ac;
-
-    public BookingProfile(Restaurant restaurant) {
-        this.restaurant = restaurant;
-        this.ac = null;
-    }
-
-    public BookingProfile(Restaurant restaurant, Customer ac) {
-        this.restaurant = restaurant;
-        this.ac = ac;
+    private final String restaurantUsername;
+    private final String customerUsername;
+    
+    public BookingProfile(String restaurantUsername, String customerUsername) {
+        this.restaurantUsername = restaurantUsername;
+        this.customerUsername = customerUsername;
     }
 
     public void displayBookingProfile(Scanner in) {
 
         System.out.println("\n# Here is restaurant information #\n");
-        System.out.println(server.getRestaurantBookingDetail(restaurant));
+        System.out.println(server.getRestaurantBookingDetail(restaurantUsername));
         System.out.println("\n1. Book today");
         System.out.println("\n2. Book another day");
         System.out.println("\n3. Back");
@@ -36,7 +28,8 @@ public class BookingProfile {
             System.out.print("\nWhat action do you want to do?: ");
             try {
                 int op = Integer.parseInt(in.nextLine());
-                if (ac instanceof Customer) {
+                if (server.isCustomerByUsername(customerUsername)) {
+                    outerloop:
                     switch (op) {
                         case 1 -> {
                             boolean isValidSession = false;
@@ -44,7 +37,7 @@ public class BookingProfile {
                             while (!isValidSession) {
                                 System.out.print("Which timeslot do you want to book (HH:mm) - (HH:mm): ");
                                 bookSession = in.nextLine();
-                                if (!server.timeslotValidation(restaurant, bookSession)) {
+                                if (!server.timeslotValidation(restaurantUsername, bookSession)) {
                                     System.out.println("\nNot validate! Please input again");
                                 } else {
                                     isValidSession = true;
@@ -58,12 +51,12 @@ public class BookingProfile {
                                 System.out.print("How many seats would you like to book? ");
                                 try {
                                     ppl = Integer.parseInt(in.nextLine());
-                                    tableID = server.availableTableID(restaurant, ppl, bookSession, LocalDate.now());
+                                    tableID = server.availableTableID(restaurantUsername, ppl, bookSession, LocalDate.now());
                                     if (tableID == 0) {
                                         System.out.println("\nSorry. The restaurant is full at this timeslot or have not enough seats for you.");
-                                    } else {
-                                        isValidPpl = true;
+                                        break outerloop;
                                     }
+                                    isValidPpl = true;
                                 } catch (NumberFormatException e) {
                                     System.out.println("\nInvalid input! Please try again.");
                                 }
@@ -73,7 +66,7 @@ public class BookingProfile {
                             System.out.print("What is your contact number: ");
                             String contact = in.nextLine();
                             //makeBooking
-                            System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurant, ac, contact, ppl));
+                            System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                             isValidOption = true;
                         }
                         case 2 -> {
@@ -91,7 +84,7 @@ public class BookingProfile {
                                     while (!isValidSession) {
                                         System.out.print("Which timeslot do you want to book (HH:mm) - (HH:mm): ");
                                         bookSession = in.nextLine();
-                                        if (!server.timeslotValidation(restaurant, bookSession)) {
+                                        if (!server.timeslotValidation(restaurantUsername, bookSession)) {
                                             System.out.println("\nNot validate! Please input again");
                                         } else {
                                             isValidSession = true;
@@ -105,9 +98,10 @@ public class BookingProfile {
                                         System.out.print("How many seats would you like to book? ");
                                         try {
                                             ppl = Integer.parseInt(in.nextLine());
-                                            tableID = server.availableTableID(restaurant, ppl, bookSession, bookingDate);
+                                            tableID = server.availableTableID(restaurantUsername, ppl, bookSession, bookingDate);
                                             if (tableID == 0) {
                                                 System.out.println("\nThe restaurant is full at this timeslot or have not enough seats for you.");
+                                                break outerloop;
                                             } else {
                                                 isValidPpl = true;
                                             }
@@ -120,7 +114,7 @@ public class BookingProfile {
                                     System.out.print("What is your contact number: ");
                                     String contact = in.nextLine();
                                     //makeBooking
-                                    System.out.println(server.makeBooking(bookingDate, tableID, bookSession, restaurant, ac, contact, ppl));
+                                    System.out.println(server.makeBooking(bookingDate, tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                                 } catch (Exception e) {
                                     System.out.println("\nNot validate! Please input again");
                                 }

@@ -1,6 +1,6 @@
 package system;
 
-// Other imports as needed
+import acm.Role;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,22 +12,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-import acm.Role;
-
 public class Restaurant extends Account {
 
-    private String restaurantName;
     private String type;
     private String district;
     private String address;
-    private String restaurantContact;
     private float rate;
     private LocalTime openTime;
     private LocalTime closeTime;
     private Duration sessionDuration;
     private ArrayList<Table> allTables = new ArrayList<>();
     private final ArrayList<Comment> allComments = new ArrayList<>();
-    private ArrayList<Booking> allBookings = new ArrayList<>();
+    private RestaurantLog lastWeekLog;
+    private RestaurantLog thisWeekLog;
 
     //Test
     Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
@@ -35,18 +32,15 @@ public class Restaurant extends Account {
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
     public Restaurant(String userName, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
-        super(Arrays.asList(Role.RESTAURANT), userName, password);
+        super(Arrays.asList(Role.RESTAURANT), userName, password, name, contact);
         this.rate = 0;
-        this.restaurantName = name;
         this.type = type;
         this.district = district;
         this.address = address;
-        this.restaurantContact = contact;
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.sessionDuration = sessionDuration;
         this.allTables = new ArrayList<>();
-        this.allBookings = new ArrayList<>();
         initializeTables(tableNum);
         generateTimeslots();
         this.allComments.add(cm1);
@@ -54,7 +48,7 @@ public class Restaurant extends Account {
         //this.allTables = new ArrayList<>();
     }
 
-    public String getTimeslots() {
+    public String getRestaurantTimeslots() {
         LocalTime currentTime = openTime;
         String result = "";
         while (currentTime.plus(sessionDuration).isBefore(closeTime)
@@ -78,11 +72,20 @@ public class Restaurant extends Account {
         }
     }
 
+    public void addCommentInRestaurant(Comment cm) {
+        allComments.add(cm);
+        float newRate = 0;
+        for (Comment comment : allComments) {
+            newRate += comment.getCommentRate();
+        }
+        this.rate = newRate;
+    }
+
     // public void updateSeatNo(int tableID, int seatNum) {
     //     Table table = allTables.get(tableID - 1);
     //     table.setSeatNum(seatNum);
     // }
-    public boolean tableValidation(int tableID) {
+    public boolean tableValidationInRestaurant(int tableID) {
         for (Table table : allTables) {
             if (table.getTableID() == tableID) {
                 return true;
@@ -91,7 +94,7 @@ public class Restaurant extends Account {
         return false;
     }
 
-    public int availableTableID(int ppl, String timeslotSession, LocalDate date) {
+    public int availableTableIDInRestaurant(int ppl, String timeslotSession, LocalDate date) {
         for (Table table : allTables) {
             if (table.isTimeslotAvailable(timeslotSession, date)) {
                 if (table.getSeatNum() >= ppl) {
@@ -103,25 +106,22 @@ public class Restaurant extends Account {
         return 0;
     }
 
-    public StringBuilder getAllTableInfo() {
-        StringBuilder result= new StringBuilder();
+    public StringBuilder getRestaurantAllTableInfo() {
+        StringBuilder result = new StringBuilder();
         StringBuilder tableID = new StringBuilder("                ");
         StringBuilder seat = new StringBuilder("                ");
-        StringBuilder status = new StringBuilder("                ");
         for (Table table : allTables) {
             tableID.append(String.format("| Table ID: %-13d ", table.getTableID()));
             seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
-            status.append(String.format("| Status: %-15s ", table.getStatus()));
         }
 
         result.append(tableID.toString()).append("\n");
         result.append(seat.toString()).append("\n");
-        result.append(status.toString()).append("\n");
         System.out.println(result.toString());
         return result;
     }
 
-    public void updateTableInfo(Scanner in, int tableID) {
+    public void updateRestaurantTableInfo(Scanner in, int tableID) {
         Table table = allTables.get(tableID - 1);
 
         boolean isValidSeatNo = false;
@@ -142,55 +142,47 @@ public class Restaurant extends Account {
         }
     }
 
-    public String getRestaurantName() {
-        return restaurantName;
-    }
-
-    public String getType() {
+    public String getRestaurantType() {
         return type;
     }
 
-    public String getAddress() {
+    public String getRestaurantAddress() {
         return address;
     }
 
-    public String getRestaurantContact() {
-        return restaurantContact;
-    }
-
-    public float getRate() {
+    public float getRestaurantRate() {
         return rate;
     }
 
-    public LocalTime getOpenTime() {
+    public float getRestaurantLogRate() {
+        return rate;
+    }
+
+    public LocalTime getRestaurantOpenTime() {
         return openTime;
     }
 
-    public LocalTime getCloseTime() {
+    public LocalTime getRestaurantCloseTime() {
         return closeTime;
     }
 
-    public long getSessionDuration() {
+    public long getRestaurantSessionDuration() {
         return sessionDuration.toMinutes();
     }
 
-    public ArrayList<Table> getAllTables() {
+    public ArrayList<Table> getRestaurantAllTables() {
         return allTables;
     }
 
-    public String getDistrict() {
+    public String getRestaurantDistrict() {
         return district;
     }
 
-    public ArrayList<Booking> getAllBookings() {
-        return allBookings;
-    }
-
-    public ArrayList<Comment> getAllCommentsList() {
+    public ArrayList<Comment> getRestaurantAllCommentsList() {
         return allComments;
     }
 
-    public String getAllComments() {
+    public String getRestaurantAllComments() {
         String result = "";
         for (Comment cm : allComments) {
             result = result + cm.getCommentCustomerName() + ": " + cm.getCommentContent() + " " + cm.getCommentRate() + "\n";
@@ -198,39 +190,31 @@ public class Restaurant extends Account {
         return result;
     }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
-
-    public void setType(String type) {
+    public void setRestaurantType(String type) {
         this.type = type;
     }
 
-    public void setDistrict(String district) {
+    public void setRestaurantDistrict(String district) {
         this.district = district;
     }
 
-    public void setAddress(String address) {
+    public void setRestaurantAddress(String address) {
         this.address = address;
     }
 
-    public void setRestaurantContact(String restaurantContact) {
-        this.restaurantContact = restaurantContact;
-    }
-
-    public void setRate(float rate) {
+    public void setRestaurantRate(float rate) {
         this.rate = rate;
     }
 
-    public void setOpenTime(LocalTime openTime) {
+    public void setRestaurantOpenTime(LocalTime openTime) {
         this.openTime = openTime;
     }
 
-    public void setCloseTime(LocalTime closeTime) {
+    public void setRestaurantCloseTime(LocalTime closeTime) {
         this.closeTime = closeTime;
     }
 
-    public void setSessionDuration(Duration sessionDuration) {
+    public void setRestaurantSessionDuration(Duration sessionDuration) {
         if (!sessionDuration.isZero() && !sessionDuration.isNegative()) {
             this.sessionDuration = sessionDuration;
         } else {
@@ -238,7 +222,7 @@ public class Restaurant extends Account {
         }
     }
 
-    public void setAllTables(ArrayList<Table> allTables) {
+    public void setRestaurantAllTables(ArrayList<Table> allTables) {
         this.allTables = allTables;
     }
 
@@ -250,18 +234,18 @@ public class Restaurant extends Account {
 
     @Override
     public String getProfileDetail() {
-        return "Rate: " + this.getRate()
-                + "\nRestaurant Name: " + restaurantName
+        return "Rate: " + this.getRestaurantRate()
+                + "\nRestaurant Name: " + getAccountName()
                 + "\nType: " + type
                 + "\nDistrict: " + district
                 + "\nAddress: " + address
-                + "\nPhone: " + restaurantContact
+                + "\nPhone: " + getAccountContact()
                 + "\nOpen Time: " + openTime
                 + "\nClose Time: " + closeTime
                 + "\nSession Duration: " + sessionDuration.toMinutes() + "mins"
                 + "\nTable Amount: " + allTables.size()
-                + "\n\nTimeslot: \n" + this.getTimeslots()
-                + "\nComment: \n" + this.getAllComments();
+                + "\n\nTimeslot: \n" + this.getRestaurantTimeslots()
+                + "\nComment: \n" + this.getRestaurantAllComments();
     }
 
     @Override
@@ -293,32 +277,32 @@ public class Restaurant extends Account {
                         switch (Integer.parseInt(input)) {
                             case 1 -> {
                                 System.out.print("Please input new Restaurant Name: ");
-                                setRestaurantName(in.nextLine());
-                                System.out.println("\nRestaurant Name has been changed to " + getRestaurantName() + "\n");
+                                setAccountName(in.nextLine());
+                                System.out.println("\nRestaurant Name has been changed to " + getAccountName() + "\n");
                                 isValidOption = true;
                             }
                             case 2 -> {
                                 System.out.print("Please input new Type: ");
-                                setType(in.nextLine());
-                                System.out.println("\nType has been changed to " + getType() + "\n");
+                                setRestaurantType(in.nextLine());
+                                System.out.println("\nType has been changed to " + getRestaurantType() + "\n");
                                 isValidOption = true;
                             }
                             case 3 -> {
                                 System.out.print("Please input new Distrct: ");
-                                setDistrict(in.nextLine());
-                                System.out.println("\nDistrict has been changed to " + getDistrict() + "\n");
+                                setRestaurantDistrict(in.nextLine());
+                                System.out.println("\nDistrict has been changed to " + getRestaurantDistrict() + "\n");
                                 isValidOption = true;
                             }
                             case 4 -> {
                                 System.out.print("Please input new Address: ");
-                                setAddress(in.nextLine());
-                                System.out.println("\nAddress has been changed to " + getAddress() + "\n");
+                                setRestaurantAddress(in.nextLine());
+                                System.out.println("\nAddress has been changed to " + getRestaurantAddress() + "\n");
                                 isValidOption = true;
                             }
                             case 5 -> {
                                 System.out.print("Please input new Phone: ");
-                                setRestaurantContact(in.nextLine());
-                                System.out.println("\nPhone has been changed to " + getRestaurantContact() + "\n");
+                                setAccountContact(in.nextLine());
+                                System.out.println("\nPhone has been changed to " + getAccountContact() + "\n");
                                 isValidOption = true;
                             }
                             case 6 -> {
@@ -330,9 +314,9 @@ public class Restaurant extends Account {
                                         if (newOpenTime.isAfter(closeTime)) {
                                             System.out.println("Open Time must not  earlier than Open Time.Please input again");
                                         } else {
-                                            setOpenTime(newOpenTime);
+                                            setRestaurantOpenTime(newOpenTime);
                                             generateTimeslots();
-                                            System.out.println("\nOpen Time has been changed to " + getOpenTime() + "\n");
+                                            System.out.println("\nOpen Time has been changed to " + getRestaurantOpenTime() + "\n");
                                             isValidOpenTime = true;
                                             isValidOption = true;
                                         }
@@ -351,9 +335,9 @@ public class Restaurant extends Account {
                                         if (newClosingTime.isBefore(openTime)) {
                                             System.out.println("Close Time must not be earlier than Open Time.Please input again");
                                         } else {
-                                            setCloseTime(newClosingTime);
+                                            setRestaurantCloseTime(newClosingTime);
                                             generateTimeslots();
-                                            System.out.println("\nClose Time has been changed to " + getCloseTime() + "\n");
+                                            System.out.println("\nClose Time has been changed to " + getRestaurantCloseTime() + "\n");
                                             isValidCloseTime = true;
                                             isValidOption = true;
                                         }
@@ -372,9 +356,9 @@ public class Restaurant extends Account {
                                         if (newSessionDuration <= 0) {
                                             System.out.println("New session duration cannot be smaller or equal to 0.Please input again");
                                         } else {
-                                            setSessionDuration(Duration.ofMinutes(newSessionDuration));
+                                            setRestaurantSessionDuration(Duration.ofMinutes(newSessionDuration));
                                             generateTimeslots();
-                                            System.out.println("\nSession Duration has been changed to " + getSessionDuration() + "\n");
+                                            System.out.println("\nSession Duration has been changed to " + getRestaurantSessionDuration() + "\n");
                                             isValidSessionDuration = true;
                                             isValidOption = true;
                                         }
@@ -394,7 +378,7 @@ public class Restaurant extends Account {
                                             System.out.println("Table Amount cannot be smaller or equal to 0.Please input again");
                                         } else {
                                             initializeTables(TableAmountInput);
-                                            System.out.println("\nTable Amount has been changed to " + getAllTables().size() + "\n");
+                                            System.out.println("\nTable Amount has been changed to " + getRestaurantAllTables().size() + "\n");
                                             isValidTableAmount = true;
                                             isValidOption = true;
                                         }
@@ -418,11 +402,11 @@ public class Restaurant extends Account {
 
     @Override
     public int getBookingRecord(LocalDate date) {
-        Collections.sort(allBookings, Comparator.comparing(Booking::getBookingTimeslot));
+        Collections.sort(getAllBookings(), Comparator.comparing(Booking::getBookingTimeslot));
         int totalBookings = 0;
         ArrayList<Booking> requiredBookings = new ArrayList<>();
-        for (Booking booking : allBookings) {
-            if (booking.getDate().equals(date)) {
+        for (Booking booking : getAllBookings()) {
+            if (booking.getBookingDate().equals(date)) {
                 totalBookings++;
                 requiredBookings.add(booking);
             }
@@ -453,7 +437,7 @@ public class Restaurant extends Account {
             StringBuilder arrived = new StringBuilder("            ");
             for (Booking booking : group) {
                 tableID.append(String.format("| Table ID: %-13d ", booking.getBookingTableID()));
-                booker.append(String.format("| Booker: %-13s ", booking.getBookingCustomer().getCustomerName()));
+                booker.append(String.format("| Booker: %-13s ", booking.getCustomerName()));
                 ppl.append(String.format("| Ppl No: %-13s ", booking.getBookingPpl()));
                 contact.append(String.format("| Contact: %-13s ", booking.getBookingCustomerContact()));
                 arrived.append(String.format("| Arrived?: %-13s ", booking.hasArrived()));
@@ -467,7 +451,105 @@ public class Restaurant extends Account {
         return totalBookings;
     }
 
-    public void addBooking(Booking bk) {
-        this.allBookings.add(bk);
+    public ArrayList<Booking> getPeriodBookings(LocalDate startDate, LocalDate endDate) {
+        ArrayList<Booking> periodBookings = new ArrayList<>();
+        for (Booking bk : getAllBookings()) {
+            if ((bk.getBookingDate().isEqual(startDate) || bk.getBookingDate().isAfter(startDate)) && (bk.getBookingDate().isEqual(endDate) || bk.getBookingDate().isBefore(endDate))) {
+                periodBookings.add(bk);
+            }
+        }
+        return periodBookings;
     }
+
+    public ArrayList<Comment> getPeriodComments(LocalDate startDate, LocalDate endDate) {
+        ArrayList<Comment> periodComments = new ArrayList<>();
+        for (Comment cm : allComments) {
+            if ((cm.getCommentDate().isEqual(startDate) || cm.getCommentDate().isAfter(startDate)) && (cm.getCommentDate().isEqual(endDate) || cm.getCommentDate().isBefore(endDate))) {
+                periodComments.add(cm);
+            }
+        }
+        return periodComments;
+    }
+
+    public void generateLogWithoutRank(LocalDate thisWeekStartDate, LocalDate thisWeekEndDate, LocalDate lastWeekStartDate, LocalDate lastWeekEndDate) {
+        ArrayList<Booking> lastWeekBookings = getPeriodBookings(lastWeekStartDate, lastWeekEndDate);
+        ArrayList<Comment> lastWeekComments = getPeriodComments(lastWeekStartDate, lastWeekEndDate);
+        int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+        float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
+
+        //this week data
+        ArrayList<Booking> thisWeekBookings = getPeriodBookings(thisWeekStartDate, thisWeekEndDate);
+        ArrayList<Comment> thisWeekComments = getPeriodComments(thisWeekStartDate, thisWeekEndDate);
+        int thisWeekTotalPpl = thisWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
+        float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
+        thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
+        lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
+
+    }
+
+    public float getLastWeekRate() {
+        return lastWeekLog.getLogRate();
+    }
+
+    public float getThisWeekRate() {
+        return thisWeekLog.getLogRate();
+    }
+
+    public void setLastWeekRank(int rank) {
+        lastWeekLog.setRank(rank);
+    }
+
+    public void setThisWeekRank(int rank) {
+        thisWeekLog.setRank(rank);
+    }
+
+    public int getThisWeekRank() {
+        return thisWeekLog.getLogRank();
+
+    }
+
+    public int getLastWeekRank() {
+        return lastWeekLog.getLogRank();
+
+    }
+
+    public void generateWeeklyReport() {
+
+        StringBuilder report = new StringBuilder();
+
+        report.append("Last week:\n");
+        report.append("Rank: ").append(lastWeekLog.getLogRank()).append("\n");
+        report.append("Rate: ").append(lastWeekLog.getLogRate()).append("\n");
+        report.append("Total ppl: ").append(lastWeekLog.getLogTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : lastWeekLog.getLogComments()) {
+            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
+        }
+
+        report.append("\nThis week:\n");
+        report.append("Rank: ").append(thisWeekLog.getLogRank()).append("\n");
+        report.append("Rate: ").append(thisWeekLog.getLogRate()).append("\n");
+        report.append("Total ppl: ").append(thisWeekLog.getLogTotalPpl()).append("\n");
+        report.append("Comment:\n");
+        for (Comment comment : thisWeekLog.getLogComments()) {
+            report.append(comment.getCommentCustomerName()).append(": ").append(comment.getCommentContent()).append(" ").append(comment.getCommentRate()).append("\n");
+        }
+
+        report.append("\nRank decrease/increase ").append(~(thisWeekLog.getLogRank() - lastWeekLog.getLogRank()) + 1).append("\n");
+        report.append("Rate decrease/increase ").append(thisWeekLog.getLogRate() - lastWeekLog.getLogRate()).append("\n");
+        report.append("Total ppl decrease/increase ").append(thisWeekLog.getLogTotalPpl() - lastWeekLog.getLogTotalPpl()).append("\n");
+
+        System.out.println(report.toString());
+    }
+
+    public boolean takeAttendanceInRestaurant(LocalDate date, String inputSession, int tableID) {
+        for (Booking booking : getAllBookings()) {
+            if (booking.getBookingDate().equals(date) && booking.getBookingTableID() == tableID && booking.getBookingTimeslot().equals(inputSession)) {
+                booking.takeAttendance();
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
