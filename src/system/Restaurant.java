@@ -11,11 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
-import acm.Permission;
-import acm.Privilege;
-import acm.Resource;
 import acm.Role;
 
 public class Restaurant extends Account {
@@ -39,7 +35,7 @@ public class Restaurant extends Account {
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
     public Restaurant(String userName, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
-        super(Arrays.asList(Role.RESTAURANT), userName, password, getRestaurantPermissions());
+        super(Arrays.asList(Role.RESTAURANT), userName, password);
         this.rate = 0;
         this.restaurantName = name;
         this.type = type;
@@ -82,16 +78,6 @@ public class Restaurant extends Account {
         }
     }
 
-    // Permissions for the restaurant
-    private static List<Permission> getRestaurantPermissions() {
-        return Arrays.asList(
-                new Permission(Role.RESTAURANT, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
-                new Permission(Role.RESTAURANT, Resource.VIEW_BOOKING, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
-                new Permission(Role.RESTAURANT, Resource.TABLE_MANAGEMENT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
-                new Permission(Role.RESTAURANT, Resource.WEEKLY_REPORT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE))
-        );
-    }
-
     // public void updateSeatNo(int tableID, int seatNum) {
     //     Table table = allTables.get(tableID - 1);
     //     table.setSeatNum(seatNum);
@@ -117,7 +103,8 @@ public class Restaurant extends Account {
         return 0;
     }
 
-    public void getAllTableInfo() {
+    public StringBuilder getAllTableInfo() {
+        StringBuilder result= new StringBuilder();
         StringBuilder tableID = new StringBuilder("                ");
         StringBuilder seat = new StringBuilder("                ");
         StringBuilder status = new StringBuilder("                ");
@@ -126,9 +113,12 @@ public class Restaurant extends Account {
             seat.append(String.format("| Seat: %-17d ", table.getSeatNum()));
             status.append(String.format("| Status: %-15s ", table.getStatus()));
         }
-        System.out.println(tableID.toString());
-        System.out.println(seat.toString());
-        System.out.println(status.toString());
+
+        result.append(tableID.toString()).append("\n");
+        result.append(seat.toString()).append("\n");
+        result.append(status.toString()).append("\n");
+        System.out.println(result.toString());
+        return result;
     }
 
     public void updateTableInfo(Scanner in, int tableID) {

@@ -45,7 +45,7 @@ public class SignUp {
                         //Input customerContact
                         System.out.print("\nPlease input your phone number: ");
                         String contact = in.nextLine();
-                        server.signUpCustomer(username, password, name, contact);
+                        server.signUp("CUSTOMER", username, password, name, contact, null, null, null, null, null, null, 0);
                         isValidRole = true;
                     }
                     case 2 -> {
@@ -128,7 +128,7 @@ public class SignUp {
                             }
                         }
 
-                        server.signUpRestaurant(username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
+                        server.signUp("RESTAURANT", username, password, name, type, district, address, contact, openTime, closeTime, sessionDuration, tableCount);
                         isValidRole = true;
                     }
                     case 3 -> {

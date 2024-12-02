@@ -48,7 +48,9 @@ public final class SearchCriteria {
     // not using String.compareTo because no normal human would think "eat" is closer to "bibliography" than "seat"
     // return {a, b}: a = score, b = weight
     // precondition: both name and keyword are not null
-    public float[] getWordScore(String name, String keyword) {
+    public float[] getWordScore(String name_og, String keyword_og) {
+        String name = name_og.toLowerCase();
+        String keyword = keyword_og.toLowerCase();
         if (keyword.length() <= 1) {
             float[] result = {name.contains(keyword) ? 1 : 0, 1};
             return result;
@@ -108,40 +110,20 @@ public final class SearchCriteria {
             result += typeScore[0] / typeScore[1];
         }
 
-        // System.out.printf("%s score: %f\n", r.getRestaurantName(), result);
 
         return (int) Math.ceil(result * 100); // higher accuracy for comparator
     }
 
     public ArrayList<Restaurant> searchRestaurantsIn(ArrayList<Restaurant> restaurants){
+        Server server = Server.getInstance();
         ArrayList<Restaurant> result = new ArrayList<>();
         for (Restaurant r : restaurants){
-            // if (restaurantName != null && !r.getRestaurantName().contains(restaurantName)){
-            //     continue;
-            // }
-            // if (district != null && !r.getDistrict().contains(district)){
-            //     continue;
-            // }
-
-            // if (rateRange != null){
-            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getRate()){
-            //         continue;
-            //     }
-            //     int minRate = rateRange.charAt(0) - '0';
-            //     int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
-            //     if (r.getRate() > maxRate || r.getRate() < minRate){
-            //         continue;
-            //     }
-            // }
-            // if (type != null && !type.contains(r.getType())){
-            //     continue;
-            // }
-
             if (getSearchScore(r) == 0) {
                 continue;
             }
 
-            ArrayList<Table> tables = r.getAllTables();
+            // ArrayList<Table> tables = r.getAllTables();
+            ArrayList<Table> tables = server.getAllTablesOf((r));
             for (Table t : tables){
                 boolean status;
                 if (startTime != null){
@@ -155,7 +137,6 @@ public final class SearchCriteria {
                 }
             }
         }
-            // if (ppl >0 && ppl < r.get)
 
         Comparator<Restaurant> sorter = new Comparator<Restaurant>() {
             @Override

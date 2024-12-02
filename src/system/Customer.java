@@ -4,13 +4,8 @@ import java.time.LocalDate;
 // Other imports as needed
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
-import acm.Permission;
-import acm.Privilege;
-import acm.Resource;
 import acm.Role;
 
 public class Customer extends Account {
@@ -22,18 +17,9 @@ public class Customer extends Account {
     private final ArrayList<Booking> allBookings = new ArrayList<>();
 
     public Customer(String userName, String password, String name, String contact) {
-        super(Arrays.asList(Role.CUSTOMER), userName, password, getCustomerPermissions());
+        super(Arrays.asList(Role.CUSTOMER), userName, password);
         this.customerName = name;
         this.customerContact = contact;
-    }
-
-    // Permissions for the customer
-    private static List<Permission> getCustomerPermissions() {
-        return Arrays.asList(
-                new Permission(Role.CUSTOMER, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
-                new Permission(Role.CUSTOMER, Resource.VIEW_BOOKING, Set.of(Privilege.READ)),
-                new Permission(Role.CUSTOMER, Resource.SEARCH_RESTAURANT, Set.of(Privilege.READ))
-        );
     }
 
     public String getCustomerName() {

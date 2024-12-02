@@ -22,122 +22,182 @@ import system.Server;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import system.Account;
 
 
 public class SearchRestaurantTestDavid {
+    Restaurant restaurant1;
+    Restaurant restaurant2;
+    Restaurant restaurant3;
+    Restaurant eat;
+    Restaurant eateat;
+    Restaurant ea;
+    Customer customer;
+    Server server = Server.getInstance();
+
+
+    @Before
+    public void setUp(){
+        restaurant1 = new Restaurant("timeat",
+            "password",
+            "Tim Eat",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            (LocalTime.parse("10:00")),
+            (LocalTime.parse("20:00")),
+            Duration.ofMinutes(60),
+            3);
+
+        restaurant2 = new Restaurant("ericeat",
+            "password",
+            "Eric Eats",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            (LocalTime.parse("09:00")),
+            (LocalTime.parse("21:00")),
+            Duration.ofMinutes(120),
+            3);
+
+        restaurant3 = new Restaurant("dinadine",
+            "password",
+            "Dina Dine",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            (LocalTime.parse("10:30")),
+            (LocalTime.parse("20:30")),
+            Duration.ofMinutes(30),
+            3);
+
+        eat = new Restaurant("Eat",
+            "password",
+            "Eat",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            (LocalTime.parse("10:00")),
+            (LocalTime.parse("20:00")),
+            Duration.ofMinutes(60),
+            3);
+            
+        eateat = new Restaurant("EatEat",
+            "password",
+            "EatEat",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            (LocalTime.parse("10:00")),
+            (LocalTime.parse("20:00")),
+            Duration.ofMinutes(60),
+            3);
+        ea = new Restaurant("ea",
+            "password",
+            "Ea",
+            "type",
+            "district",
+            "address",
+            "12345678",
+            (LocalTime.parse("10:00")),
+            (LocalTime.parse("20:00")),
+            Duration.ofMinutes(60),
+            3);
+        customer = new Customer("username", "pass", "tim", "123456789");
+    }
+
+
     @Test
-    public void test_search_exact_name1() {
-        Restaurant restaurant1 = new Restaurant("timeat",
-                "password",
-                "Tim Eat",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                (LocalTime.parse("10:00")),
-                (LocalTime.parse("20:00")),
-                Duration.ofMinutes(60),
-                3);
-
-        Restaurant restaurant2 = new Restaurant("ericeat",
-                "password",
-                "Eric Eats",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                (LocalTime.parse("09:00")),
-                (LocalTime.parse("21:00")),
-                Duration.ofMinutes(120),
-                3);
-
-        Restaurant restaurant3 = new Restaurant("dinadine",
-                "password",
-                "Dina Dine",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                (LocalTime.parse("10:30")),
-                (LocalTime.parse("20:30")),
-                Duration.ofMinutes(30),
-                3);
-
-        // ArrayList<Restaurant> restList = new ArrayList<>();
-        // restList.add(restaurant1);
-        // restList.add(restaurant2);
-        // restList.add(restaurant3);
-
-        Customer customer = new Customer("username", "pass", "tim", "123456789");
-        Server server = Server.getInstance();
+    public void test_search_exact_name() {
         server.addRestaurantAccount(restaurant1);
         server.addRestaurantAccount(restaurant2);
         server.addRestaurantAccount(restaurant3);
-                
-        SearchRestaurant search = new SearchRestaurant(customer);
-        String user_input = "Dina Dine\nnull\nnull\nnull\nnull\nnull\nbull\nnull\nX";
-        Scanner in = new Scanner(user_input);
-        ArrayList<Restaurant> result = search.displaySearchRestaurnt(in);
+        ArrayList<Restaurant> result = server.searchRestaurantsIn("Dina Dine", "null", "null", "null", "null", "null", "null");
         assertEquals(restaurant3, result.get(0));
-        //assertEquals(restList.get(1), result.get(1));
-        //assertEquals(restList.get(2), result.get(2));
     }
+
+    @Test
+    public void test_search_name_keyword() {
+        server.addRestaurantAccount(eat);
+        server.addRestaurantAccount(eateat);
+        server.addRestaurantAccount(ea);
+        ArrayList<Restaurant> expected = new ArrayList<>();
+        expected.add(eat);
+        expected.add(eateat);
+        expected.add(ea);
+        
+        ArrayList<Restaurant> result = server.searchRestaurantsIn("eat", "null", "null", "null", "null", "null", "null");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void test_search_district_keyword() {
+        server.addRestaurantAccount(eat);
+        server.addRestaurantAccount(eateat);
+        server.addRestaurantAccount(ea);
+        ArrayList<Restaurant> expected = new ArrayList<>();
+        expected.add(eat);
+        expected.add(eateat);
+        expected.add(ea);
+        
+        ArrayList<Restaurant> result = server.searchRestaurantsIn("eat", "null", "null", "null", "null", "null", "null");
+        assertEquals(expected, result);
+    }
+
 
     @Test
     public void test_rating_range() {
-        Restaurant restaurant1 = new Restaurant("timeat",
-                "password",
-                "Tim Eat",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                (LocalTime.parse("10:00")),
-                (LocalTime.parse("20:00")),
-                Duration.ofMinutes(60),
-                3);
+        restaurant1.setRate((float)1.2);
+        restaurant2.setRate((float)4.5);
+        restaurant3.setRate((float)3.9);
 
-        Restaurant restaurant2 = new Restaurant("ericeat",
-                "password",
-                "Eric Eats",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                (LocalTime.parse("09:00")),
-                (LocalTime.parse("21:00")),
-                Duration.ofMinutes(120),
-                3);
-
-        Restaurant restaurant3 = new Restaurant("dinadine",
-                "password",
-                "Dina Dine",
-                "type",
-                "district",
-                "address",
-                "12345678",
-                (LocalTime.parse("10:30")),
-                (LocalTime.parse("20:30")),
-                Duration.ofMinutes(30),
-                3);
-
-        // ArrayList<Restaurant> restList = new ArrayList<>();
-        // restList.add(restaurant1);
-        // restList.add(restaurant2);
-        // restList.add(restaurant3);
-
-        Customer customer = new Customer("username", "pass", "tim", "123456789");
-        Server server = Server.getInstance();
         server.addRestaurantAccount(restaurant1);
         server.addRestaurantAccount(restaurant2);
         server.addRestaurantAccount(restaurant3);
                 
-        SearchRestaurant search = new SearchRestaurant(customer);
-        String user_input = "Dina Dine\nnull\nnull\nnull\nnull\nnull\nbull\nnull\nX";
-        Scanner in = new Scanner(user_input);
-        ArrayList<Restaurant> result = search.displaySearchRestaurnt(in);
-        assertEquals(restaurant3, result.get(0));
-        //assertEquals(restList.get(1), result.get(1));
-        //assertEquals(restList.get(2), result.get(2));
+        ArrayList<Restaurant> result = server.searchRestaurantsIn("null", "null", "2--5", "null", "null", "null", "null");
+
+        assertEquals(true, result.get(0) == restaurant2 && result.get(1) == restaurant3 && result.size()==2 && !result.contains(restaurant1));
     }
+
+    // @Test
+    // public void test_valid_rating_null() {
+
+
+    //     restaurant1.setRate((float)1.2);
+    //     server.addRestaurantAccount(restaurant1);
+
+        
+                
+    //     SearchRestaurant search = new SearchRestaurant(customer);
+    //     String user_input = "null\nnull\nnull\n987\n2-5\nnull\nnull\nnull\nbull\nnull\nX";
+    //     Scanner in = new Scanner(user_input);
+    //     ArrayList<Restaurant> result = search.displaySearchRestaurnt(in);
+
+        
+    // }
+
+    // @Test
+    // public void test_valid_rating_singleDigit() {
+
+    //     restaurant1.setRate((float)1.2);
+
+    //     Customer customer = new Customer("username", "pass", "tim", "123456789");
+    //     Server server = Server.getInstance();
+    //     server.addRestaurantAccount(restaurant1);
+
+        
+                
+    //     SearchRestaurant search = new SearchRestaurant(customer);
+    //     String user_input = "null\nnull\nnull\n987\n2-5\n3\nnull\nnull\nbull\nnull\nX";
+    //     Scanner in = new Scanner(user_input);
+    //     ArrayList<Restaurant> result = search.displaySearchRestaurnt(in);
+
+        
+    // }
 }
