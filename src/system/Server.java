@@ -185,7 +185,7 @@ public class Server {
         return resultList;
     }
     public ArrayList<Table> getAllTablesOf(Restaurant restaurant) {
-        return restaurant.getAllTables();
+        return restaurant.getRestaurantAllTables();
     }
 
     public String getListInfo(String userName) {

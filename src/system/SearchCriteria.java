@@ -116,32 +116,13 @@ public final class SearchCriteria {
     public ArrayList<Account> searchRestaurantsIn(ArrayList<Account> restaurants) {
         ArrayList<Account> result = new ArrayList<>();
         for (Account r : restaurants) {
-            // if (restaurantName != null && !r.getRestaurantName().contains(restaurantName)){
-            //     continue;
-            // }
-            // if (district != null && !r.getDistrict().contains(district)){
-            //     continue;
-            // }
-
-            // if (rateRange != null){
-            //     if (rateRange.length() == 1 && rateRange.charAt(0)-'0' != (int)r.getAccountRate()){
-            //         continue;
-            //     }
-            //     int minRate = rateRange.charAt(0) - '0';
-            //     int maxRate = rateRange.charAt(rateRange.length()-1) - '0';
-            //     if (r.getAccountRate() > maxRate || r.getAccountRate() < minRate){
-            //         continue;
-            //     }
-            // }
-            // if (type != null && !type.contains(r.getAccountType())){
-            //     continue;
-            // }
+            Server server = Server.getInstance(); 
             if (getSearchScore(r) == 0) {
                 continue;
             }
 
             // ArrayList<Table> tables = r.getAllTables();
-            ArrayList<Table> tables = server.getAllTablesOf((r));
+            ArrayList<Table> tables = server.getAllTablesOf(((Restaurant)r));
             for (Table t : tables){
                 boolean status;
                 if (startTime != null) {
