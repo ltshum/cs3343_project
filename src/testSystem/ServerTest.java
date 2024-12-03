@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import acm.Permission;
+import acm.PermissionRegistry;
 import acm.Privilege;
 import acm.Resource;
 import acm.Role;
@@ -28,19 +31,33 @@ import system.Server;
 public class ServerTest {
 
 	 Server server;
-     Customer customer;
+     Account customer;
     InputStream systemIn = System.in;
-    Restaurant restaurant;
+    Account restaurant;
     Scanner scanner;
 
     @Before
     public void setUp() {
         server = Server.getInstance();
-        server.reset();
-        restaurant = new Restaurant("Test Restaurant", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+        restaurant = new Restaurant("TestRestaurant", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
         customer = new Customer("TestUser", "password", "Test Name", "123456789");
         server.addAccount(restaurant); 
         server.addAccount(customer);
+        restaurant.getAccountPermissions();
+        customer.getAccountPermissions();
+          PermissionRegistry.registerPermissions(Role.RESTAURANT, Arrays.asList(
+                new Permission(Role.RESTAURANT, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
+                new Permission(Role.RESTAURANT, Resource.VIEW_BOOKING, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
+                new Permission(Role.RESTAURANT, Resource.TABLE_MANAGEMENT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
+                new Permission(Role.RESTAURANT, Resource.WEEKLY_REPORT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE))
+            ));
+
+            PermissionRegistry.registerPermissions(Role.CUSTOMER, Arrays.asList(
+                new Permission(Role.CUSTOMER, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
+                new Permission(Role.CUSTOMER, Resource.VIEW_BOOKING, Set.of(Privilege.READ)),
+                new Permission(Role.CUSTOMER, Resource.SEARCH_RESTAURANT, Set.of(Privilege.READ))
+            ));
+
         // Assuming there's a method to add restaurant
     }
     @After
@@ -49,20 +66,29 @@ public class ServerTest {
         scanner.close();
     	}
         System.setIn(systemIn);
+        server.reset();
     }
     
     public void setInput(String[] in) {
         scanner = testInput.input(in);
     }
 
-  
+  @Test
+  public void getetAccountByUserNamenull() {
+	  assertNull(server.getAccountByUserName("Hello"));
+  }
     @Test
     public void testSignUpCustomer() {
         Account result = server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
+        server.addAccount(result);
+        List<Role> newRoles = Arrays.asList(Role.CUSTOMER);
+        result.setRoles(newRoles);
         assertNotNull(result);
-        // Verify that the customer was added correctly
+        assertTrue(result instanceof Customer);
+
     }
-    
+
+   
     @Test
     public void testgetuseranme() {
         assertEquals("TestUser",server.getUserName(customer));
@@ -76,9 +102,8 @@ public class ServerTest {
     }
     @Test
     public void testgetAccountByUserName() {
-    	server.getAccountByUserName("TestUser");
-    	assertEquals(customer,server.getAccountByUserName("TestUser"));
-
+        String temp=server.getAccountByUserName("TestUser").getAccountUserName();
+    	assertEquals(customer.getAccountUserName(),temp);
     }
 
     @Test
@@ -99,6 +124,22 @@ public class ServerTest {
         String account = server.signIn("testUser12", "password");
         assertNull(account);
     }
+    @Test
+public void testSearchAccountById() {
+    // Test valid account ID for restaurant
+    Account foundRestaurant = server.searchAccountById(restaurant.getId());
+    assertNotNull("Should find the restaurant account", foundRestaurant);
+    assertEquals("Test", foundRestaurant.getAccountName());
+
+    // Test valid account ID for customer
+    Account foundCustomer = server.searchAccountById(customer.getId());
+    assertNotNull("Should find the customer account", foundCustomer);
+    assertEquals("TestUser", foundCustomer.getAccountUserName());
+
+    // Test invalid account ID
+    Account notFound = server.searchAccountById(-1); // Assuming -1 is an invalid ID
+    assertNull("Should not find any account for invalid ID", notFound);
+}
 
     @Test
     public void testSignInInvalid3() {
@@ -109,7 +150,7 @@ public class ServerTest {
     @Test
     public void testAddRestaurant() {
     	server.addAccount(restaurant);
-    	assertEquals(0,server.getAccountList().size());
+    	assertEquals(3,server.getAccountList().size());
     }
 
 //    @Test
@@ -131,12 +172,12 @@ public class ServerTest {
     	String[] input = { "10"};
 		setInput(input);
         server.updateTableInfo(restaurant.getAccountUserName(),scanner,1 );
-        assertEquals(10,restaurant.getRestaurantAllTables().get(0).getSeatNum());//        // Verify the update
+        assertEquals(10,restaurant.getAccountAllTables().get(0).getSeatNum());//        // Verify the update
     }
 	
 	@Test
 	public void TestaddRestaurantAccount() {
-		server.addRestaurantAccount(restaurant);
+		server.addRestaurantAccount((Restaurant)restaurant);
 		assertEquals(restaurant.getAccountName(),server.getRestaurantAccounts().get(0).getAccountName());
 		}
 	
@@ -165,13 +206,13 @@ public class ServerTest {
 
     @Test
     public void testIsUsernameExist() {
-        server.addRestaurantAccount(restaurant);
-        assertTrue(server.isUsernameExist("Test Restaurant"));
+        server.addRestaurantAccount((Restaurant)restaurant);
+        assertTrue(server.isUsernameExist("TestRestaurant"));
     }
     
     @Test
     public void testIsUsernameExist2() {
-        server.addRestaurantAccount(restaurant);
+        server.addRestaurantAccount((Restaurant)restaurant);
         server.addAccount(customer);
         assertFalse(server.isUsernameExist("TestUser1"));
     }
@@ -180,7 +221,7 @@ public class ServerTest {
 //
    @Test
     public void testGetUserDetail() {
-        server.addRestaurantAccount(restaurant);
+        server.addRestaurantAccount((Restaurant)restaurant);
         String res="Rate: " + "0.0"
                 + "\nRestaurant Name: " + "Test"
                 + "\nType: " + "Cuisine"
@@ -204,7 +245,7 @@ public class ServerTest {
                 "19:00 - 20:00 \n"+
                 "20:00 - 21:00 \n"
                 + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
-        String details = server.getUserDetail(restaurant.getAccountName());
+        String details = server.getUserDetail(restaurant.getAccountUserName());
         assertEquals(res,details);
     }
 //
@@ -212,7 +253,7 @@ public class ServerTest {
     public void testUpdateRestaurantDetail() {
 	   String[] input = { "5", "735759", "X"};
 		setInput(input);
-        server.addRestaurantAccount(restaurant);
+        server.addRestaurantAccount((Restaurant)restaurant);
         server.updateUserDetail(restaurant.getAccountUserName(), scanner);
         assertEquals("735759", restaurant.getAccountContact());
     }
@@ -221,15 +262,29 @@ public class ServerTest {
    public void testUpdateCustomerDetail() {
 	   String[] input = { "5", "735759", "X"};
 		setInput(input);
-       server.addRestaurantAccount(restaurant);
-       server.updateUserDetail(restaurant.getAccountName(), scanner);
+       server.addRestaurantAccount((Restaurant)restaurant);
+       server.updateUserDetail(restaurant.getAccountUserName(), scanner);
        assertEquals("735759", restaurant.getAccountContact());
+   }
+
+   @Test
+   public void testgetpermission(){
+
+    List<Permission> permissions= restaurant.getAccountPermissions();
+    assertEquals(4,permissions.size());
+
    }
    @Test
    public void testgetPermissionNumber1() {
-	   assertEquals(4,server.getPermissionNumber(restaurant.getAccountUserName()));
+    assertEquals(4,server.getPermissionNumber(restaurant.getAccountUserName()));
+
    }
    
+   @Test
+   public void testgetRestaurantBookingDetail1() {
+	   assertEquals("Restaurant not found.",server.getRestaurantBookingDetail("Hello"));
+   }
+
   
    @Test
    public void testgetPermissionNumber2() {
@@ -258,11 +313,11 @@ public class ServerTest {
 	
 	@Test
 	public void testgetPermissionNumber11() {
-	assertEquals(5,server.getPermissionNumber(restaurant.getAccountUserName()));
+	assertEquals(4,server.getPermissionNumber(restaurant.getAccountUserName()));
 	}
 	@Test
 	public void testgetPermissionNumber21() {
-	assertEquals(4,server.getPermissionNumber(customer.getAccountUserName()));
+	assertEquals(3,server.getPermissionNumber(customer.getAccountUserName()));
 	}
 	
 	
@@ -291,22 +346,22 @@ public class ServerTest {
 	public void testgetViewBookingRecord1() {
 	LocalDate differentDate = LocalDate.of(2023, 11, 26);
 	LocalDate bookingDate=LocalDate.now();
-	Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant,customer,customer.getAccountContact(),2);
+	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant.getAccountName(),restaurant.getAccountUserName(),customer.getAccountName(),customer.getAccountContact(),2);
 	restaurant.addBooking(booking);
 	customer.addBooking(booking);
-	int cusbooking =server.getViewBookingRecord(customer, bookingDate);
-	int restbooking = server.getViewBookingRecord(restaurant, bookingDate);
-	assertEquals( 0, cusbooking);
+	int cusbooking =server.getViewBookingRecord(customer.getAccountUserName(), bookingDate);
+	int restbooking = server.getViewBookingRecord(restaurant.getAccountUserName(), bookingDate);
+	assertEquals( 1, cusbooking);
 	assertEquals( cusbooking, restbooking);
 	}
 	@Test
 	public void testgetViewBookingRecord2() {
 	LocalDate bookingDate=LocalDate.now();
-	Booking booking = new Booking(bookingDate,1,"12:00-13:00",restaurant,customer,customer.getCustomerContact(),2);
+	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant.getAccountName(),restaurant.getAccountUserName(),customer.getAccountName(),customer.getAccountContact(),2);
 	restaurant.addBooking(booking);
 	customer.addBooking(booking);
-	int cusbooking =server.getViewBookingRecord(customer, bookingDate);
-	int restbooking = server.getViewBookingRecord(restaurant, bookingDate);
+	int cusbooking =server.getViewBookingRecord(customer.getAccountUserName(), bookingDate);
+	int restbooking = server.getViewBookingRecord(restaurant.getAccountUserName(), bookingDate);
 	assertEquals( 1, cusbooking);
 	assertEquals( cusbooking, restbooking);
 	}
@@ -325,7 +380,7 @@ public class ServerTest {
 	@Test
 	public void testtakeattendance() {
 	LocalDate bookingDate=LocalDate.now();
-	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant.getAccountUserName(),restaurant.getAccountName(),customer.getAccountUserName(),customer.getAccountContact(),2);
+	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant.getAccountName(),restaurant.getAccountUserName(),customer.getAccountName(),customer.getAccountContact(),2);
 	restaurant.addBooking(booking);
 	assertTrue(server.takeAttendance(restaurant.getAccountUserName(), bookingDate, "12:00 - 13:00", 1));
 	assertFalse(server.takeAttendance(restaurant.getAccountUserName(), bookingDate, "13:00 - 14:00", 1));
@@ -333,7 +388,21 @@ public class ServerTest {
 	assertFalse(server.takeAttendance(restaurant.getAccountUserName(), bookingDate.plusDays(1),"13:00 - 14:00", 1));
 	assertFalse(server.takeAttendance(restaurant.getAccountUserName(), bookingDate, "13:00 - 14:00", 6));
 	}
-	
+	@Test
+	public void searchAccountById() {
+		server.searchAccountById(2);
+		server.searchAccountById(100);
+	}
+	@Test
+	public void testisRestaurantByUsername() {
+		assertFalse(server.isRestaurantByUsername("TestUser"));
+		assertTrue(server.isRestaurantByUsername("TestRestaurant"));
+	}
+	@Test
+	public void testisCustomerByUsername() {
+		assertTrue(server.isCustomerByUsername("TestUser"));
+		assertFalse(server.isCustomerByUsername("TestRestaurant"));
+	}
 	@Test
 	public void testgetListInfo() {
 	String res="Test"
@@ -346,10 +415,10 @@ public class ServerTest {
 	@Test
     public void testGetRestaurantAccountByUserName() {
         // Test for an existing username
-		server.addRestaurantAccount(restaurant);
-        Account account = server.getRestaurantAccountByUserName("Test Restaurant");
+		server.addRestaurantAccount((Restaurant)restaurant);
+        Account account = server.getRestaurantAccountByUserName("TestRestaurant");
         assertNotNull(account);
-        assertEquals("Test Restaurant", account.getAccountUserName());
+        assertEquals("TestRestaurant", account.getAccountUserName());
 
         // Test for a non-existing username
         Account account2 = server.getRestaurantAccountByUserName("NonExistentUser");
@@ -367,35 +436,24 @@ public class ServerTest {
 	@Test 
 	public void testgetRestaurantBookingDetail2() {
         Restaurant temp = new Restaurant("Test ", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
-		server.addRestaurantAccount(restaurant);
+		server.addRestaurantAccount((Restaurant)restaurant);
 		server.getRestaurantBookingDetail(restaurant.getAccountUserName());
-		server.getRestaurantBookingDetail(temp.getAccountUserName());
+	}
+	@Test
+	public void testgenerateAccountWeeklyReport() {
+		server.generateAccountWeeklyReport(restaurant.getAccountUserName());
 	}
 		@Test 
 	public void testmakeBooking() {
-        Restaurant temp = new Restaurant("", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
-        server.addRestaurantAccount(temp);
-        Restaurant account2 = (Restaurant)server.getRestaurantAccountByUserName("NonExistentUser");
-        server.makeBooking(LocalDate.now(),1,"12:00 - 13:00 ",restaurant.getAccountName(),restaurant.getAccountUserName(),customer.getAccountName(),customer.getAccountContact(),1);
-        server.makeBooking(LocalDate.now(),1,"12:00 - 13:00" ,temp,customer,customer.getAccountContact(),1);
-		
+        server.makeBooking(LocalDate.now(),1,"12:00 - 13:00 ",restaurant.getAccountUserName(),customer.getAccountUserName(),customer.getAccountContact(),1);		
 	}
 		
 
-	    @Test
-	    public void testMakeBooking_RestaurantNotFound() {
-	        Restaurant tempRestaurant = new Restaurant("NonExistentUser", "testPass", "Nonexistent",
-	                                                   "Cuisine", "District", "Address",
-	                                                   "Contact", LocalTime.parse("09:00"),
-	                                                   LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
-	       
-	        String result = server.makeBooking(LocalDate.now(), 1, "12:00 - 13:00", tempRestaurant, customer, customer.getCustomerContact(), 1);
-	        assertEquals("Restaurant not found.", result);
-	    }
+
 	@Test
 	public void testgetalltableinfo() {
-		server.addRestaurantAccount(restaurant);
-		server.getAllTableInfo(restaurant);
+		server.addRestaurantAccount((Restaurant)restaurant);
+		server.getAllTableInfo(restaurant.getAccountUserName());
 	}
 	
 //	@Test
@@ -420,7 +478,7 @@ public class ServerTest {
     @Test 
     public void testcheckHasAttend(){
     	LocalDate bookingDate=LocalDate.now();
-    	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant,customer,customer.getCustomerContact(),2);
+    	Booking booking = new Booking(bookingDate,1,"12:00 - 13:00",restaurant.getAccountName(),restaurant.getAccountUserName(),customer.getAccountName(),customer.getAccountContact(),2);
     	customer.addBooking(booking);
     	booking.hasArrived();
     	server.checkHasAttend(customer.getAccountUserName(), 1, bookingDate);
@@ -453,8 +511,21 @@ public class ServerTest {
 		String[] input = {"9", "4", "X"};
         setInput(input);
         restaurant.edit(scanner);
-        server.addRestaurantAccount(restaurant);
+        server.addRestaurantAccount((Restaurant)restaurant);
 		server.availableTableID(restaurant.getAccountUserName(), 1,"12:00 - 13:00",LocalDate.now());
+	}
+	
+	@Test
+	public void testgetviewbookingrecord() {
+		LocalDate differentDate = LocalDate.of(2023, 11, 26);
+		LocalDate bookingDate=LocalDate.now();
+		Booking booking = new Booking(differentDate,1,"12:00-13:00",restaurant.getAccountName(),restaurant.getAccountUserName(),customer.getAccountName(),customer.getAccountContact(),2);
+		restaurant.addBooking(booking);
+		customer.addBooking(booking);
+		int cusbooking =server.getViewBookingRecord(customer.getAccountUserName(), bookingDate);
+		int restbooking = server.getViewBookingRecord(restaurant.getAccountUserName(), bookingDate);
+		assertEquals( 0, cusbooking);
+		assertEquals( cusbooking, restbooking);
 	}
 }
 
@@ -564,4 +635,5 @@ public class ServerTest {
 ////    // Add more tests as necessary for other methods in Server
 //
 //}
+
 //	
