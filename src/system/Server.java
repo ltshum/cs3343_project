@@ -203,8 +203,8 @@ public class Server {
     }
 
     public String getRestaurantBookingDetail(String userName) {
-        Account restaurant = getAccountByUserName(userName);
-        Account requiredRestaurant = getRestaurantAccountByUserName(restaurant.getAccountUserName());
+//        Account restaurant = getAccountByUserName(userName);
+        Account requiredRestaurant = getRestaurantAccountByUserName(userName);
         if (requiredRestaurant != null) {
             return requiredRestaurant.getProfileDetail();
         }
@@ -230,7 +230,7 @@ public class Server {
 
         Account restaurant = getAccountByUserName(restaurantUserName);
         Account customer = getAccountByUserName(customerUserName);
-        Booking booking = new Booking(date, tableID, bookSession, restaurant.getAccountName(), restaurantUserName, customer.getAccountName(), contact, ppl);
+        Booking booking = new Booking(date, tableID, bookSession, restaurant.getAccountName(), restaurantUserName, customer.getAccountName(), customer.getAccountContact(), ppl);
         restaurant.addBooking(booking);
         customer.addBooking(booking);
         return "\nAlready booked a seat for you";
