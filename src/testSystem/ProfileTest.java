@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import View.Profile;
-import system.Account;
 import system.Server;
 
 public class ProfileTest {
@@ -25,8 +24,7 @@ public class ProfileTest {
     public void TestUpdateProfile(){
         String[] in = {"1\nX\n2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
-        Profile profile = new Profile(customer);
+        Profile profile = new Profile("1");
         profile.displayProfile(input);
     }
 
@@ -34,8 +32,15 @@ public class ProfileTest {
     public void TestBack(){
         String[] in = {"2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
-        Profile profile = new Profile(customer);
+        Profile profile = new Profile("1");
+        profile.displayProfile(input);
+    }
+
+    @Test
+    public void TestRestaurant(){
+        String[] in = {"2\n4\n3\n"};
+        Scanner input = testInput.input(in);
+        Profile profile = new Profile("2");
         profile.displayProfile(input);
     }
 
@@ -43,8 +48,7 @@ public class ProfileTest {
     public void TestInvalidNumber(){
         String[] in = {"8\n2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
-        Profile profile = new Profile(customer);
+        Profile profile = new Profile("1");
         profile.displayProfile(input);
     }
 
@@ -52,8 +56,7 @@ public class ProfileTest {
     public void TestInvalidInput(){
         String[] in = {"test\n2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
-        Profile profile = new Profile(customer);
+        Profile profile = new Profile("1");
         profile.displayProfile(input);
     }
 }
