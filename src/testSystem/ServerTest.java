@@ -21,10 +21,13 @@ import acm.PermissionRegistry;
 import acm.Privilege;
 import acm.Resource;
 import acm.Role;
+import java.util.ArrayList;
 import system.Account;
 import system.Booking;
+import system.Comment;
 import system.Customer;
 import system.Restaurant;
+import system.RestaurantLog;
 import system.Server;
 
 
@@ -43,6 +46,7 @@ public class ServerTest {
         customer = new Customer("TestUser", "password", "Test Name", "123456789");
         server.addAccount(restaurant); 
         server.addAccount(customer);
+        server.addRestaurantAccount((Restaurant)restaurant);
         restaurant.getAccountPermissions();
         customer.getAccountPermissions();
           PermissionRegistry.registerPermissions(Role.RESTAURANT, Arrays.asList(
@@ -163,7 +167,7 @@ public void testSearchAccountById() {
     public void testSearchRestaurantsIn() {
         server.addAccount(restaurant);
         var results = server.searchRestaurantsIn("Test Restaurant", "District", "null", "Cuisine", "null", "null", "null");
-        assertTrue(results.isEmpty());
+        assertFalse(results.isEmpty());
     }
 
     @Test
@@ -441,6 +445,30 @@ public void testSearchAccountById() {
 	}
 	@Test
 	public void testgenerateAccountWeeklyReport() {
+         LocalDate thisWeekStartDate = LocalDate.now();
+    LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+    LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+    LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+    Booking booking = new Booking(thisWeekStartDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+    restaurant.addBooking(booking);
+    restaurant.addBooking(new Booking(thisWeekStartDate, 1, "12:00-13:00", 
+    "Test Restaurant", "user", "customer1", "123456789", 4));
+    restaurant.addBooking(new Booking(thisWeekEndDate, 1, "12:00-13:00", 
+    "Test Restaurant", "user", "customer1", "123456789", 4));
+    restaurant.addBooking(new Booking(lastWeekEndDate, 1, "12:00-13:00", 
+    "Test Restaurant", "user", "customer1", "123456789", 3));
+
+    // Create a new instance of Restaurant (if needed)
+    
+
+    // Add comments for last week
+    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate));
+
+    // Add comments for this week
+    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate)); // Use start date if today is not the end date
+    ((Restaurant) restaurant).generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 		server.generateAccountWeeklyReport(restaurant.getAccountUserName());
 	}
 		@Test 
@@ -527,7 +555,98 @@ public void testSearchAccountById() {
 		assertEquals( 0, cusbooking);
 		assertEquals( cusbooking, restbooking);
 	}
-}
+    @Test
+    public void generateAccountLog(){
+        LocalDate thisWeekStartDate = LocalDate.now();
+        LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+        LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+        LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+        Booking booking = new Booking(thisWeekStartDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+        restaurant.addBooking(booking);
+        restaurant.addBooking(new Booking(thisWeekStartDate, 1, "12:00-13:00", 
+        "Test Restaurant", "user", "customer1", "123456789", 4));
+        restaurant.addBooking(new Booking(thisWeekEndDate, 1, "12:00-13:00", 
+        "Test Restaurant", "user", "customer1", "123456789", 4));
+        restaurant.addBooking(new Booking(lastWeekEndDate, 1, "12:00-13:00", 
+        "Test Restaurant", "user", "customer1", "123456789", 3));
+    
+        // Create a new instance of Restaurant (if needed)
+        
+    
+        // Add comments for last week
+        ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+        ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate));
+    
+        // Add comments for this week
+        ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+        ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate)); // Use start date if today is not the end date
+        ((Restaurant) restaurant).generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
+        server.generateAccountLog();
+    }
+   
+//        @Test
+//public void testCalAndSetRestaurantRank() {
+//    // Setup: Create restaurants with different rates for last week and this week
+//    Restaurant restaurantA = new Restaurant("A", "1", "A", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
+//     thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
+//        lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
+//    restaurantA.setRestaurantLastWeekRate(4.5);
+//    restaurantA.setRestaurantThisWeekRate(4.0);
+//    
+//    Restaurant restaurantB = new Restaurant("B", "2", "B", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
+//    restaurantB.setRestaurantLastWeekRate(3.5);
+//    restaurantB.setRestaurantThisWeekRate(5.0);
+//    
+//    Restaurant restaurantC = new Restaurant("C", "3", "C", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
+//    restaurantC.setRestaurantLastWeekRate(4.5); // Tie with restaurantA
+//    restaurantC.setRestaurantThisWeekRate(4.0); // Tie with restaurantA
+//                 ArrayList<Account> accounts;
+//
+//    // Add restaurants to the accounts list
+//    accounts.add(restaurantA);
+//    accounts.add(restaurantB);
+//    accounts.add(restaurantC);
+//
+//    // Test ranking by last week rate
+//    server.calAndSetRestaurantRank(accounts, "lastWeekRate");
+//    assertEquals(1, restaurantA.getRestaurantLastWeekRank());
+//    assertEquals(2, restaurantB.getRestaurantLastWeekRank());
+//    assertEquals(1, restaurantC.getRestaurantLastWeekRank()); // Tied with A
+//
+//    // Clear previous rankings
+//    accounts.forEach(account -> account.setRestaurantLastWeekRank(0));
+//
+//    // Test ranking by this week rate
+//    server.calAndSetRestaurantRank(accounts, "thisWeekRate");
+//    assertEquals(2, restaurantA.getRestaurantThisWeekRank()); // Lower rate than B
+//    assertEquals(1, restaurantB.getRestaurantThisWeekRank()); // Highest rate
+//    assertEquals(2, restaurantC.getRestaurantThisWeekRank()); // Tied with A
+//
+//    // Test with all equal rates
+//    Restaurant restaurantD = new Restaurant("D", "4", "D", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
+//    restaurantD.setRestaurantLastWeekRate(4.0);
+//    restaurantD.setRestaurantThisWeekRate(4.0);
+//    
+//    accounts.add(restaurantD);
+//
+//    // Test ranking when all rates are equal
+//    server.calAndSetRestaurantRank(accounts, "lastWeekRate");
+//    assertEquals(1, restaurantA.getRestaurantLastWeekRank());
+//    assertEquals(1, restaurantB.getRestaurantLastWeekRank());
+//    assertEquals(1, restaurantC.getRestaurantLastWeekRank());
+//    assertEquals(1, restaurantD.getRestaurantLastWeekRank()); // All tied
+//
+//    // Test with empty account list
+//    server.calAndSetRestaurantRank(new ArrayList<>(), "lastWeekRate"); // Should not throw any exceptions
+//
+//    // Test with a single account
+//    ArrayList<Account> singleAccountList = new ArrayList<>();
+//    singleAccountList.add(restaurantA);
+//    server.calAndSetRestaurantRank(singleAccountList, "lastWeekRate");
+//    assertEquals(1, restaurantA.getRestaurantLastWeekRank()); // Should rank as 1
+//}
+    }
+//}
 
 //	@Test
 //	public void testCheckHasAttendBookingArrived_NoBooking() {

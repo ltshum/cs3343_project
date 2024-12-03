@@ -353,7 +353,7 @@ public class Server {
     }
 
     public void generateAccountWeeklyReport(String restaurantUsername) {
-        Account restaurant = getRestaurantAccountByUserName(restaurantUsername);
+        Account restaurant = getAccountByUserName(restaurantUsername);
         restaurant.generateRestaurantWeeklyReport();
     }
 
