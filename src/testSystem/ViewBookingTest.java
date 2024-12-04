@@ -131,7 +131,7 @@ public class ViewBookingTest {
 	
 	@Test
 	public void testMakeCommentInRestaurantAccount() {
-		String[] in = { "1\n3\nGood\nX" };
+		String[] in = { "1", "X" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(restaurantAccount.getAccountUserName());
 		viewBooking.displayViewBooking(input);
