@@ -62,8 +62,9 @@ public class BookingProfile {
 
                             }
 
-                            System.out.print("What is your contact number: ");
-                            String contact = in.nextLine();
+                            // System.out.print("What is your contact number: ");
+                            // String contact = in.nextLine();
+                            String contact = "";
                             //makeBooking
                             System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                             isValidOption = true;
@@ -110,8 +111,9 @@ public class BookingProfile {
 
                                     }
 
-                                    System.out.print("What is your contact number: ");
-                                    String contact = in.nextLine();
+                                    // System.out.print("What is your contact number: ");
+                                    // String contact = in.nextLine();
+                                    String contact = "";
                                     //makeBooking
                                     System.out.println(server.makeBooking(bookingDate, tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                                 } catch (Exception e) {
