@@ -2,10 +2,10 @@
 
 @if exist build rd /s /q build
 mkdir build
-javac -d ./build View/Main.java
+javac -verbose -d ./build View/Main.java
 
 cd build
-jar -cfe %name%.jar View/Main *
+jar -cvfe %name%.jar View/Main *
 @echo:
 @echo %name%.jar successfully created.
 
