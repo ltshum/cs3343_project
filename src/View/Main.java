@@ -27,6 +27,9 @@ public class Main {
         // server.addRestaurant(r1);
         // server.addRestaurant(r2);
         // server.addRestaurant(r3);
+        server.addAccount(r1);
+        server.addAccount(r2);
+        server.addAccount(r3);
         server.addRestaurantAccount(r1);
         server.addRestaurantAccount(r2);
         server.addRestaurantAccount(r3);
