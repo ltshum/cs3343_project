@@ -7,7 +7,6 @@ import java.util.Scanner;
 import org.junit.Test;
 
 import View.SearchRestaurant;
-import system.Account;
 import system.Server;
 
 public class SearchRestaurantTest {
@@ -61,6 +60,14 @@ public void TestIsValidRatingSingleOutOfRange2() {
     String customer = server.signIn("1", "1");
     SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
     boolean result = searchrestaurant.isValidRating("-1");
+    assertFalse(result);
+}
+
+@Test
+public void TestIsValidRatingSingleInvalidFormat() {
+    String customer = server.signIn("1", "1");
+    SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
+    boolean result = searchrestaurant.isValidRating("-");
     assertFalse(result);
 }
 
@@ -127,6 +134,30 @@ public void TestIsValidRatingRangeInvalid4() {
     boolean result = searchrestaurant.isValidRating("1-10");
     assertFalse(result);
 }
+
+@Test
+public void TestIsValidRatingRangeInvalidFormat1() {
+    String customer = server.signIn("1", "1");
+    SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
+    boolean result = searchrestaurant.isValidRating("012");
+    assertFalse(result);
+}
+
+@Test
+public void TestIsValidRatingRangeInvalidFormat2() {
+    String customer = server.signIn("1", "1");
+    SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
+    boolean result = searchrestaurant.isValidRating("0--");
+    assertFalse(result);
+}
+
+@Test
+public void TestIsValidRatingRangeInvalidFormat3() {
+    String customer = server.signIn("1", "1");
+    SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
+    boolean result = searchrestaurant.isValidRating("--5");
+    assertFalse(result);
+}
     
     @Test
     public void TestInvalidppl(){
@@ -149,6 +180,15 @@ public void TestIsValidRatingRangeInvalid4() {
     @Test
     public void TestInvalidDuration(){
         String[] in = {"name\ndistrict\ntype\n2\n6\n09:00\ninvalid\n60\nX\n4\n3\n"};
+        Scanner input = testInput.input(in);
+        String customer = server.signIn("1", "1");
+        SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
+           searchrestaurant.displaySearchRestaurnt(input);
+    }
+    
+    @Test
+    public void TestInvalidRating(){
+        String[] in = {"name", "district", "type", "invalid", "2", "6", "09:00", "60", "X", "4", "3"};
         Scanner input = testInput.input(in);
         String customer = server.signIn("1", "1");
         SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
