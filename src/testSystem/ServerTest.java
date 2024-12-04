@@ -21,6 +21,7 @@ import acm.PermissionRegistry;
 import acm.Privilege;
 import acm.Resource;
 import acm.Role;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import system.Account;
 import system.Booking;
@@ -570,10 +571,7 @@ public void testSearchAccountById() {
         restaurant.addBooking(new Booking(lastWeekEndDate, 1, "12:00-13:00", 
         "Test Restaurant", "user", "customer1", "123456789", 3));
     
-        // Create a new instance of Restaurant (if needed)
-        
-    
-        // Add comments for last week
+
         ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
         ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate));
     
@@ -584,68 +582,243 @@ public void testSearchAccountById() {
         server.generateAccountLog();
     }
    
-//        @Test
-//public void testCalAndSetRestaurantRank() {
+        @Test
+public void testCalAndSetRestaurantRank() {
+            LocalDate thisWeekStartDate = LocalDate.now();
+            LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+            LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+            LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+            Booking booking = new Booking(thisWeekStartDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+            restaurant.addBooking(booking);
+            Restaurant temp = new Restaurant("Test ", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+    		server.addRestaurantAccount((Restaurant)temp);
+    		((Restaurant) restaurant).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+            ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User2", "bad", 0, lastWeekStartDate));
+        
+            // Add comments for this week
+            ((Restaurant) temp).addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+            ((Restaurant) temp).addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate));
+//    		Booking bk1 =new Booking(thisWeekEndDate, 1, "12:00-13:00", 
+//    	            "Test Restaurant", "user", "customer1", "123456789", 4);
+//    		restaurant.addBooking(bk1);
+//            restaurant.addBooking(new Booking(lastWeekEndDate, 1, "12:00-13:00", 
+//            "Test Restaurant", "user", "customer1", "123456789", 3));
+            server.generateAccountLog();
+            server.calAndSetRestaurantRank(server.getRestaurantAccounts(),"lastWeekRate");
+        }
+        @Test
+        public void testCalAndSetRestaurantRank2() {
+                    LocalDate thisWeekStartDate = LocalDate.now();
+                    LocalDate thisWeekEndDate = thisWeekStartDate.plusDays(7);
+                    LocalDate lastWeekStartDate = thisWeekStartDate.minusDays(14);
+                    LocalDate lastWeekEndDate = thisWeekStartDate.minusDays(7);
+                    Booking booking = new Booking(thisWeekStartDate, 1, "12:00-13:00", restaurant.getAccountUserName(), restaurant.getAccountName(), "customer1", "123456789", 2);
+                    restaurant.addBooking(booking);
+                    Restaurant temp = new Restaurant("Test ", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+            		server.addRestaurantAccount((Restaurant)temp);
+            		((Restaurant) restaurant).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+                    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User2", "bad", 0, lastWeekStartDate));
+                    ((Restaurant) temp).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+                    ((Restaurant) temp).addCommentInRestaurant(new Comment("User2", "bad", 0, lastWeekStartDate));
+                    // Add comments for this week
+                    ((Restaurant) temp).addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+                    ((Restaurant) temp).addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate));
+                    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+                    ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate));
+
+                    server.generateAccountLog();
+                    server.calAndSetRestaurantRank(server.getRestaurantAccounts(),"lastWeekRate");
+        }
+   
+
+            @Test
+            public void testCalAndSetRestaurantRankWithMultipleRestaurants() {
+                // Setup: Create multiple restaurants and add ratings through comments
+                LocalDate lastWeekDate = LocalDate.now().minusDays(7);
+                LocalDate lastweekstart =LocalDate.now().minusDays(14);
+                LocalDate thisweekend =LocalDate.now().plusDays(14);
+                Restaurant restaurantA = new Restaurant("Restaurant A", "1", "A", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantA.addCommentInRestaurant(new Comment("User1", "Good", 4, lastWeekDate));
+
+                Restaurant restaurantB = new Restaurant("Restaurant B", "2", "B", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantB.addCommentInRestaurant(new Comment("User2", "Average", 3, thisweekend));
+
+                Restaurant restaurantC = new Restaurant("Restaurant C", "3", "C", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantC.addCommentInRestaurant(new Comment("User3", "Excellent", 5, lastWeekDate));
+                ((Restaurant)restaurant).addCommentInRestaurant(new Comment("User3", "bad", 0, lastweekstart));
+
+                // Add restaurants to the server
+                server.addRestaurantAccount(restaurantA);
+                server.addRestaurantAccount(restaurantB);
+                server.addRestaurantAccount(restaurantC);
+                restaurant.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantA.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantB.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantC.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+
+                // Calculate and set ranks based on last week rates
+                server.calAndSetRestaurantRank(server.getRestaurantAccounts(), "lastWeekRate");
+            }
+            
+            @Test
+            public void testmergesort() {
+            	server.mergeSort(null,"lastweekrate");
+            }
+
+            @Test
+            public void testCalAndSetRestaurantRankWithTies() {
+                // Setup: Create restaurants with tied last week rates via comments
+                LocalDate lastWeekDate = LocalDate.now().minusDays(7);
+                LocalDate lastweekstart =LocalDate.now().minusDays(14);
+                LocalDate thisweekend =LocalDate.now().plusDays(14);
+
+                Restaurant restaurantA = new Restaurant("Restaurant A", "1", "A", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantA.addCommentInRestaurant(new Comment("User1", "Good", 4, lastWeekDate));
+
+                Restaurant restaurantB = new Restaurant("Restaurant B", "2", "B", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantB.addCommentInRestaurant(new Comment("User2", "Good", 4, lastWeekDate)); // Tie with restaurant A
+
+                Restaurant restaurantC = new Restaurant("Restaurant C", "3", "C", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantC.addCommentInRestaurant(new Comment("User3", "Average", 3, lastWeekDate));
+
+                // Add restaurants to the server
+                server.addRestaurantAccount(restaurantA);
+                server.addRestaurantAccount(restaurantB);
+                server.addRestaurantAccount(restaurantC);
+                restaurant.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantA.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantB.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantC.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+
+                // Calculate and set ranks based on last week rates
+                server.calAndSetRestaurantRank(server.getRestaurantAccounts(), "lastWeekRate");
+
+         
+            }
+
+            @Test
+            public void testCalAndSetRestaurantRankEmptyList() {
+                // Test with an empty restaurant list
+                server.calAndSetRestaurantRank(new ArrayList<>(), "lastWeekRate");
+                // No exceptions should be thrown, and nothing should happen
+            }
+
+            @Test
+            public void testCalAndSetRestaurantRankSingleRestaurant() {
+                // Create a single restaurant and add a rating via comment
+                LocalDate lastWeekDate = LocalDate.now().minusDays(7);
+                LocalDate lastweekstart =LocalDate.now().minusDays(14);
+                LocalDate thisweekend =LocalDate.now().plusDays(14);
+                
+                Restaurant restaurantA = new Restaurant("Restaurant A", "1", "A", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantA.addCommentInRestaurant(new Comment("User1", "Good", 4, lastWeekDate));
+               
+                // Add the single restaurant to the server
+                server.addRestaurantAccount(restaurantA);
+                restaurant.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantA.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                server.calAndSetRestaurantRank(server.getRestaurantAccounts(), "lastWeekRate");
+
+                // Assertion to verify ranking
+            }
+
+            @Test
+            public void testCalAndSetRestaurantRankWithNoRankedRates() {
+                // Create restaurants with no last week rates set via comments
+                LocalDate lastWeekDate = LocalDate.now().minusDays(7);
+                LocalDate lastweekstart =LocalDate.now().minusDays(14);
+                LocalDate thisweekend =LocalDate.now().plusDays(14);
+                
+                Restaurant restaurantA = new Restaurant("Restaurant A", "1", "A", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantA.addCommentInRestaurant(new Comment("User1", "Bad", 0, lastWeekDate));
+
+                Restaurant restaurantB = new Restaurant("Restaurant B", "2", "B", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+                restaurantB.addCommentInRestaurant(new Comment("User2", "Terrible", 0, lastWeekDate)); // Both should be considered tied
+
+                // Add restaurants to the server
+                server.addRestaurantAccount(restaurantA);
+                server.addRestaurantAccount(restaurantB);
+                restaurant.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantA.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+                restaurantB.generateRestaurantLogWithoutRank(lastweekstart, lastWeekDate, LocalDate.now(), thisweekend);
+
+                // Calculate and set ranks
+                server.calAndSetRestaurantRank(server.getRestaurantAccounts(), "lastWeekRate");
+
+                // Assertions to verify that both are tied
+            }
+
+        
+        
+            // Add comments for last week
+//            ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User1", "Excellent!", 5, lastWeekStartDate));
+//            ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User2", "Not bad", 3, lastWeekStartDate));
+//        
+//            // Add comments for this week
+//            ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User3", "Great", 4, thisWeekStartDate));
+//            ((Restaurant) restaurant).addCommentInRestaurant(new Comment("User4", "Good",0, thisWeekEndDate)); // Use start date if today is not the end date
+//            ((Restaurant) restaurant).generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 //    // Setup: Create restaurants with different rates for last week and this week
 //    Restaurant restaurantA = new Restaurant("A", "1", "A", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
 //     thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
 //        lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
 //    restaurantA.setRestaurantLastWeekRate(4.5);
 //    restaurantA.setRestaurantThisWeekRate(4.0);
-//    
-//    Restaurant restaurantB = new Restaurant("B", "2", "B", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
+////    
+//   Restaurant restaurantB = new Restaurant("B", "2", "B", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
 //    restaurantB.setRestaurantLastWeekRate(3.5);
 //    restaurantB.setRestaurantThisWeekRate(5.0);
-//    
+///    
 //    Restaurant restaurantC = new Restaurant("C", "3", "C", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
 //    restaurantC.setRestaurantLastWeekRate(4.5); // Tie with restaurantA
 //    restaurantC.setRestaurantThisWeekRate(4.0); // Tie with restaurantA
 //                 ArrayList<Account> accounts;
-//
-//    // Add restaurants to the accounts list
+////
+////    // Add restaurants to the accounts list
 //    accounts.add(restaurantA);
 //    accounts.add(restaurantB);
 //    accounts.add(restaurantC);
-//
-//    // Test ranking by last week rate
+////
+////    // Test ranking by last week rate
 //    server.calAndSetRestaurantRank(accounts, "lastWeekRate");
 //    assertEquals(1, restaurantA.getRestaurantLastWeekRank());
 //    assertEquals(2, restaurantB.getRestaurantLastWeekRank());
 //    assertEquals(1, restaurantC.getRestaurantLastWeekRank()); // Tied with A
-//
-//    // Clear previous rankings
+////
+////    // Clear previous rankings
 //    accounts.forEach(account -> account.setRestaurantLastWeekRank(0));
-//
-//    // Test ranking by this week rate
+////
+////    // Test ranking by this week rate
 //    server.calAndSetRestaurantRank(accounts, "thisWeekRate");
 //    assertEquals(2, restaurantA.getRestaurantThisWeekRank()); // Lower rate than B
 //    assertEquals(1, restaurantB.getRestaurantThisWeekRank()); // Highest rate
 //    assertEquals(2, restaurantC.getRestaurantThisWeekRank()); // Tied with A
-//
-//    // Test with all equal rates
+////
+////    // Test with all equal rates
 //    Restaurant restaurantD = new Restaurant("D", "4", "D", "Cuisine", "District", "Address", "Contact", null, null, null, 5);
 //    restaurantD.setRestaurantLastWeekRate(4.0);
 //    restaurantD.setRestaurantThisWeekRate(4.0);
-//    
+////    
 //    accounts.add(restaurantD);
-//
-//    // Test ranking when all rates are equal
+////
+////    // Test ranking when all rates are equal
 //    server.calAndSetRestaurantRank(accounts, "lastWeekRate");
 //    assertEquals(1, restaurantA.getRestaurantLastWeekRank());
 //    assertEquals(1, restaurantB.getRestaurantLastWeekRank());
 //    assertEquals(1, restaurantC.getRestaurantLastWeekRank());
 //    assertEquals(1, restaurantD.getRestaurantLastWeekRank()); // All tied
-//
-//    // Test with empty account list
+////
+////    // Test with empty account list
 //    server.calAndSetRestaurantRank(new ArrayList<>(), "lastWeekRate"); // Should not throw any exceptions
-//
-//    // Test with a single account
-//    ArrayList<Account> singleAccountList = new ArrayList<>();
+////
+////    // Test with a single account
+//    ArrayList<Account> singleAccountList = new ArrayList<>(); 
 //    singleAccountList.add(restaurantA);
 //    server.calAndSetRestaurantRank(singleAccountList, "lastWeekRate");
 //    assertEquals(1, restaurantA.getRestaurantLastWeekRank()); // Should rank as 1
-//}
+
     }
+    
 //}
 
 //	@Test
