@@ -25,9 +25,9 @@ public class ViewBookingTest {
 	public void setUp() {
 		server.signUp("CUSTOMER", "1", "1", "1", "1", null, null, null, null, null, null, 0);
     server.signUp("RESTAURANT", "2", "2", "1", "1", "d", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
-		customerAccount = (Customer) server.signIn("1", "1");
-		restaurantAccount = (Restaurant) server.signIn("2", "2");
-		server.makeBooking(LocalDate.now(), 1, "12:00 - 13:00", restaurantAccount, customerAccount, "12345678", 3);
+		customerAccount =((Customer) server.getAccountByUserName("1"));
+		restaurantAccount = ((Restaurant)server.getAccountByUserName("2"));
+		server.makeBooking(LocalDate.now(), 1, "12:00 - 13:00", restaurantAccount.getAccountUserName(), customerAccount.getAccountUserName(), "12345678", 3);
 	}
 
 	@After

@@ -86,9 +86,6 @@ public abstract class Account {
     public List<Permission> getAccountPermissions() {
         List<Permission> allPermissions = new ArrayList<>();
         for (Role role : roles) {
-            if (role == Role.RESTAURANT) { // Corrected usage of Role enum
-                System.out.println("This is a restaurant role inside the compare");
-            }
             PermissionRegistry permissionRegistry = new PermissionRegistry();
             allPermissions.addAll(permissionRegistry.getPermissionsForRole(role));
         }

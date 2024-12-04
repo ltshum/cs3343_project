@@ -1,6 +1,7 @@
 package testSystem;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
 
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import View.BookingProfile;
+import system.Booking;
 import system.Server;
 
 public class BookingProfileTest {
@@ -32,6 +34,14 @@ public class BookingProfileTest {
 
     @Test
     public void TestBook(){
+        String[] in = {"1\n19:00 - 20:00\n1\n12345678\n3\n5\n3\n"};
+        Scanner input = testInput.input(in);
+        BookingProfile bookingProfile = new BookingProfile("2", "1");
+        bookingProfile.displayBookingProfile(input);
+    }
+    
+    @Test
+    public void TestBook2(){
         String[] in = {"1\n19:00 - 20:00\n1\n12345678\n3\n5\n3\n"};
         Scanner input = testInput.input(in);
         BookingProfile bookingProfile = new BookingProfile("2", "1");
@@ -93,7 +103,37 @@ public class BookingProfileTest {
         BookingProfile bookingProfile = new BookingProfile("2", "1");
         bookingProfile.displayBookingProfile(input);
     }
+    @Test
+    public void TestBookTodayInvalidTimeslot() {
+        server.getAccountByUserName("2").addBooking(new Booking(LocalDate.now(),1,"",server.getAccountByUserName("2").getAccountName(),server.getAccountByUserName("2").getAccountUserName(),server.getAccountByUserName("1").getAccountUserName(),server.getAccountByUserName("1").getAccountContact(),2));
+        String[] in = {"1\ninvalid\n12:00 - 13:00\n1\n12345677\n3\n"};
+        Scanner input = testInput.input(in);
+        BookingProfile bookingProfile = new BookingProfile("2", "1");
+        bookingProfile.displayBookingProfile(input);
+    }
 
+    @Test
+    public void TestBookAnotherDayAvailableTables() {
+        String[] in = {"2\n2024-12-21\n09:00 - 10:00\n1\n12345678\n3\n"};
+        Scanner input = testInput.input(in);
+        BookingProfile bookingProfile = new BookingProfile("2", "1");
+        bookingProfile.displayBookingProfile(input);
+    }
+    @Test
+    public void TestBookAnotherDayFormat() {
+        String[] in = {"2\n2024-12-21\n09:00 - 10:00\nhello\n12345678\n3\n"};
+        Scanner input = testInput.input(in);
+        BookingProfile bookingProfile = new BookingProfile("2", "1");
+        bookingProfile.displayBookingProfile(input);
+    }
+
+    @Test
+    public void TestInvalidPplInput() {
+        String[] in = {"1\n09:00 - 10:00\ninvalid\n4\n12345678\n3\n"};
+        Scanner input = testInput.input(in);
+        BookingProfile bookingProfile = new BookingProfile("2", "1");
+        bookingProfile.displayBookingProfile(input);
+    }
     // @Test
     // public void TestInvalidPpl(){
     //     String[] in = {"1\n2024-12-21\n11:00 - 12:00\ninvalid\n1\n12345678\n3\n5\n3\n"};
