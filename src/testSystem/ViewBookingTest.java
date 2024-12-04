@@ -32,8 +32,27 @@ public class ViewBookingTest {
 
 	@After
 	public void tearDown() {
+		restaurantAccount.getAllBookings().clear();
 		customerAccount.getAllBookings().clear();
 	}
+	
+	
+	@Test
+	public void testExit() {
+		String[] in = { "X" };
+		Scanner input = testInput.input(in);
+		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
+		viewBooking.displayViewBooking(input);
+	}
+	
+	@Test
+	public void testChangeDate() {
+		String[] in = { "2024-12-21", "X" };
+		Scanner input = testInput.input(in);
+		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
+		viewBooking.displayViewBooking(input);
+	}
+	
 	
 	//Take Attendance
 	@Test
@@ -103,6 +122,13 @@ public class ViewBookingTest {
 
 
 	//Make Comment
+	public void takeAttendanceForCustomerTest(Restaurant restaurantAccount) {
+		String[] in = { "T\n12:00 - 13:00\n1\nX" };
+		Scanner input = testInput.input(in);
+		ViewBooking viewBooking = new ViewBooking(restaurantAccount.getAccountUserName());
+		viewBooking.displayViewBooking(input);
+	}
+	
 	@Test
 	public void testMakeCommentInRestaurantAccount() {
 		String[] in = { "1\n3\nGood\nX" };
@@ -112,7 +138,17 @@ public class ViewBookingTest {
 	}
 
 	@Test
+	public void testMakeComment() {
+		takeAttendanceForCustomerTest(restaurantAccount);
+		String[] in = { "1\n3\nGood\nX" };
+		Scanner input = testInput.input(in);
+		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
+		viewBooking.displayViewBooking(input);
+	}
+	
+	@Test
 	public void testInputRestauantIndexLargerThanNumberOfBooking() {
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "2\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
@@ -121,6 +157,7 @@ public class ViewBookingTest {
 
 	@Test
 	public void testInputRestaurantIndexSmallerThan1() {
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "-1\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
@@ -130,7 +167,7 @@ public class ViewBookingTest {
 
 	@Test
 	public void testExitWhenInputtingRate() {
-		testTakeAttendance();
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "1\nX\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
@@ -139,7 +176,7 @@ public class ViewBookingTest {
 
 	@Test
 	public void testInputWrongTypeRate() {
-		testTakeAttendance();
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "1\nfive\nX\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
@@ -148,7 +185,7 @@ public class ViewBookingTest {
 
 	@Test
 	public void testInputRateSmallerThan0() {
-		testTakeAttendance();
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "1\n-1\nX\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
@@ -157,7 +194,7 @@ public class ViewBookingTest {
 
 	@Test
 	public void testInputRateLargerThan5() {
-		testTakeAttendance();
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "1\n6\nX\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
@@ -166,7 +203,7 @@ public class ViewBookingTest {
 
 	@Test
 	public void testInputRateAndExitWhenInputtingComment() {
-		testTakeAttendance();
+		takeAttendanceForCustomerTest(restaurantAccount);
 		String[] in = { "1\n3\nX\nX" };
 		Scanner input = testInput.input(in);
 		ViewBooking viewBooking = new ViewBooking(customerAccount.getAccountUserName());
