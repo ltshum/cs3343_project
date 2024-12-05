@@ -549,5 +549,13 @@ public class Restaurant extends Account {
         }
         return false;
     }
+    
+	public void setLastWeekLog(RestaurantLog lastWeekLog) {
+		this.lastWeekLog = lastWeekLog;
+	}
+	
+	public void setThisWeekLog(RestaurantLog thisWeekLog) {
+		this.thisWeekLog = thisWeekLog;
+	}
 
 }

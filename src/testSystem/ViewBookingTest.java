@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import View.ViewBooking;
-import system.Customer;
-import system.Restaurant;
 import system.Server;
 
 
