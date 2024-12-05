@@ -55,7 +55,7 @@ When signed in as Customer, there are 4 options:
   - User's name and phone number will be used in their comments and their booking respectively.
 
 2. View Booking
-  - This displays the booking record of the current date. User may input a date, to view another date's booking record, eg. input "2024-12-21".
+  - This displays the booking record of the current date. User may input a date to view another date's booking record, eg. input "2024-12-21".
     Display example:
     [2024-12-21]
     1. AC1: 13:00 - 14:00 3ppl
@@ -73,7 +73,7 @@ When signed in as Customer, there are 4 options:
     c. Type, eg. "Japanese"
     d. Rate range, eg. "2-4" or "5"
     e. Seat number, eg. "3"
-    f. Timeslot, eg. "13:00"
+    f. Start time, eg. "13:00"
     g. Duration, eg. "30"
   - If user has no preference for a criterion, they may input "null" instead.
   - Search result is a list of restaurants with brief information, sorted by how closely it matches the search criteria.
