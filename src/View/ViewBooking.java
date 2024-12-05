@@ -25,11 +25,12 @@ public class ViewBooking {
             if (server.isRestaurantByUsername(accountUsername)) {
                 System.out.println("# Take attendence input T #");
                 isRestaurant = true;
-            } else if (server.isCustomerByUsername(accountUsername)) {
+                }
+                if (server.isCustomerByUsername(accountUsername)) {
                 System.out.println("# If you want to make comment please input restaurant number #");
                 isCustomer = true;
 
-            }
+                }
 
             System.out.println("\n[" + date + "]");
 
