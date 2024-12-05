@@ -25,8 +25,8 @@ Restaurants may:
 -- Prerequisites --
 
 1. Operating System: Windows 10 or above
-2. JDK version: 11 or above
-  - Install JDK here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+2. Java Runtime Environment version: 8 or above
+  - Install JRE here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 
 
