@@ -13,7 +13,7 @@ jar -cvfe $name.jar View/Main *
 echo ""
 echo "$name.jar successfully created."
 
-echo java -jar $name.jar > Run.bat
+echo @java -jar $name.jar > Run.bat
 echo "Run.bat successfully created."
 echo java -jar $name.jar > Run.sh
 echo "Run.sh successfully created."
