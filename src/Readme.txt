@@ -42,7 +42,9 @@ Restaurants may:
 -- Program Execution --
 
 1. Go to "Release" folder
-2. Execute "Run.bat"
+2. Run TODONAMEPENDING.jar
+  - For Windows, execute "Run.bat"
+  - For macOS, execute "Run.sh"
 
 
 
