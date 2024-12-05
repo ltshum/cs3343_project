@@ -115,20 +115,17 @@ public class ServerTest {
     public void testSignInValid() {
         server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
         String account = server.signIn("testUser", "password");
-        String account = server.signIn("testUser", "password");
         assertNotNull(account);
         assertEquals("testUser", account);
     }@Test
     public void testSignInValid1() {
         server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
         String account = server.signIn("testUser", "password12");
-        String account = server.signIn("testUser", "password12");
         assertNull(account);
 
     }@Test
     public void testSignInValid2() {
         server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
-        String account = server.signIn("testUser12", "password");
         String account = server.signIn("testUser12", "password");
         assertNull(account);
     }
@@ -152,7 +149,6 @@ public void testSearchAccountById() {
     @Test
     public void testSignInInvalid3() {
     	String account = server.signIn("invalidUser", "password123");
-        String account = server.signIn("invalidUser", "password123");
         assertNull(account);
     }
 
