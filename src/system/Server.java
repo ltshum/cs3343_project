@@ -346,15 +346,11 @@ public class Server {
 
         ArrayList<Account> thisWeekRankedRestaurantAccounts = new ArrayList<>(RestaurantAccounts.values());
         calAndSetRestaurantRank(thisWeekRankedRestaurantAccounts, "thisWeekRate");
-
-        for (Account restaurantAc : (RestaurantAccounts.values())) {
-            System.out.println(restaurantAc.getAccountName() + ":" + restaurantAc.getRestaurantThisWeekRank() + "     " + restaurantAc.getRestaurantLastWeekRank());
-        }
     }
 
-    public void generateAccountWeeklyReport(String restaurantUsername) {
+    public String generateAccountWeeklyReport(String restaurantUsername) {
         Account restaurant = getAccountByUserName(restaurantUsername);
-        restaurant.generateRestaurantWeeklyReport();
+        return restaurant.generateRestaurantWeeklyReport();
     }
 
     public void reset() {

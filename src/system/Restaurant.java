@@ -511,7 +511,7 @@ public class Restaurant extends Account {
 
     }
 
-    public void generateWeeklyReport() {
+    public String generateWeeklyReport() {
 
         StringBuilder report = new StringBuilder();
 
@@ -537,7 +537,7 @@ public class Restaurant extends Account {
         report.append("Rate decrease/increase ").append(thisWeekLog.getLogRate() - lastWeekLog.getLogRate()).append("\n");
         report.append("Total ppl decrease/increase ").append(thisWeekLog.getLogTotalPpl() - lastWeekLog.getLogTotalPpl()).append("\n");
 
-        System.out.println(report.toString());
+        return report.toString();
     }
 
     public boolean takeAttendanceInRestaurant(LocalDate date, String inputSession, int tableID) {

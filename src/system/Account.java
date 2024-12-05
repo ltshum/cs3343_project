@@ -148,8 +148,8 @@ public abstract class Account {
         return ((Restaurant) this).getLastWeekRank();
     }
 
-    public void generateRestaurantWeeklyReport() {
-        ((Restaurant) this).generateWeeklyReport();
+    public String generateRestaurantWeeklyReport() {
+        return ((Restaurant) this).generateWeeklyReport();
     }
 
     public boolean takeAttenanceInAccount(LocalDate date, String inputSession, int tableID) {
