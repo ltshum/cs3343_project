@@ -25,7 +25,7 @@ public class ProfileTest {
     public void TestUpdateProfile(){
         String[] in = {"1\nX\n2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
+        String customer = server.signIn("1", "1");
         Profile profile = new Profile(customer);
         profile.displayProfile(input);
     }
@@ -34,7 +34,7 @@ public class ProfileTest {
     public void TestBack(){
         String[] in = {"2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
+        String customer = server.signIn("1", "1");
         Profile profile = new Profile(customer);
         profile.displayProfile(input);
     }
@@ -43,7 +43,7 @@ public class ProfileTest {
     public void TestInvalidNumber(){
         String[] in = {"8\n2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
+        String customer = server.signIn("1", "1");
         Profile profile = new Profile(customer);
         profile.displayProfile(input);
     }
@@ -52,7 +52,7 @@ public class ProfileTest {
     public void TestInvalidInput(){
         String[] in = {"test\n2\n4\n3\n"};
         Scanner input = testInput.input(in);
-        Account customer = server.signIn("1", "1");
+        String customer = server.signIn("1", "1");
         Profile profile = new Profile(customer);
         profile.displayProfile(input);
     }

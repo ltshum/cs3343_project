@@ -117,8 +117,8 @@ public class SearchRestaurantTestDavid {
         server.addRestaurantAccount(restaurant1);
         server.addRestaurantAccount(restaurant2);
         server.addRestaurantAccount(restaurant3);
-        ArrayList<Restaurant> result = server.searchRestaurantsIn("Dina Dine", "null", "null", "null", "null", "null", "null");
-        assertEquals(restaurant3, result.get(0));
+        ArrayList<String> result = server.searchRestaurantsIn("Dina Dine", "null", "null", "null", "null", "null", "null");
+        assertEquals(restaurant3.getAccountUserName(), result.get(0));
     }
 
     @Test
@@ -126,12 +126,12 @@ public class SearchRestaurantTestDavid {
         server.addRestaurantAccount(eat);
         server.addRestaurantAccount(eateat);
         server.addRestaurantAccount(ea);
-        ArrayList<Restaurant> expected = new ArrayList<>();
-        expected.add(eat);
-        expected.add(eateat);
-        expected.add(ea);
+        ArrayList<String> expected = new ArrayList<>();
+        expected.add(eat.getAccountUserName());
+        expected.add(eateat.getAccountUserName());
+        expected.add(ea.getAccountUserName());
         
-        ArrayList<Restaurant> result = server.searchRestaurantsIn("eat", "null", "null", "null", "null", "null", "null");
+        ArrayList<String> result = server.searchRestaurantsIn("eat", "null", "null", "null", "null", "null", "null");
         assertEquals(expected, result);
     }
 
@@ -140,29 +140,32 @@ public class SearchRestaurantTestDavid {
         server.addRestaurantAccount(eat);
         server.addRestaurantAccount(eateat);
         server.addRestaurantAccount(ea);
-        ArrayList<Restaurant> expected = new ArrayList<>();
-        expected.add(eat);
-        expected.add(eateat);
-        expected.add(ea);
+        ArrayList<String> expected = new ArrayList<>();
+        expected.add(eat.getAccountUserName());
+        expected.add(eateat.getAccountUserName());
+        expected.add(ea.getAccountUserName());
         
-        ArrayList<Restaurant> result = server.searchRestaurantsIn("eat", "null", "null", "null", "null", "null", "null");
+        ArrayList<String> result = server.searchRestaurantsIn("eat", "null", "null", "null", "null", "null", "null");
         assertEquals(expected, result);
     }
 
 
     @Test
     public void test_rating_range() {
-        restaurant1.setRate((float)1.2);
-        restaurant2.setRate((float)4.5);
-        restaurant3.setRate((float)3.9);
+        restaurant1.setRestaurantRate((float)1.2);
+        restaurant2.setRestaurantRate((float)4.5);
+        restaurant3.setRestaurantRate((float)3.9);
 
         server.addRestaurantAccount(restaurant1);
         server.addRestaurantAccount(restaurant2);
         server.addRestaurantAccount(restaurant3);
+        ArrayList<String> expected = new ArrayList<>();
+        expected.add(restaurant2.getAccountUserName());
+        expected.add(restaurant3.getAccountUserName());
                 
-        ArrayList<Restaurant> result = server.searchRestaurantsIn("null", "null", "2--5", "null", "null", "null", "null");
+        ArrayList<String> result = server.searchRestaurantsIn("null", "null", "2--5", "null", "null", "null", "null");
 
-        assertEquals(true, result.get(0) == restaurant2 && result.get(1) == restaurant3 && result.size()==2 && !result.contains(restaurant1));
+        assertEquals(expected, result);
     }
 
     // @Test

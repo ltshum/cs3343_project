@@ -72,24 +72,24 @@ public class ServerTest {
     @Test
     public void testSignInValid() {
         server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
-        Account account = server.signIn("testUser", "password");
+        String account = server.signIn("testUser", "password");
         assertNotNull(account);
         assertEquals("testUser", server.getUserName(account));
     }@Test
     public void testSignInValid1() {
         server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
-        Account account = server.signIn("testUser", "password12");
+        String account = server.signIn("testUser", "password12");
         assertNull(account);
     }@Test
     public void testSignInValid2() {
         server.signUp("CUSTOMER", "testUser", "password", "Test Name", "123456789", null, null, null, null, null, null, 0);
-        Account account = server.signIn("testUser12", "password");
+        String account = server.signIn("testUser12", "password");
         assertNull(account);
     }
 
     @Test
     public void testSignInInvalid3() {
-        Account account = server.signIn("invalidUser", "password123");
+        String account = server.signIn("invalidUser", "password123");
         assertNull(account);
     }
 
