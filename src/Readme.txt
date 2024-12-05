@@ -1,5 +1,14 @@
 CS3343 Group 27
 
+LI Qiaolan, Project Manager
+MAN Hon Pan, Assistant Project Manager
+HUI Hiu Wang, Development and Test Led
+SHUM Lok Ting, Advanced Programmer
+David Alexander Leynes CORNEJO, Programmer
+LONG Yancheng, Programmer
+
+
+
 -- Restaurant Booking System --
 
 
@@ -126,15 +135,6 @@ When signed in as Restaurant, there are 5 options:
 5. Logout
   - This takes the user back to the initial page with 3 options.
 
--- End of User Guideline --
 
 
-
--- Credits --
-
-LI Qiaolan, Project Manager
-MAN Hon Pan, Assistant Project Manager
-HUI Hiu Wang, Development and Test Led
-SHUM Lok Ting, Advanced Programmer
-David Alexander Leynes CORNEJO, Programmer
-LONG Yancheng, Programmer
+-- End --
