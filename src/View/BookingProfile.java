@@ -2,6 +2,7 @@ package View;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+
 import system.Server;
 
 public class BookingProfile {
@@ -28,9 +29,7 @@ public class BookingProfile {
             System.out.print("\nWhat action do you want to do?: ");
             try {
                 int op = Integer.parseInt(in.nextLine());
-                if (server.isCustomerByUsername(customerUsername)) {
-                    outerloop:
-                    switch (op) {
+                    outerloop:switch (op) {
                         case 1 -> {
                             boolean isValidSession = false;
                             String bookSession = "";
@@ -63,11 +62,13 @@ public class BookingProfile {
 
                             }
 
-                            System.out.print("What is your contact number: ");
-                            String contact = in.nextLine();
+                            // System.out.print("What is your contact number: ");
+                            // String contact = in.nextLine();
+                            String contact = "";
                             //makeBooking
                             System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                             isValidOption = true;
+                            System.out.println("Booking had been make ");
                         }
                         case 2 -> {
                             System.out.println("Book another day");
@@ -111,8 +112,9 @@ public class BookingProfile {
 
                                     }
 
-                                    System.out.print("What is your contact number: ");
-                                    String contact = in.nextLine();
+                                    // System.out.print("What is your contact number: ");
+                                    // String contact = in.nextLine();
+                                    String contact = "";
                                     //makeBooking
                                     System.out.println(server.makeBooking(bookingDate, tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                                 } catch (Exception e) {
@@ -127,12 +129,9 @@ public class BookingProfile {
                         default ->
                             System.out.print("\nInvalid option. Please input again.");
                     }
-                }
-            } catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                 System.out.print("\nInvalid input! Please input again.");
             }
-
         }
-
     }
 }

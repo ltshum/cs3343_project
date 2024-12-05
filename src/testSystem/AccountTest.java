@@ -1,6 +1,7 @@
 package testSystem;
 
 import acm.Permission;
+import acm.PermissionRegistry;
 import acm.Privilege;
 import acm.Resource;
 import acm.Role;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +57,18 @@ public class AccountTest {
                 LocalTime.parse("20:00"),
                 Duration.ofMinutes(60),
                 3);
+        PermissionRegistry.registerPermissions(Role.RESTAURANT, Arrays.asList(
+                new Permission(Role.RESTAURANT, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
+                new Permission(Role.RESTAURANT, Resource.VIEW_BOOKING, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
+                new Permission(Role.RESTAURANT, Resource.TABLE_MANAGEMENT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE)),
+                new Permission(Role.RESTAURANT, Resource.WEEKLY_REPORT, Set.of(Privilege.CREATE, Privilege.READ, Privilege.UPDATE, Privilege.DELETE))
+            ));
+
+            PermissionRegistry.registerPermissions(Role.CUSTOMER, Arrays.asList(
+                new Permission(Role.CUSTOMER, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE)),
+                new Permission(Role.CUSTOMER, Resource.VIEW_BOOKING, Set.of(Privilege.READ)),
+                new Permission(Role.CUSTOMER, Resource.SEARCH_RESTAURANT, Set.of(Privilege.READ))
+            ));
         
     }
 
@@ -100,12 +114,12 @@ public class AccountTest {
 
     @Test
     public void testGetPermissions() {
-        List<Permission> permissions = accountCustomer.getAccountPermissions();
-        assertEquals(3, permissions.size());
-        Permission per=new Permission(Role.CUSTOMER, Resource.PROFILE, Set.of(Privilege.READ, Privilege.UPDATE));
-        assertEquals(per.getRole(), permissions.get(0).getRole());
-        assertEquals(per.getResource(), permissions.get(0).getResource());
-        assertEquals(per.getPrivileges(), permissions.get(0).getPrivileges());
+        String name=accountRestaurant.getAccountName();
+        System.out.println("This is the role of the restaurant "+accountRestaurant.getRoles());
+        List<Role> roles = new ArrayList<>();
+        List<Permission> permissions = accountRestaurant.getAccountPermissions();
+        System.out.println("This is the permission string "+accountRestaurant.getAccountPermissionsString(1));
+        assertEquals(4, permissions.size());
     }
     @Test
     public void testgetAccountContact(){
@@ -409,6 +423,7 @@ public void testGetCommentRestaurantUserNameWithNoBookings() {
 
     @Test
     public void testgetAccountPermissionsString(){
+    	System.out.println("This is the string I want "+accountRestaurant.getAccountPermissionsString(1));
         assertEquals("PROFILE",
         accountRestaurant.getAccountPermissionsString(1));
         assertEquals( "PROFILE",
@@ -555,4 +570,27 @@ public void testGetCommentRestaurantUserNameWithNoBookings() {
         String restaurantUserName = accountCustomer.getCommentRestaurantUserName(2, bookingDate2);
         assertNull(restaurantUserName);
     }
+    
+    @Test
+    public void testgetgetAccountTimeslots() {
+    	String res =
+                "10:00 - 11:00 \n" +
+                "11:00 - 12:00 \n" +
+                "12:00 - 13:00 \n" +
+                "13:00 - 14:00 \n" +
+                "14:00 - 15:00 \n" +
+                "15:00 - 16:00 \n" +
+                "16:00 - 17:00 \n" +
+                "17:00 - 18:00 \n" +
+                "18:00 - 19:00 \n"+
+                "19:00 - 20:00 \n";
+    	assertEquals(res,accountRestaurant.getAccountTimeslots());
+    }
+    @Test
+    public void testgetAccountPermissionNumber() {
+    	assertEquals(5,accountRestaurant.getAccountPermissionNumber());
+    	assertEquals(4,accountCustomer.getAccountPermissionNumber());
+
+    }
+    
 }

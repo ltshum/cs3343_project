@@ -180,7 +180,7 @@ public abstract class Account {
 
     public int getAccountPermissionNumber() {
         int count = 1;
-        for (Permission permission : getAccountPermissions()) {
+        for (Permission permission : this.getAccountPermissions()) {
             System.out.println("\n" + count + ". " + permission.getResource());
             count++;
         }

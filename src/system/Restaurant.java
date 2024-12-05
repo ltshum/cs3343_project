@@ -476,7 +476,6 @@ public class Restaurant extends Account {
         ArrayList<Comment> lastWeekComments = getPeriodComments(lastWeekStartDate, lastWeekEndDate);
         int lastWeekTotalPpl = lastWeekBookings.stream().mapToInt(Booking::getBookingPpl).sum();
         float lastWeekRate = lastWeekComments.isEmpty() ? 0 : (float) lastWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
-
         //this week data
         ArrayList<Booking> thisWeekBookings = getPeriodBookings(thisWeekStartDate, thisWeekEndDate);
         ArrayList<Comment> thisWeekComments = getPeriodComments(thisWeekStartDate, thisWeekEndDate);
@@ -484,7 +483,6 @@ public class Restaurant extends Account {
         float thisWeekRate = thisWeekComments.isEmpty() ? 0 : (float) thisWeekComments.stream().mapToDouble(Comment::getCommentRate).average().getAsDouble();
         thisWeekLog = new RestaurantLog(0, thisWeekRate, thisWeekTotalPpl, thisWeekComments);
         lastWeekLog = new RestaurantLog(0, lastWeekRate, lastWeekTotalPpl, lastWeekComments);
-
     }
 
     public float getLastWeekRate() {
