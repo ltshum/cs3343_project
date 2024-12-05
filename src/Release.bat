@@ -12,10 +12,14 @@ jar -cvfe %name%.jar View/Main *
 echo @java -jar %name%.jar > Run.bat
 @echo:
 @echo Run.bat successfully created.
-@echo To run %name%.jar, execute Run.bat
+echo @java -jar %name%.jar > Run.sh
+@echo:
+@echo Run.sh successfully created.
+@echo:
+@echo To run %name%.jar, execute Run.bat or Run.sh
 
 @echo:
-@echo To complete the project, move %name%.jar and Run.bat from 'build' folder to 'Release' folder.
-@echo After everything is done, delete 'build' folder and this .bat file.
+@echo To complete the project, move %name%.jar, Run.bat and Run.sh from 'build' folder to 'Release' folder.
+@echo After everything is done, delete 'build' folder and both Release executables.
 
 @pause
