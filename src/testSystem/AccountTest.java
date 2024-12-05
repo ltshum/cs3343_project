@@ -588,8 +588,8 @@ public void testGetCommentRestaurantUserNameWithNoBookings() {
     }
     @Test
     public void testgetAccountPermissionNumber() {
-    	assertEquals(4,accountRestaurant.getAccountPermissionNumber());
-    	assertEquals(3,accountCustomer.getAccountPermissionNumber());
+    	assertEquals(5,accountRestaurant.getAccountPermissionNumber());
+    	assertEquals(4,accountCustomer.getAccountPermissionNumber());
 
     }
     

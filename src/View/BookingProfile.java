@@ -68,6 +68,7 @@ public class BookingProfile {
                             //makeBooking
                             System.out.println(server.makeBooking(LocalDate.now(), tableID, bookSession, restaurantUsername, customerUsername, contact, ppl));
                             isValidOption = true;
+                            System.out.println("Booking had been make ");
                         }
                         case 2 -> {
                             System.out.println("Book another day");

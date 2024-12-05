@@ -8,13 +8,22 @@ import system.Server;
 
 public class Main {
 
-    public static void main(String[] args) {
+    private Server server;
+    private Scanner scanner;
+
+    public Main(Server server, Scanner scanner) {
+        this.server = server;
+        this.scanner = scanner;
+    }
+    	public void start() {
         Server server = Server.getInstance();
         Scanner in = new Scanner(System.in);
 
         //For Test
         server.signUp("CUSTOMER", "1", "1", "1", "1", null, null, null, null, null, null, 0);
         server.signUp("RESTAURANT", "2", "2", "1", "1", "d", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
+        server.signUp("RESTAURANT","AC1", "2", "AC1", "Japan", "Kowloon Tong", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
+
         //server.updateSeatNo(testres,1,6);
         //Test
         Restaurant r1 = new Restaurant("AC1", "2", "AC1", "Japan", "Kowloon Tong", "1", "1", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 3);
@@ -69,4 +78,12 @@ public class Main {
 
         }
     }
+    
+	   public static void main(String[] args) {
+	        Server server = Server.getInstance();
+	        Scanner in = new Scanner(System.in);
+	        Main mainApp = new Main(server, in);
+	        mainApp.start();
+	    }
 }
+

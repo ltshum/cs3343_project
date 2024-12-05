@@ -1,5 +1,14 @@
 CS3343 Group 27
 
+LI Qiaolan, Project Manager
+MAN Hon Pan, Assistant Project Manager
+HUI Hiu Wang, Development and Test Led
+SHUM Lok Ting, Advanced Programmer
+David Alexander Leynes CORNEJO, Programmer
+LONG Yancheng, Programmer
+
+
+
 -- Restaurant Booking System --
 
 
@@ -25,8 +34,8 @@ Restaurants may:
 -- Prerequisites --
 
 1. Operating System: Windows 10 or above
-2. JDK version: 21 or above
-  - Install JDK here: https://www.oracle.com/java/technologies/downloads/
+2. Java Runtime Environment version: 8 or above
+  - Install JRE here: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 
 
@@ -55,7 +64,7 @@ When signed in as Customer, there are 4 options:
   - User's name and phone number will be used in their comments and their booking respectively.
 
 2. View Booking
-  - This displays the booking record of the current date. User may input a date, to view another date's booking record, eg. input "2024-12-21".
+  - This displays the booking record of the current date. User may input a date to view another date's booking record, eg. input "2024-12-21".
     Display example:
     [2024-12-21]
     1. AC1: 13:00 - 14:00 3ppl
@@ -73,7 +82,7 @@ When signed in as Customer, there are 4 options:
     c. Type, eg. "Japanese"
     d. Rate range, eg. "2-4" or "5"
     e. Seat number, eg. "3"
-    f. Timeslot, eg. "13:00"
+    f. Start time, eg. "13:00"
     g. Duration, eg. "30"
   - If user has no preference for a criterion, they may input "null" instead.
   - Search result is a list of restaurants with brief information, sorted by how closely it matches the search criteria.
@@ -126,15 +135,6 @@ When signed in as Restaurant, there are 5 options:
 5. Logout
   - This takes the user back to the initial page with 3 options.
 
--- End of User Guideline --
 
 
-
--- Credits --
-
-LI Qiaolan, Project Manager
-MAN Hon Pan, Assistant Project Manager
-HUI Hiu Wang, Development and Test Led
-SHUM Lok Ting, Advanced Programmer
-David Alexander Leynes CORNEJO, Programmer
-LONG Yancheng, Programmer
+-- End --
