@@ -12,6 +12,15 @@ import system.Server;
 public class SearchRestaurantTest {
     
     Server server = Server.getInstance();
+    @Before
+    public void setUp() {
+        server = Server.getInstance();
+        restaurant = new Restaurant("TestRestaurant", "1", "Test", "Cuisine", "District", "Address", "Contact", LocalTime.parse("09:00"), LocalTime.parse("21:00"), Duration.ofMinutes(60), 5);
+        customer = new Customer("TestUser", "password", "Test Name", "123456789");
+        server.addAccount(restaurant); 
+        server.addAccount(customer);
+        server.addRestaurantAccount((Restaurant)restaurant);
+   }
 
     @Test
     public void TestAllNonNullData(){
@@ -194,4 +203,13 @@ public void TestIsValidRatingRangeInvalidFormat3() {
         SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
            searchrestaurant.displaySearchRestaurnt(input);
     }
+    
+//    @Test
+//    public void TestAllNonNullData(){
+//        String[] in = {"name\ndistrict\ntype\n3\n6\n09:00\n60\nX\n4\n3\n"};
+//        Scanner input = testInput.input(in);
+//        String customer = server.signIn("1", "1");
+//        SearchRestaurant searchrestaurant = new SearchRestaurant(customer);
+//           searchrestaurant.displaySearchRestaurnt(input);
+//    }
 }
