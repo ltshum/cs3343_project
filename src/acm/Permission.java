@@ -14,17 +14,17 @@ public class Permission {
         this.privileges = privileges;
     }
 
-    public Role getRole() {
-        return role;
-    }
+//    public Role getRole() {
+//        return role;
+//    }
 
     public Resource getResource() {
         return resource;
     }
-
-    public Set<Privilege> getPrivileges() {
-        return privileges;
-    }
+//
+//    public Set<Privilege> getPrivileges() {
+//        return privileges;
+//    }
 
     // public boolean canPerform(Privilege privilege) {
     //     return privileges.contains(privilege);
