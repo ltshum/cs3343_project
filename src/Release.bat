@@ -12,7 +12,7 @@ jar -cvfe %name%.jar View/Main *
 echo @java -jar %name%.jar > Run.bat
 @echo:
 @echo Run.bat successfully created.
-echo @java -jar %name%.jar > Run.sh
+echo java -jar %name%.jar > Run.sh
 @echo:
 @echo Run.sh successfully created.
 @echo:
