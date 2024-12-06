@@ -26,10 +26,8 @@ public class MainTest {
     
      @After
     public void tearDown() throws Exception {
-    	if(scanner!=null) {
         scanner.close();
-    	}
-        System.setIn(systemIn);
+    System.setIn(systemIn);
     }
 
     public void setInput(String[] in) {

@@ -96,7 +96,7 @@ public class SearchCriteriaTest {
     public void testGetSearchScoreWithMatchingRestaurantName() {
 
         criteria = new SearchCriteria("Test Restaurant", "null", "null", "null", "null", "null", "null");
-        assertTrue(criteria.getSearchScore(account) > 0);
+        assertEquals(18, criteria.getSearchScore(account));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class SearchCriteriaTest {
     @Test
     public void testGetSearchScoreWithRateRange() {
         criteria = new SearchCriteria("null", "null", "4-5", "null", "null", "null", "null");
-        assertFalse(criteria.getSearchScore(account) > 0);
+        assertEquals(0, criteria.getSearchScore(account));
     }
 
     @Test

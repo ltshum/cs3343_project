@@ -41,9 +41,7 @@ public class RestaurantListTest {
     }
     @After
     public void tearDown() {
-    	if(scanner!=null) {
         scanner.close();
-    	}
         System.setIn(systemIn);
     }
 

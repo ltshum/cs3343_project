@@ -32,9 +32,7 @@ public class BookingProfileTest {
 
      @After
     public void tearDown() throws Exception {
-    	if(scanner!=null) {
         scanner.close();
-    	}
         System.setIn(systemIn);
     }
 
