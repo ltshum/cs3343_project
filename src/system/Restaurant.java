@@ -27,8 +27,8 @@ public class Restaurant extends Account {
     private RestaurantLog thisWeekLog;
 
     //Test
-    Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
-    Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
+    // Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
+    // Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
 
     //private ArrayList<Comment> allComments = new ArrayList<>();
     public Restaurant(String userName, String password, String name, String type, String district, String address, String contact, LocalTime openTime, LocalTime closeTime, Duration sessionDuration, int tableNum) {
@@ -43,8 +43,8 @@ public class Restaurant extends Account {
         this.allTables = new ArrayList<>();
         initializeTables(tableNum);
         generateTimeslots();
-        this.allComments.add(cm1);
-        this.allComments.add(cm2);
+        // this.allComments.add(cm1);
+        // this.allComments.add(cm2);
         //this.allTables = new ArrayList<>();
     }
 
