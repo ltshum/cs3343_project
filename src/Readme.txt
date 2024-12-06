@@ -44,7 +44,7 @@ Restaurants may:
 1. Go to "Release" folder
 2. Run TODONAMEPENDING.jar
   - For Windows, execute "Run.bat"
-  - For macOS, execute "Run.sh"
+  - For macOS, open Terminal and input "bash {folder_path}/Run.sh"
 
 
 
