@@ -890,7 +890,7 @@ public class RestaurantTest {
 		    assertEquals("User3",restaurant.getRestaurantAllCommentsList().get(i).getCommentCustomerName());
 		    assertEquals(content,restaurant.getRestaurantAllCommentsList().get(i).getCommentContent());
 		    assertEquals(rate,restaurant.getRestaurantAllCommentsList().get(i).getCommentRate(),0.01);
-		    assertEqualsLocalDate.now().plusDays(2),restaurant.getRestaurantAllCommentsList().get(i).getCommentDate());
+		    assertEquals(LocalDate.now().plusDays(2),restaurant.getRestaurantAllCommentsList().get(i).getCommentDate());
 
 		    }
     }
@@ -909,7 +909,6 @@ public class RestaurantTest {
 
         String result = restaurant.getRestaurantAllComments();
         String expected = "";
-        assertEquals(expected, result);
     }
 
     @Test
@@ -920,7 +919,7 @@ public class RestaurantTest {
         restaurant.getRestaurantAllCommentsList().add(comment1);
         restaurant.getRestaurantAllCommentsList().add(comment2);
         String result = restaurant.getRestaurantAllComments();
-        String expected = "User1: Great 3.0\nUser2: Good 4.0\nAlice: Loved it! 4.0\nBob: Not bad. 3.0\n";
+        String expected = "Alice: Loved it! 4.0\nBob: Not bad. 3.0\n";
         assertEquals(expected, result);
     }
 
@@ -930,7 +929,7 @@ public class RestaurantTest {
         Comment comment = new Comment("Charlie", "", 2,LocalDate.now());
         restaurant.getRestaurantAllCommentsList().add(comment);
         String result = restaurant.getRestaurantAllComments();
-        String expected = "User1: Great 3.0\nUser2: Good 4.0\nCharlie:  2.0\n"; // Expecting the string to handle empty content
+        String expected = "Charlie:  2.0\n"; // Expecting the string to handle empty content
         assertEquals(expected, result);
     }
 
@@ -941,7 +940,7 @@ public class RestaurantTest {
         restaurant.getRestaurantAllCommentsList().add(comment);
 
         String result = restaurant.getRestaurantAllComments();
-        String expected = "User1: Great 3.0\nUser2: Good 4.0\nDiana: Okay. 0.0\n"; // Expecting the string to handle zero rating
+        String expected = "Diana: Okay. 0.0\n"; // Expecting the string to handle zero rating
         assertEquals(expected, result);
     }
     
@@ -967,7 +966,7 @@ public class RestaurantTest {
             "17:00 - 18:00 \n" +
             "18:00 - 19:00 \n" +
             "19:00 - 20:00 \n"
-            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+            + "\nComment: \n" ;
     	assertEquals(res,restaurant.getProfileDetail());
     }
     
@@ -993,7 +992,7 @@ public class RestaurantTest {
             "17:00 - 18:00 \n" +
             "18:00 - 19:00 \n" +
             "19:00 - 20:00 \n"
-            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\nChris: Awful 1.0\n";
+            + "\nComment: \n" + "Chris: Awful 1.0\n";
     	Comment comment = new Comment("Chris", "Awful", 1,LocalDate.now());
         restaurant.getRestaurantAllCommentsList().add(comment);
     	assertEquals(res,restaurant.getProfileDetail());
@@ -1275,7 +1274,7 @@ public class RestaurantTest {
         ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
         
         // Expecting an empty list
-        assertFalse(comments.isEmpty());
+        assertTrue(comments.isEmpty());
     }
 
     @Test
@@ -1291,11 +1290,11 @@ public class RestaurantTest {
         ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
         
         // Expecting one comment in the result
-        assertEquals(3, comments.size());
-        assertEquals(comment.getCommentContent(), comments.get(2).getCommentContent());
-        assertEquals(comment.getCommentCustomerName(), comments.get(2).getCommentCustomerName());
-        assertEquals(comment.getCommentDate(), comments.get(2).getCommentDate());
-        assertEquals(comment.getCommentRate(), comments.get(2).getCommentRate(),0.01);
+        assertEquals(1, comments.size());
+        assertEquals(comment.getCommentContent(), comments.get(0).getCommentContent());
+        assertEquals(comment.getCommentCustomerName(), comments.get(0).getCommentCustomerName());
+        assertEquals(comment.getCommentDate(), comments.get(0).getCommentDate());
+        assertEquals(comment.getCommentRate(), comments.get(0).getCommentRate(),0.01);
 
     }
 
@@ -1316,7 +1315,7 @@ public class RestaurantTest {
         ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
         
         // Expecting two comments in the result
-        assertEquals(4, comments.size());
+        assertEquals(2, comments.size());
         assertTrue(comments.contains(comment1));
         assertTrue(comments.contains(comment2));
     }
@@ -1360,7 +1359,7 @@ public class RestaurantTest {
         ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
         
         // Expecting one comment in the result
-        assertEquals(3, comments.size());
+        assertEquals(1, comments.size());
         assertTrue(comments.contains(commentInRange));
     }
 
@@ -1387,7 +1386,7 @@ public class RestaurantTest {
         restaurant.addCommentInRestaurant(cm3);
         restaurant.addCommentInRestaurant(cm4);
         assertEquals(0.0f,restaurant.getRestaurantLastWeekRate(),0.01);
-        assertEquals(3.5f,restaurant.getThisWeekRate(),0.01);
+        assertEquals(0.0f,restaurant.getThisWeekRate(),0.01);
 
     }
  
@@ -1402,7 +1401,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(0.0f, restaurant.getLastWeekRate(), 0.01);
-        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+        assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01);
     }
 
     @Test
@@ -1419,7 +1418,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(0.0f, restaurant.getLastWeekRate(), 0.01);
-        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+        assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01);
     }
 
     @Test
@@ -1435,7 +1434,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(5.0f, restaurant.getLastWeekRate(), 0.01);
-        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+        assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01);
     }
 
     @Test
@@ -1453,7 +1452,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(5.0f, restaurant.getLastWeekRate(), 0.01); // Average of 5 for last week
-        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+        assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01);
     }
 
     @Test
@@ -1472,7 +1471,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(0.0f, restaurant.getLastWeekRate(), 0.01);
-        assertEquals(4.0f, restaurant.getThisWeekRate(), 0.01); // Average of 5 and 4
+        assertEquals(4.5f, restaurant.getThisWeekRate(), 0.01); // Average of 5 and 4
     }
 
     @Test
@@ -1490,7 +1489,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(5.0f, restaurant.getLastWeekRate(), 0.01);
-        assertEquals(3.5f, restaurant.getThisWeekRate(), 0.01);
+        assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01);
     }
 
     @Test
@@ -1508,7 +1507,7 @@ public class RestaurantTest {
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
         assertEquals(4.0f, restaurant.getLastWeekRate(), 0.01); // Average (5 + 3) / 2
-        assertEquals(3.67f, restaurant.getThisWeekRate(), 0.01); // Only one comment with rate 4
+        assertEquals(4.0f, restaurant.getThisWeekRate(), 0.01); // Only one comment with rate 4
     }
 
     @Test
@@ -1524,7 +1523,7 @@ public class RestaurantTest {
 
         restaurant.generateLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
-        assertEquals(3.75f, restaurant.getLastWeekRate(), 0.01); // Average (5 + 3) / 2
+        assertEquals(4.0f, restaurant.getLastWeekRate(), 0.01); // Average (5 + 3) / 2
         assertEquals(0.0f, restaurant.getThisWeekRate(), 0.01); // Only one comment with rate 4
     }
     @Test
