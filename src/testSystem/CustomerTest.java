@@ -31,15 +31,10 @@ public class CustomerTest {
     }
      @After
     public void tearDown() throws Exception {
-    	if(scanner!=null) {
-        scanner.close();
-    	}
         System.setIn(systemIn);
     }
 
-    public void setInput(String[] in) {
-        scanner = testInput.input(in);
-    }
+   
 
     @Test
     public void testCustomerConstructor() {

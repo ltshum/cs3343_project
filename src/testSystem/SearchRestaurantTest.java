@@ -2,16 +2,23 @@ package testSystem;
 
 import static org.junit.Assert.*;
 
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Scanner;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import View.SearchRestaurant;
+import system.Customer;
+import system.Restaurant;
 import system.Server;
 
 public class SearchRestaurantTest {
     
     Server server = Server.getInstance();
+    private Restaurant restaurant ;
+    private Customer customer;
     @Before
     public void setUp() {
         server = Server.getInstance();
