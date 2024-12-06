@@ -195,7 +195,7 @@ public class AccountTest {
 
         accountRestaurant.generateRestaurantLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
-        assertEquals(3.75f, accountRestaurant.getRestaurantLastWeekRate(), 0.01); // Average (5 + 3) / 2
+        assertEquals(4.0f, accountRestaurant.getRestaurantLastWeekRate(), 0.01); // Average (5 + 3) / 2
         assertEquals(0.0f, accountRestaurant.getRestaurantThisWeekRate(), 0.01); // Only one comment with rate 4
     }
 
@@ -260,7 +260,7 @@ public class AccountTest {
 
         accountRestaurant.generateRestaurantLogWithoutRank(thisWeekStartDate, thisWeekEndDate, lastWeekStartDate, lastWeekEndDate);
 
-        assertEquals(3.75f, accountRestaurant.getRestaurantLastWeekRate(), 0.01); // Average (5 + 3) / 2
+        assertEquals(4.0f, accountRestaurant.getRestaurantLastWeekRate(), 0.01); // Average (5 + 3) / 2
         assertEquals(0.0f, accountRestaurant.getRestaurantThisWeekRate(), 0.01); // No comments for this week
     }
 

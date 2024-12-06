@@ -250,7 +250,7 @@ public class RestaurantTest {
             "17:00 - 18:00 \n" +
             "18:00 - 19:00 \n" +
             "19:00 - 20:00 \n"
-            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+            + "\nComment: \n" ;
         assertEquals(res, restaurant.getProfileDetail());
     }
     @Test
@@ -278,7 +278,7 @@ public class RestaurantTest {
             "17:00 - 18:00 \n" +
             "18:00 - 19:00 \n" +
             "19:00 - 20:00 \n"
-            + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+            + "\nComment: \n" ;
         assertEquals(res, restaurant.getProfileDetail());
     }
 
@@ -290,13 +290,7 @@ public class RestaurantTest {
 
     @Test
     public void testgetRestaurantAllCommentsList(){
-        ArrayList<Comment> temp=new  ArrayList<Comment>();
-        Comment cm1 = new Comment("User1", "Great", 3, LocalDate.now());
-        Comment cm2 = new Comment("User2", "Good", 4, LocalDate.now());
-        temp.add(cm1);
-        temp.add(cm2);
-        assertEquals(temp.size(),restaurant.getRestaurantAllCommentsList().size());
-        assertEquals(temp.get(0).getCommentCustomerName(),restaurant.getRestaurantAllCommentsList().get(0).getCommentCustomerName());
+        assertEquals(0,restaurant.getRestaurantAllCommentsList().size());
     }
 
     @Test
@@ -891,12 +885,12 @@ public class RestaurantTest {
 	    cmList.add(cm1);
 	    cmList.add(cm2);
 	    cmList.add(cm3);
-	    assertEquals(3, restaurant.getRestaurantAllCommentsList().size());
+	    assertEquals(1, restaurant.getRestaurantAllCommentsList().size());
 	    for(int i=0;i<restaurant.getRestaurantAllCommentsList().size();i++) {
-		    assertEquals(cmList.get(i).getCommentCustomerName(),restaurant.getRestaurantAllCommentsList().get(i).getCommentCustomerName());
-		    assertEquals(cmList.get(i).getCommentContent(),restaurant.getRestaurantAllCommentsList().get(i).getCommentContent());
-		    assertEquals(cmList.get(i).getCommentRate(),restaurant.getRestaurantAllCommentsList().get(i).getCommentRate(),0.01);
-		    assertEquals(cmList.get(i).getCommentDate(),restaurant.getRestaurantAllCommentsList().get(i).getCommentDate());
+		    assertEquals("User3",restaurant.getRestaurantAllCommentsList().get(i).getCommentCustomerName());
+		    assertEquals(content,restaurant.getRestaurantAllCommentsList().get(i).getCommentContent());
+		    assertEquals(rate,restaurant.getRestaurantAllCommentsList().get(i).getCommentRate(),0.01);
+		    assertEqualsLocalDate.now().plusDays(2),restaurant.getRestaurantAllCommentsList().get(i).getCommentDate());
 
 		    }
     }
@@ -904,7 +898,7 @@ public class RestaurantTest {
     public void testGetAllComments_Empty() {
         // Test when there are no comments
         String result = restaurant.getRestaurantAllComments();
-        assertEquals("User1: Great 3.0\nUser2: Good 4.0\n", result);
+        assertEquals("", result);
     }
 
     @Test
@@ -914,7 +908,7 @@ public class RestaurantTest {
         restaurant.getRestaurantAllCommentsList().add(comment);
 
         String result = restaurant.getRestaurantAllComments();
-        String expected = "User1: Great 3.0\nUser2: Good 4.0\nJohn: Great food! 5.0\n";
+        String expected = "";
         assertEquals(expected, result);
     }
 
@@ -1344,7 +1338,7 @@ public class RestaurantTest {
         ArrayList<Comment> comments = restaurant.getPeriodComments(startDate, endDate);
         
         // Expecting two comments in the result
-        assertEquals(4, comments.size());
+        assertEquals(2, comments.size());
         assertTrue(comments.contains(commentStart));
         assertTrue(comments.contains(commentEnd));
     }

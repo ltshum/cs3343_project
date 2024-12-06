@@ -101,7 +101,11 @@ public final class SearchCriteria {
         if (rateRange != null) {
             int minRate = rateRange.charAt(0) - '0';
             int maxRate = rateRange.charAt(rateRange.length() - 1) - '0';
-            result += r.getAccountRate() > minRate && r.getAccountRate() < maxRate ? 1 : 0;
+            if(r.getAccountRate() > minRate && r.getAccountRate() < maxRate ){
+                result+=1;
+            }else{
+                result+=0;
+            }
         }
 
         if (type != null) {

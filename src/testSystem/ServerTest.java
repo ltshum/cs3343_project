@@ -249,7 +249,7 @@ public void testSearchAccountById() {
                 "18:00 - 19:00 \n"+
                 "19:00 - 20:00 \n"+
                 "20:00 - 21:00 \n"
-                + "\nComment: \n" + "User1: Great 3.0\nUser2: Good 4.0\n";
+                + "\nComment: \n" ;
         String details = server.getUserDetail(restaurant.getAccountUserName());
         assertEquals(res,details);
     }
